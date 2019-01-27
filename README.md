@@ -1,2 +1,2 @@
 # kimimaro
-Dense TEASAR skeletonization of 3D labeled images.
+Dense modified TEASAR skeletonization of 3D labeled images.

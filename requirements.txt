@@ -1,0 +1,8 @@
+connected-components-3d
+cloud-volume
+dijkstra3d
+edt>=1.2.3
+fastremap
+numpy>=1.14.2
+pytest
+scipy>=1.1.0
