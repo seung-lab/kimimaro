@@ -1,1 +1,1 @@
-from .intake import skeletonize
+from .intake import skeletonize, DimensionError
