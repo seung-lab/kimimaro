@@ -28,7 +28,6 @@ def trace(
     pdrf_scale=5000, pdrf_exponent=16,
     soma_invalidation_scale=0.5,
     soma_invalidation_const=0,
-    path_downsample=1
   ):
   """
   Given the euclidean distance transform of a label ("Distance to Boundary Function"), 
@@ -48,8 +47,6 @@ def trace(
   soma_invalidation_scale: the 'scale' factor used in the one time soma root invalidation (default .5)
   soma_invalidation_const: the 'const' factor used in the one time soma root invalidation (default 0)
                            (units in chosen physical units (i.e. nm))
-  path_downsample: stride length for downsampling the saved skeleton paths (default 1)
-                    (units of node points)
   
   Based on the algorithm by:
 
@@ -113,13 +110,6 @@ def trace(
     parents, scale, const, anisotropy, 
     soma_mode, soma_radius
   )
-
-  # Downsample skeletons by striding. Ensure first and last point remain.
-  # Duplicate points are eliminated in consolidation.
-  for i, path in enumerate(paths):
-    paths[i] = np.concatenate(
-      (path[0:-2:path_downsample, :], path[-1:, :])
-    )
 
   skel = PrecomputedSkeleton.simple_merge(
     [ PrecomputedSkeleton.from_path(path) for path in paths ]
