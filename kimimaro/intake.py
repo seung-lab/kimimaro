@@ -27,7 +27,7 @@ DEFAULT_TEASAR_PARAMS = {
 def skeletonize(
     all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
     object_ids=None, dust_threshold=1000, cc_safety_factor=1,
-    progress=False
+    progress=False, fix_branching=False
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -110,7 +110,13 @@ def skeletonize(
 
     roi = Bbox.from_slices(slices)
 
-    skeleton = kimimaro.trace.trace(labels, dbf, anisotropy=anisotropy, **teasar_params)
+    skeleton = kimimaro.trace.trace(
+      labels, 
+      dbf, 
+      anisotropy=anisotropy, 
+      fix_branching=fix_branching, 
+      **teasar_params
+    )
     skeleton.vertices[:,0] += roi.minpt.x
     skeleton.vertices[:,1] += roi.minpt.y
     skeleton.vertices[:,2] += roi.minpt.z

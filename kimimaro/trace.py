@@ -28,6 +28,7 @@ def trace(
     pdrf_scale=5000, pdrf_exponent=16,
     soma_invalidation_scale=0.5,
     soma_invalidation_const=0,
+    fix_branching=False,
   ):
   """
   Given the euclidean distance transform of a label ("Distance to Boundary Function"), 
@@ -47,6 +48,11 @@ def trace(
   soma_invalidation_scale: the 'scale' factor used in the one time soma root invalidation (default .5)
   soma_invalidation_const: the 'const' factor used in the one time soma root invalidation (default 0)
                            (units in chosen physical units (i.e. nm))
+  fix_branching: When enabled, zero out the graph edge weights traversed by 
+    of previously found paths. This causes branch points to occur closer to 
+    the actual path divergence. However, there is a large performance penalty
+    associated with this as dijkstra's algorithm is computed once per a path
+    rather than once per a skeleton.
   
   Based on the algorithm by:
 
@@ -94,8 +100,11 @@ def trace(
   # Use dijkstra propogation w/o a target to generate a field of
   # pointers from each voxel to its parent. Then we can rapidly
   # compute multiple paths by simply hopping pointers using path_from_parents
-  parents = dijkstra3d.parental_field(PDRF, root)
-  del PDRF
+  if not fix_branching:
+    parents = dijkstra3d.parental_field(PDRF, root)
+    del PDRF
+  else:
+    parents = PDRF
 
   if soma_mode:
     invalidated, labels = kimimaro.skeletontricks.roll_invalidation_ball(
@@ -108,7 +117,7 @@ def trace(
   paths = compute_paths(
     root, labels, DBF, DAF, 
     parents, scale, const, anisotropy, 
-    soma_mode, soma_radius
+    soma_mode, soma_radius, fix_branching
   )
 
   skel = PrecomputedSkeleton.simple_merge(
@@ -123,7 +132,7 @@ def trace(
 def compute_paths(
     root, labels, DBF, DAF, 
     parents, scale, const, anisotropy, 
-    soma_mode, soma_radius
+    soma_mode, soma_radius, fix_branching
   ):
   """
   Given the labels, DBF, DAF, dijkstra parents,
@@ -142,7 +151,11 @@ def compute_paths(
 
   while valid_labels > 0:
     target = kimimaro.skeletontricks.find_target(labels, DAF)
-    path = dijkstra3d.path_from_parents(parents, target)
+
+    if fix_branching:
+      path = dijkstra3d.dijkstra(parents, root, target)
+    else:
+      path = dijkstra3d.path_from_parents(parents, target)
     
     if soma_mode:
       dist_to_soma_root = np.linalg.norm(anisotropy * (path - root), axis=1)
@@ -159,6 +172,8 @@ def compute_paths(
     valid_labels -= invalidated
     for vertex in path:
       invalid_vertices[tuple(vertex)] = True
+      if fix_branching:
+        parents[tuple(vertex)] = 0.0
 
     paths.append(path)
 
