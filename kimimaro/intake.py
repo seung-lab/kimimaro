@@ -17,14 +17,53 @@ import kimimaro.trace
 class DimensionError(Exception):
   pass
 
+
+DEFAULT_TEASAR_PARAMS = {
+  'scale': 10, 'const': 50,
+  'pdrf_scale': 100000,
+  'pdrf_exponent': 4,
+}
+
 def skeletonize(
-    all_labels, teasar_params, anisotropy=(1,1,1),
-    object_ids=None, dust_threshold=1000, cc_safety_factor=0.25,
+    all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
+    object_ids=None, dust_threshold=1000, cc_safety_factor=1,
     progress=False
   ):
   """
+  Skeletonize all non-zero labels in a given 2D or 3D image.
 
+  Required:
+    all_labels: a 2D or 3D numpy array of integer type (signed or unsigned) 
+
+  Optional:
+    anisotropy: the physical dimensions of each axis (e.g. 4nm x 4nm x 40nm)
+    object_ids: If not none, zero out all labels other than those specified here.
+    teasar_params: {
+      scale: during the "rolling ball" invalidation phase, multiply 
+          the DBF value by this.
+      const: during the "rolling ball" invalidation phase, this 
+          is the minimum radius in chosen physical units (i.e. nm).
+      soma_detection_threshold: if object has a DBF value larger than this, 
+          root will be placed at largest DBF value and special one time invalidation
+          will be run over that root location (see soma_invalidation scale)
+          expressed in chosen physical units (i.e. nm) 
+      pdrf_scale: scale factor in front of dbf, used to weight dbf over euclidean distance (higher to pay more attention to dbf) (default 5000)
+      pdrf_exponent: exponent in dbf formula on distance from edge, faster if factor of 2 (default 16)
+      soma_invalidation_scale: the 'scale' factor used in the one time soma root invalidation (default .5)
+      soma_invalidation_const: the 'const' factor used in the one time soma root invalidation (default 0)
+                             (units in chosen physical units (i.e. nm))
+    }
+    dust_threshold: don't bother skeletonizing connected components smaller than
+      this many voxels.
+    cc_safety_factor: Value between 0 and 1 that scales the size of the 
+      disjoint set maps in connected_components. 1 is guaranteed to work,
+      but is probably excessive and corresponds to every pixel being a different
+      label. Use smaller values to save some memory.
+    progress: if true, display a progress bar
+
+  Returns: [ cloudvolume.PrecomputedSkeleton, ... ]
   """
+
   if all_labels.ndim not in (2,3):
     raise DimensionError("Can only skeletonize arrays of dimension 2 or 3.")
 
@@ -56,7 +95,7 @@ def skeletonize(
   all_slices = scipy.ndimage.find_objects(cc_labels)
 
   skeletons = defaultdict(list)
-  for segid in tqdm(cc_segids, disable=(not progress), desc="Label"):
+  for segid in tqdm(cc_segids, disable=(not progress), desc="Skeletonizing Labels"):
     if segid == 0:
       continue 
 
