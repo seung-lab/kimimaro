@@ -27,7 +27,7 @@ DEFAULT_TEASAR_PARAMS = {
 def skeletonize(
     all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
     object_ids=None, dust_threshold=1000, cc_safety_factor=1,
-    progress=False, fix_branching=False
+    progress=False, fix_branching=True
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -60,6 +60,11 @@ def skeletonize(
       but is probably excessive and corresponds to every pixel being a different
       label. Use smaller values to save some memory.
     progress: if true, display a progress bar
+    fix_branching: When enabled, zero the edge weights by of previously 
+      traced paths. This causes branch points to occur closer to 
+      the actual path divergence. However, there is a performance penalty
+      associated with this as dijkstra's algorithm is computed once per a path
+      rather than once per a skeleton.
 
   Returns: [ cloudvolume.PrecomputedSkeleton, ... ]
   """

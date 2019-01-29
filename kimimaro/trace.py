@@ -28,7 +28,7 @@ def trace(
     pdrf_scale=5000, pdrf_exponent=16,
     soma_invalidation_scale=0.5,
     soma_invalidation_const=0,
-    fix_branching=False,
+    fix_branching=True,
   ):
   """
   Given the euclidean distance transform of a label ("Distance to Boundary Function"), 
