@@ -35,6 +35,7 @@ skeletons = kimimaro.skeletonize(
   progress=True
 )
 ```
+*Detailed discussion of TEASAR parameters here or link to wiki.*
 
 ## `pip` Binary Installation
 
@@ -66,11 +67,23 @@ TBC
 
 TBC
 
+### Using DAF for Targets, PDRF for Pathfinding
+
+### Normalized DAF "Trickle Gradient"
+
+### Rolling Invalidation Cube
+
+Uses topological cues to perform O(V) invalidations instead of O(VN) where V is the number of voxels in the volume and N is the number of vertices in a skeleton path. This could be done as a sphere, it's just more time consuming to program.
+
+### Soma Handling
+
+We want to handle somas diff
+
 ## Related Projects
 
 Several classic algorithms had to be specially tuned to make this module possible.  
 
-1. [MLAEDT-3D](https://github.com/seung-lab/euclidean-distance-transform-3d): A single pass, multi-label anisotropy supporting euclidean distance transform implementation. 
+1. [edt](https://github.com/seung-lab/euclidean-distance-transform-3d): A single pass, multi-label anisotropy supporting euclidean distance transform implementation. 
 2. [dijkstra3d](https://github.com/seung-lab/dijkstra3d): Dijkstra's shortest-path algorithm defined on 26-connected 3D images. This avoids the time cost of edge generation and wasted memory of a graph representation.
 3. [connected-components-3d](https://github.com/seung-lab/connected-components-3d): A connected components implementation defined on 26-connected 3D images with multiple labels.
 4. [fastremap](https://github.com/seung-lab/fastremap): Allows high speed renumbering of labels from 1 in a 3D array in order to reduce memory consumption caused by unnecessarily large 32 and 64-bit labels.
@@ -84,9 +97,13 @@ Some of the TEASAR modifications used in this package were first demonstrated by
 
 1. [skeletonization](https://github.com/seung-lab/skeletonization): Python implementation of modified TEASAR for sparse labels.
 
+## Credits
+
+Alex Bae and William Silversmith
+
 ## References 
 
 1. M. Sato, I. Bitter, M.A. Bender, A.E. Kaufman, and M. Nakajima. "TEASAR: Tree-structure Extraction Algorithm for Accurate and Robust Skeletons". Proc. 8th Pacific Conf. on Computer Graphics and Applications. Oct. 2000. doi: 10.1109/PCCGA.2000.883951 ([link](https://ieeexplore.ieee.org/abstract/document/883951/))
 2.  I. Bitter, A.E. Kaufman, and M. Sato. "Penalized-distance volumetric skeleton algorithm". IEEE Transactions on Visualization and Computer Graphics Vol. 7, Iss. 3, Jul-Sep 2001. doi: 10.1109/2945.942688 ([link](https://ieeexplore.ieee.org/abstract/document/942688/))
-
+3. T. Zhao, S. Plaza. "Automatic Neuron Type Identification by Neurite Localization in the Drosophila Medulla". Sept. 2014. arXiv:1409.1892 [q-bio.NC] ([link](https://arxiv.org/abs/1409.1892))
 
