@@ -1,12 +1,15 @@
+[![PyPI version](https://badge.fury.io/py/kimimaro.svg)](https://badge.fury.io/py/kimimaro)  
+
+# Kimimaro: Skeletonize Densely Labeled Images
+
+Rapidly skeletonize all non-zero labels in 2D and 3D numpy arrays using a TEASAR derived method. The returned list of skeletons is in the format used by [cloud-volume](https://github.com/seung-lab/cloud-volume/wiki/Advanced-Topic:-Skeletons). 
+
+On a 3.7 GHz Intel i7 processor, this package processed a 512x512x100 volume with 333 labels in under a minute. It processed a 512x512x512 volume with 2124 labels in eight to thirteen minutes (depending on whether `fix_branching` is set).
+
 <p style="font-style: italics;" align="center">
 <img height=512 width=512 src="https://raw.githubusercontent.com/seung-lab/kimimaro/master/mass_skeletonization.png" alt="A Densely Labeled Volume Skeletonized with Kimimaro" /><br>
 Fig. 1: A Densely Labeled Volume Skeletonized with Kimimaro
 </p>
-
-# kimimaro
-Rapidly skeletonize all non-zero labels in 2D and 3D numpy arrays using a TEASAR derived method. The returned list of skeletons is in the format used by [cloud-volume](https://github.com/seung-lab/cloud-volume/wiki/Advanced-Topic:-Skeletons). 
-
-On a 3.7 GHz Intel i7 processor, this package processed a 512x512x100 volume with 333 labels in 46 seconds. It processed a 512x512x512 volume with 2124 labels in eight minutes.
 
 ```python
 import kimimaro
