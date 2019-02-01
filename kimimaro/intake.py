@@ -66,7 +66,7 @@ def skeletonize(
       associated with this as dijkstra's algorithm is computed once per a path
       rather than once per a skeleton.
 
-  Returns: [ cloudvolume.PrecomputedSkeleton, ... ]
+  Returns: { $segid: cloudvolume.PrecomputedSkeleton, ... }
   """
 
   if all_labels.ndim not in (2,3):
@@ -79,7 +79,7 @@ def skeletonize(
 
   all_labels = apply_object_mask(all_labels, object_ids)
   if not np.any(all_labels):
-    return
+    return {}
 
   cc_labels, remapping = compute_cc_labels(all_labels, cc_safety_factor)
   del all_labels

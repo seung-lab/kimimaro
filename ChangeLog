@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+0.2.0
+-----
+
+* docs: add PyPI badge
+* feat: fix branching (#1)
+* docs: adding sections to README
+
 0.1.0
 -----
 
