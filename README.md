@@ -54,17 +54,21 @@ skeletons = kimimaro.skeletonize(
 ```
 *Detailed discussion of TEASAR parameters here or link to wiki.*
 
+## Performance Tips
 
+- If you only need a few labels skeletonized, pass in `object_ids` to bypass processing all the others. If `object_ids` contains only a single label, the masking operation will run faster.
+- You may save on peak memory usage by using a `cc_safety_factor` < 1, only if you are sure the connected components algorithm will generate many fewer labels than there are pixels in your image.
+- Larger TEASAR parameters scale and const require processing larger invalidation regions per path.
+- Set `pdrf_exponent` to a small power of two (e.g. 1, 2, 4, 8, 16) for a small speedup.
+- If you are willing to sacrifice the improved branching behavior, you can set `fix_branching=False` for a moderate 1.1x to 1.5x speedup (assuming your TEASAR parameters and data allow branching).
 
 ## Motivation
 
-The connectomics field commonly generates very large densely labeled volumes of neural tissue. Skeletons are one dimensional centerline representations of two or three dimensional objects. They have many uses, a few of which are for visualization of neurons, calculating global topological features, rapidly measuring electrical distances between objects, and imposing tree structures on neurons. There are several ways to compute skeletons and a few ways to define them. After some experimentation, we found that the TEASAR [1] approach gave fairly good results. Other approaches include topological thinning ("grass fire") and finding the centerline described by maximally inscribed spheres. Ignacio Arganda-Carreras, an alumnus of the Seung Lab, wrote a topological thinning plugin for Fiji called [Skeletonize3d](https://imagej.net/Skeletonize3D). 
+The connectomics field commonly generates very large densely labeled volumes of neural tissue. Skeletons are one dimensional representations of two or three dimensional objects. They have many uses, a few of which are visualization of neurons, calculating global topological features, rapidly measuring electrical distances between objects, and imposing tree structures on neurons (useful for computation and user interfaces). There are several ways to compute skeletons and a few ways to define them. After some experimentation, we found that the TEASAR [1] approach gave fairly good results. Other approaches include topological thinning ("onion peeling") and finding the centerline described by maximally inscribed spheres. Ignacio Arganda-Carreras, an alumnus of the Seung Lab, wrote a topological thinning plugin for Fiji called [Skeletonize3d](https://imagej.net/Skeletonize3D). 
 
-There are several implementations of TEASAR used in the connectomics field, however it is commonly understood that implementations of TEASAR are slow and can use tens of gigabytes of memory. Our goal to skeletonize all labels in a petavoxel scale image quickly showed clear that existing sparse implementations are impractical. While adapting a sparse approach to a cloud pipeline, it was noticed that there were inefficiencies in CPU usage in the repeated evaluation of the Euclidean Distance Transform (EDT), the repeated evaluation of the connected components algorithm, in the construction of the graph used by Dijkstra's algorithm where the edges are implied by the spatial relationships between voxels, in the memory cost, quadratic in the number of voxels, of representing a graph that is implicit in image, and in the unnecessarily large data type used to represent relatively small cutouts. We also found that the naive implmentation of TEASAR's "rolling invalidation ball" unnecessarily reevaluated large numbers of voxels in a way that we could loosely characterize as quadratic in the skeleton path length.   
+There are several implementations of TEASAR used in the connectomics field, however it is commonly understood that implementations of TEASAR are slow and can use tens of gigabytes of memory. Our goal to skeletonize all labels in a petavoxel scale image quickly showed clear that existing sparse implementations are impractical. While adapting a sparse approach to a cloud pipeline, we noticed that there are inefficiencies in repeated evaluation of the Euclidean Distance Transform (EDT), the repeated evaluation of the connected components algorithm, in the construction of the graph used by Dijkstra's algorithm where the edges are implied by the spatial relationships between voxels, in the memory cost, quadratic in the number of voxels, of representing a graph that is implicit in image, in the unnecessarily large data type used to represent relatively small cutouts, and in the repeated downloading of overlapping regions. We also found that the naive implmentation of TEASAR's "rolling invalidation ball" unnecessarily reevaluated large numbers of voxels in a way that could be loosely characterized as quadratic in the skeleton path length.   
 
-We found that commodity implementations of the EDT supported only binary images and did not support anisotropic dimensions (though many papers defining those techniques included anisotropic operation). Were unable to find any available Python or C++ libraries for performing Dijkstra's shortest path on an image. We also found that commodity implementations of connected components algorithms for images supported only binary images. Therefore, several libraries were devised to remedy these deficits. 
-
-TBC
+We further found that commodity implementations of the EDT supported only binary images and did not support anisotropic dimensions (though many papers defining those techniques included anisotropic operation). We were unable to find any available Python or C++ libraries for performing Dijkstra's shortest path on an image. Commodity implementations of connected components algorithms for images supported only binary images. Therefore, several libraries were devised to remedy these deficits (see Related Projects). 
 
 ## Why TEASAR?
 
@@ -82,25 +86,55 @@ In order to work with images that contain many labels, our general strategy is t
 
 Given a 3D labeled voxel array, *I*, with N >= 0 labels, and ordered triple describing voxel anisotropy *A*, our algorithm can be divided into three phases, the pramble, skeletonization, and finalization in that order.
 
-### Preamble
+### I. Preamble
 
-The Preamble takes a 3D image containing N labels and efficiently generates the connected components, distance transform, and bounding boxes needed by the skeletonization phase.
+The Preamble takes a 3D image containing *N* labels and efficiently generates the connected components, distance transform, and bounding boxes needed by the skeletonization phase.
 
-1. To enhance performance, if N is 0 return an empty set of skeletons.
+1. To enhance performance, if *N* is 0 return an empty set of skeletons.
 2. Label the M connected components, *I<sub>cc</sub>*, of *I*.
-3. To save memory, renumber the connected components in order from 1 to M. Adjust the data type of the new image to the smallest uint type that will contain M and overwrite *I<sub>cc</sub>*.
+3. To save memory, renumber the connected components in order from 1 to *M*. Adjust the data type of the new image to the smallest uint type that will contain *M* and overwrite *I<sub>cc</sub>*.
 4. Generate a mapping of the renumbered *I<sub>cc</sub>* to *I* to assign meaningful labels to skeletons later on and delete *I* to save memory.
 5. Compute *E*, the multi-label anisotropic Euclidean Distance Transform of *I<sub>cc</sub>* given *A*. *E* treats all interlabel edges as transform edges, but not the boundaries of the image. Black pixels are considered background.
 6. Gather a list, *L<sub>cc</sub>* of unique labels from *I<sub>cc</sub>* and threshold which ones to process based on the number of voxels they represent to remove "dust".
-7. In one pass, compute the list of bounding boxes, B, corresponding to each label in *L<sub>cc</sub>*.
+7. In one pass, compute the list of bounding boxes, *B*, corresponding to each label in *L<sub>cc</sub>*.
 
-### Skeletonization 
+### II. Skeletonization 
 
-In this phase, we extract the tree structured skeleton from each connected component label.
+In this phase, we extract the tree structured skeleton from each connected component label. Below, we reference variables defined in the Preamble. For clarity, we omit the soma specific processing and hold `fix_branching=True`. 
 
-### Finalization
+For each label *l* in *L<sub>cc</sub>* and *B*...
+
+1. Extract *I<sub>l</sub>*, the cropped binary image tightly enclosing *l* from *I<sub>cc</sub>* using *B<sub>l</sub>*
+2. Using *I<sub>l</sub>* and *B<sub>l</sub>*, extract *E<sub>l</sub>* from *E*. *E<sub>l</sub>* is the cropped tightly enclosed EDT of *l*. This is much faster than recomputing the EDT for each binary image.
+3. Find an arbitrary foreground voxel and using that point as a source, compute the anisotropic euclidean distance field for *I<sub>l</sub>*. The coordinate of the maximum value is now "the root" *r*.
+4. From *r*, compute the euclidean distance field and save it as the distance from root field *D<sub>r</sub>*.
+5. Compute the penalized distance from root field *P<sub>r</sub>* = `pdrf_scale` * ((1 - *E<sub>l</sub>* / max(*E<sub>l</sub>*)) ^ `pdrf_exponent`) + *D<sub>r</sub>* / max(*D<sub>r</sub>*). 
+6. While *I<sub>l</sub>* contains foreground voxels:
+    1. Identify a target coordinate, *t*, as the foreground voxel with maximum distance in *D<sub>r</sub>* from *r*.
+    2. Draw the shortest path *p* from *r* to *t* considering the voxel values in *P<sub>r</sub>* as edge weights.
+    3. For each vertex *v* in *p*, extend an invalidation cube of physical side length computed as `scale` * *E<sub>l</sub>*(*v*) + `const` and convert any foreground pixels in *I<sub>l</sub>* that overlap with these cubes to background pixels.
+    4. (Only if `fix_branching=True`) For each vertex coordinate *v* in *p*, set *P<sub>r</sub>*(*v*) = 0.
+    5. Append *p* to a list of paths for this label.
+7. Using *E<sub>l</sub>*, extract the distance to the nearest boundary each vertex in the skeleton represents.
+8. For each raw skeleton extracted from *I<sub>l</sub>*, translate the vertices by *B<sub>l</sub>* to correct for the translation the cropping operation induced.
+9. Multiply the vertices by the anisotropy *A* to place them in physical space.
+
+If soma processing is considered, we modify the root (*r*) search process as follows:  
+
+1. If max(*E<sub>l</sub>*) > `soma_detection_threshold`...
+  1. Fill toplogical holes in *I<sub>l</sub>*. Soma are large regions that often have dust from imperfect automatic labeling methods.
+  2. Recompute *E<sub>l</sub>* from this cleaned up image.
+  3. If max(*E<sub>l</sub>*) > `soma_acceptance_threshold`, divert to soma processing mode.
+2. If in soma processing mode, continue, else go to step 3 in the algorithm above.
+3. Set *r* to the coordinate corresponding to max(*E<sub>l</sub>*)
+4. Create an invalidation sphere of physical radius `soma_invalidation_scale` * max(*E<sub>l</sub>*) + `soma_invalidation_const` and erase foreground voxels from *I<sub>l</sub>* contained within it. This helps prevent errant paths from being drawn all over the soma.
+5. Continue from step 4 in the above algorithm.
+
+### III. Finalization
 
 In the final phase, we agglomerate the disparate connected component skeletons into single skeletons and assign their labels corresponding to the input image. This step is artificially broken out compared to how intermingled its implementation is with skeletonization, but it's conceptually separate.
+
+## Discussion of Deviations from TEASAR
 
 ### Using DAF for Targets, PDRF for Pathfinding
 
@@ -116,13 +150,6 @@ We want to handle somas diff
 
 ### Zero Weighting Previous Paths
 
-## Performance Tips
-
-- If you only need a few labels skeletonized, pass in `object_ids` to bypass processing all the others. If `object_ids` contains only a single label, the masking operation will run faster.
-- You may save on peak memory usage by using a `cc_safety_factor` < 1, only if you are sure the connected components algorithm will generate many fewer labels than there are pixels in your image.
-- Larger TEASAR parameters scale and const require processing larger invalidation regions per path.
-- Set `pdrf_exponent` to a small power of two (e.g. 1, 2, 4, 8, 16) for a small speedup.
-- If you are willing to sacrifice the improved forking behavior, you can set `fix_branching=False` for a moderate 1.1x to 1.5x speedup (assuming your TEASAR parameters and data allow branching).
 
 ## Related Projects
 
