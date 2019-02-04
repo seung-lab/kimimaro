@@ -136,20 +136,50 @@ In the final phase, we agglomerate the disparate connected component skeletons i
 
 ## Discussion of Deviations from TEASAR
 
+There were several places where we took a different approach than called for by the TEASAR authors.
+
 ### Using DAF for Targets, PDRF for Pathfinding
 
-### Normalized DAF "Trickle Gradient"
+The original TEASAR algorithm defines the Penalized Distance from Root voxel Field (PDRF, *P<sub>r</sub>* above) as:
 
-### Rolling Invalidation Cube
+```
+PDRF = 5000 * (1 - DBF / max(DBF))^16 + DAF
+```
 
-Uses topological cues to perform O(V) invalidations instead of O(VN) where V is the number of voxels in the volume and N is the number of vertices in a skeleton path. This could be done as a sphere, it's just more time consuming to program.
+DBF is the Distance from Boundary Field (*E<sub>l</sub>* above) and DAF is the Distance from Any voxel Field (*D<sub>r</sub>* above).  
 
-### Soma Handling
+We found the addition of the DAF tended to perturb the skeleton path from the centerline better described by the inverted DBF alone. We also found it helpful to modify the constant and exponent to tune cornering behavior. Initially, we completely stripped out the addition of the DAF from the PDRF, but this introduced a different kind of problem. The exponentiation of the PDRF caused floating point values to collapse in wide open spaces. This made the skeletons go crazy as they traced out a path described by floating point errors.  
 
-We want to handle somas diff
+The DAF provides a very helpful gradient to follow between the root and the target voxel, we just don't want that gradient to knock the path off the centerline. Therefore, in light of the fact that the PDRF base field is very large, we add the normalized DAF which is just enough to overwhelm floating point errors and provide direction in wide tubes and bulges.  
+
+The original paper also called for selecting targets using the max(PDRF) foreground values. However, this is a bit strange since the PDRF values are dominated by boundary effects rather than a pure distance metric. Therefore, we select targets from the max(DAF) forground value.
 
 ### Zero Weighting Previous Paths
 
+The 2001 skeletonization paper [2] called for correcting early forking by computing a DAF using already computed path vertices as field sources. This allows Dijkstra's algorithm to trace the existing path cost free and diverge from it at a closer point to the target.  
+
+As we have strongly deemphasized the role of the DAF in dijkstra path finding, computing this field is unnecessary and we only need to set the PDRF to zero along the path of existing skeletons to achieve this effect. This saves us an expensive repeated DAF calculation per path.  
+
+However, we still incur a substantial cost for taking this approach because we had been computing a dijkstra "parental field" that recorded the shortest path to the root from every foreground voxel. We then used this saved result to rapidly compute all paths. However, as this zero weighting modification makes successive calculations dependent upon previous ones, we need to compute Dijkstra's algorithm anew for each path.
+
+### Rolling Invalidation Cube
+
+The original TEASAR paper calls for a "rolling invalidation ball" that erases foreground voxels in step 6(iii). A naive implementation of this ball is very expensive as each voxel in the path requires its own ball, and many of these voxels overlap. In some cases, it is possible that the whole volume will need to be pointlessly reevaluated for every voxel along the path from root to target. While it's possible to specical case the worst case, in the more common general case, a large amount of duplicate effort is being expended.
+
+Therefore, we applied an algorithm using topological cues to perform the invalidation operation in linear time. For simplicity of implmentation, we substituted a cube shape instead of a sphere, but it would be possible to use one. The function name `roll_invalidation_cube` is intended to evoke this awkwardness though it hasn't appeared to have been very important.  
+
+The two-pass algorithm is as follows. Given a binary image *I*, a skeleton *S*, and a set of vertices *V*:
+
+1. Let *B<sub>v</sub>* be the set of bounding boxes that inscribe the spheres indicated by the TEASAR paper.
+2. Allocate a 3D signed integer array, *T*, the size and dimension of *I* representing the topology. *T* is initially set to all zeros.
+3. For each *B<sub>v</sub>*:
+  1. Set T(p) += 1 for all points *p* on *B<sub>v</sub>*'s left boundary along the x-axis.
+  2. Set T(p) -= 1 for all points *p* on *B<sub>v</sub>*'s right boundary along the x-axis.
+4. Compute the bounding box *B<sub>global</sub>* that inscribes the union of all *B<sub>v</sub>*.
+5. A point *p* travels along the x-axis for each row of *B<sub>global</sub>* starting on the YZ plane. 
+  1. Set integer *coloring* = 0
+  2. At each index, *coloring* += *T*(p)
+  3. If *coloring* > 0 or *T*(p) is non-zero (we're on the leaving edge), we are inside an invalidation cube and start converting foreground voxels into background voxels.
 
 ## Related Projects
 
