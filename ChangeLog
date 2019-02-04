@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+0.2.1
+-----
+
+* fix: black volumes should return dict not None
+
 0.2.0
 -----
 

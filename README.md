@@ -11,6 +11,20 @@ On a 3.7 GHz Intel i7 processor, this package processed a 512x512x100 volume wit
 Fig. 1: A Densely Labeled Volume Skeletonized with Kimimaro
 </p>
 
+## `pip` Installation 
+
+*Requires C++ compiler.*
+
+```bash
+sudo apt-get install python3-dev g++
+pip3 install numpy
+pip3 install kimimaro 
+```
+
+In the future, we may create a fully binary distribution. 
+
+## Example
+
 ```python
 import kimimaro
 
@@ -40,21 +54,7 @@ skeletons = kimimaro.skeletonize(
 ```
 *Detailed discussion of TEASAR parameters here or link to wiki.*
 
-## `pip` Binary Installation
 
-```bash
-pip install kimimaro
-```
-
-## `pip` Manual Installation 
-
-*Requires C++ compiler.*
-
-```bash
-sudo apt-get install python3-dev g++
-pip3 install numpy
-pip3 install kimimaro --no-binary :all:
-```
 
 ## Motivation
 
@@ -66,9 +66,41 @@ We found that commodity implementations of the EDT supported only binary images 
 
 TBC
 
-## TEASAR Algorithm and Deviations
+## Why TEASAR?
 
-TBC
+TEASAR: Tree-structure Extraction Algorithm for Accurate and Robust skeletons, a 2000 paper by M. Sato and others [1], is a member of a family of algorithms that transform two and three dimensional structures into a one dimensional "skeleton" embedded in that higher dimension. One might concieve of a skeleton as extracting a stick figure drawing of a binary image. This problem is more difficult than it might seem. There are different ways one might concieve of such a drawing. For example, a stick drawing of a banana might merely be a curved centerline and a drawing of a doughnut might be a closed loop. In our case of analyzing neurons, sometimes we want the skeleton to include spines, short protrusions from dendrites that usually have synapses attached, and sometimes we want only the characterize the run length of the main trunk of a neurite.  
+
+Additionally, data quality issues can be challenging as well. If one is skeletonizing a 2D image of a doughnut, but the angle were sufficiently declinated from the ring's orthogonal axis, would it even be possible to perform this task accurately? In a 3D case, if there are breaks or mergers in the labeling of a neuron, will the algorithm function sensibly? These issues are common in both manual and automatic image sementations.
+
+In our problem domain of skeletonizing neurons from anisotropic voxel labels, our chosen algorithm should produce tree structures, handle fine or coarse detail extraction depending on the circumstances, handle voxel anisotropy, and be reasonably efficient in CPU and memory usage. TEASAR fufills these criteria. Notably, TEASAR doesn't guarantee the centeredness of the skeleton within the shape, but it makes an effort. The basic TEASAR algorithm is known to cut corners around turns and branch too early. A 2001 paper by members of the original TEASAR team describes a method for reducing the early branching issue on page 204, section 4.2.2. [2]
+
+## TEASAR Derived Algorthm
+
+We implemented TEASAR but made several important deviations from the published algorithm in order to improve path centeredness, increase performance, and handle bulging cell somas. We opted not to implement the gradient vector field step from [2] as our implementation is already quite fast. The paper claims a reduction of 70-85% in input voxels, so it might be worth investigating.  
+
+In order to work with images that contain many labels, our general strategy is to perform as many actions as possible in such a way that all labels are treated in a single pass. Several of the component algorithms (e.g. connected components, euclidean distance transform) in our implementation can take several seconds to run per a pass, so it is important that they not be run hundreds or thousands of times. A large part of the engineering contribution of this package lies in the efficiency of these operations which reduce the runtime from the scale of hours to minutes.  
+
+Given a 3D labeled voxel array, *I*, with N >= 0 labels, and ordered triple describing voxel anisotropy *A*, our algorithm can be divided into three phases, the pramble, skeletonization, and finalization in that order.
+
+### Preamble
+
+The Preamble takes a 3D image containing N labels and efficiently generates the connected components, distance transform, and bounding boxes needed by the skeletonization phase.
+
+1. To enhance performance, if N is 0 return an empty set of skeletons.
+2. Label the M connected components, *I<sub>cc</sub>*, of *I*.
+3. To save memory, renumber the connected components in order from 1 to M. Adjust the data type of the new image to the smallest uint type that will contain M and overwrite *I<sub>cc</sub>*.
+4. Generate a mapping of the renumbered *I<sub>cc</sub>* to *I* to assign meaningful labels to skeletons later on and delete *I* to save memory.
+5. Compute *E*, the multi-label anisotropic Euclidean Distance Transform of *I<sub>cc</sub>* given *A*. *E* treats all interlabel edges as transform edges, but not the boundaries of the image. Black pixels are considered background.
+6. Gather a list, *L<sub>cc</sub>* of unique labels from *I<sub>cc</sub>* and threshold which ones to process based on the number of voxels they represent to remove "dust".
+7. In one pass, compute the list of bounding boxes, B, corresponding to each label in *L<sub>cc</sub>*.
+
+### Skeletonization 
+
+In this phase, we extract the tree structured skeleton from each connected component label.
+
+### Finalization
+
+In the final phase, we agglomerate the disparate connected component skeletons into single skeletons and assign their labels corresponding to the input image. This step is artificially broken out compared to how intermingled its implementation is with skeletonization, but it's conceptually separate.
 
 ### Using DAF for Targets, PDRF for Pathfinding
 
@@ -81,6 +113,16 @@ Uses topological cues to perform O(V) invalidations instead of O(VN) where V is 
 ### Soma Handling
 
 We want to handle somas diff
+
+### Zero Weighting Previous Paths
+
+## Performance Tips
+
+- If you only need a few labels skeletonized, pass in `object_ids` to bypass processing all the others. If `object_ids` contains only a single label, the masking operation will run faster.
+- You may save on peak memory usage by using a `cc_safety_factor` < 1, only if you are sure the connected components algorithm will generate many fewer labels than there are pixels in your image.
+- Larger TEASAR parameters scale and const require processing larger invalidation regions per path.
+- Set `pdrf_exponent` to a small power of two (e.g. 1, 2, 4, 8, 16) for a small speedup.
+- If you are willing to sacrifice the improved forking behavior, you can set `fix_branching=False` for a moderate 1.1x to 1.5x speedup (assuming your TEASAR parameters and data allow branching).
 
 ## Related Projects
 
@@ -107,6 +149,6 @@ Alex Bae and William Silversmith
 ## References 
 
 1. M. Sato, I. Bitter, M.A. Bender, A.E. Kaufman, and M. Nakajima. "TEASAR: Tree-structure Extraction Algorithm for Accurate and Robust Skeletons". Proc. 8th Pacific Conf. on Computer Graphics and Applications. Oct. 2000. doi: 10.1109/PCCGA.2000.883951 ([link](https://ieeexplore.ieee.org/abstract/document/883951/))
-2.  I. Bitter, A.E. Kaufman, and M. Sato. "Penalized-distance volumetric skeleton algorithm". IEEE Transactions on Visualization and Computer Graphics Vol. 7, Iss. 3, Jul-Sep 2001. doi: 10.1109/2945.942688 ([link](https://ieeexplore.ieee.org/abstract/document/942688/))
-3. T. Zhao, S. Plaza. "Automatic Neuron Type Identification by Neurite Localization in the Drosophila Medulla". Sept. 2014. arXiv:1409.1892 [q-bio.NC] ([link](https://arxiv.org/abs/1409.1892))
-
+2. I. Bitter, A.E. Kaufman, and M. Sato. "Penalized-distance volumetric skeleton algorithm". IEEE Transactions on Visualization and Computer Graphics Vol. 7, Iss. 3, Jul-Sep 2001. doi: 10.1109/2945.942688 ([link](https://ieeexplore.ieee.org/abstract/document/942688/))
+3. T. Zhao, S. Plaza. "Automatic Neuron Type Identification by Neurite Localization in the Drosophila Medulla". Sept. 2014. arXiv:1409.1892 \[q-bio.NC\] ([link](https://arxiv.org/abs/1409.1892))
+4. A. Tagliasacchi, T. Delame, M. Spagnuolo, N. Amenta, A. Telea. "3D Skeletons: A State-of-the-Art Report". May 2016. Computer Graphics Forum. Vol. 35, Iss. 2. https://doi.org/10.1111/cgf.12865
