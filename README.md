@@ -54,7 +54,36 @@ skeletons = kimimaro.skeletonize(
 ```
 *Detailed discussion of TEASAR parameters here or link to wiki.*
 
-## Performance Tips
+## Performance
+
+<p style="font-style: italics;" align="center">
+<img height=512 src="https://raw.githubusercontent.com/seung-lab/kimimaro/master/kimimaro_512x512x512_benchmark.png" alt="A Densely Labeled Volume Skeletonized with Kimimaro" /><br>
+Fig. 2: Memory Usage on a 512x512x512 Densely Labeled Volume
+</p>
+
+Figure 2 shows the memory usage and processessing time (a little over 15 minutes) required when Kimimaro was applied to a 512x512x512 cutout from a connectomics dataset containing 2124 connected components. The different sections of the algorithm are depicted. Grossly, the preamble runs for about a minute, skeletonization for about 14 minutes, and finalization within seconds. The peak memory usage was about 4.4 GB.
+
+```python
+skels = kimimaro.skeletonize(
+  labels, 
+  teasar_params={
+    'scale': 4,
+    'const': 500,
+    'pdrf_exponent': 4,
+    'pdrf_scale': 100000,
+    'soma_detection_threshold': 1100,
+    'soma_acceptance_threshold': 3500,
+    'soma_invalidation_scale': 1.0,
+    'soma_invalidation_const': 300,
+  },
+  dust_threshold=1000,
+  anisotropy=(16,16,40),
+  fix_branching=True,
+  progress=True,
+)
+```
+
+### Performance Tips
 
 - If you only need a few labels skeletonized, pass in `object_ids` to bypass processing all the others. If `object_ids` contains only a single label, the masking operation will run faster.
 - You may save on peak memory usage by using a `cc_safety_factor` < 1, only if you are sure the connected components algorithm will generate many fewer labels than there are pixels in your image.
