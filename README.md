@@ -25,45 +25,18 @@ In the future, we may create a fully binary distribution.
 
 ## Example
 
-```python
-import kimimaro
-
-# A possible configuration for long thin axons
-# without any somata in the field of view.
-teasar_params = {
-  # TEASAR parameters
-  'scale': 4, # invalidation ball scale factor
-  'const': 500, # invalidation ball const factor (in physical units)
-  'pdrf_scale': 100000, # pdrf scale factor
-  'pdrf_exponent': 4, # pdrf exponent
-
-  # Special Soma handling, not applicable to this case
-  'soma_detection_threshold': 99999999, # in physical units, set high to shut off
-  'soma_acceptance_threshold': 99999999, # in physical units, set high to shut off
-  'soma_invalidation_scale': 0.5, # Special invalidation ball for somata
-  'soma_invalidation_const': 0, # Special invalidation ball for somata
-}
-
-labels = load_segmentation() # 3D labeled image array
-skeletons = kimimaro.skeletonize(
-  labels, teasar_params=teasar_params, 
-  anisotropy=(32,32,40), # in nanometers
-  dust_threshold=1000, # in voxels
-  progress=True
-)
-```
-*Detailed discussion of TEASAR parameters here or link to wiki.*
-
-## Performance
-
 <p style="font-style: italics;" align="center">
 <img height=512 src="https://raw.githubusercontent.com/seung-lab/kimimaro/master/kimimaro_512x512x512_benchmark.png" alt="A Densely Labeled Volume Skeletonized with Kimimaro" /><br>
 Fig. 2: Memory Usage on a 512x512x512 Densely Labeled Volume
 </p>
 
-Figure 2 shows the memory usage and processessing time (a little over 15 minutes) required when Kimimaro was applied to a 512x512x512 cutout from a connectomics dataset containing 2124 connected components. The different sections of the algorithm are depicted. Grossly, the preamble runs for about a minute, skeletonization for about 14 minutes, and finalization within seconds. The peak memory usage was about 4.4 GB.
+Figure 2 shows the memory usage and processessing time (a little over 15 minutes) required when Kimimaro was applied to a 512x512x512 cutout, *labels*, from a connectomics dataset containing 2124 connected components. The different sections of the algorithm are depicted. Grossly, the preamble runs for about a minute, skeletonization for about 14 minutes, and finalization within seconds. The peak memory usage was about 4.4 GB. The code below was used to process *labels*.
 
 ```python
+import kimimaro
+
+labels = np.load(...)
+
 skels = kimimaro.skeletonize(
   labels, 
   teasar_params={
