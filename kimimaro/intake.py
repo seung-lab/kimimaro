@@ -72,6 +72,8 @@ def skeletonize(
   if all_labels.ndim not in (2,3):
     raise DimensionError("Can only skeletonize arrays of dimension 2 or 3.")
 
+  all_labels = np.asfortranarray(all_labels)
+
   if all_labels.ndim == 2:
     all_labels = all_labels[..., np.newaxis ]
 
