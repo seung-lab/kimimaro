@@ -201,9 +201,9 @@ Some of the TEASAR modifications used in this package were first demonstrated by
 
 1. [skeletonization](https://github.com/seung-lab/skeletonization): Python implementation of modified TEASAR for sparse labels.
 
-## Credits
+## Credits  
 
-Alex Bae and William Silversmith
+Alex Bae developed the precursor skeletonization package and several modifications to TEASAR that we use in this package. Alex also developed the postprocessing approach used for stitching skeletons using 50% overlap. Will Silversmith adapted these techniques for mass production, refined several basic algorithms for handling thousands of labels at once, and rewrote them into the Kimimaro package. Will added trickle DAF and zero weighted previously explored paths to the algorithm. Forrest Collman added parameter flexibility and helped tune DAF computation performance. Sven Dorkenwald and Forrest both provided helpful discussions and feedback.
 
 ## References 
 
