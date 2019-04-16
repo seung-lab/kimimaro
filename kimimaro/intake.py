@@ -27,7 +27,8 @@ DEFAULT_TEASAR_PARAMS = {
 def skeletonize(
     all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
     object_ids=None, dust_threshold=1000, cc_safety_factor=1,
-    progress=False, fix_branching=True, in_place=False
+    progress=False, fix_branching=True, in_place=False, 
+    fix_borders=False
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -67,6 +68,9 @@ def skeletonize(
       rather than once per a skeleton.
     in_place: if true, allow input labels to be modified to reduce
       memory usage and possibly improve performance.
+    fix_borders: ensure that segments touching the border place a 
+      skeleton endpoint in a predictable place to make merging 
+      adjacent chunks easier.
 
   Returns: { $segid: cloudvolume.PrecomputedSkeleton, ... }
   """
@@ -168,6 +172,24 @@ def compute_cc_labels(all_labels, cc_safety_factor):
   del tmp_labels
   remapping = kimimaro.skeletontricks.get_mapping(all_labels, cc_labels) 
   return cc_labels, remapping
+
+def compute_border_targets(cc_labels):
+  planes = (
+    cc_labels[:,:,0], # top
+    cc_labels[:,:,-1], # bottom
+    cc_labels[:,0,:], # left 
+    cc_labels[:,-1,:], # right 
+    cc_labels[0,:,:], # front
+    cc_labels[-1,:,:] # back
+  )
+
+  for plane in planes:
+    plane = np.copy(plane, order='F')
+    cc_plane = cc3d.connected_components(plane)
+    dt_plane = edt.edt(cc_plane)
+
+
+
 
 def merge(skeletons):
   merged_skels = {}

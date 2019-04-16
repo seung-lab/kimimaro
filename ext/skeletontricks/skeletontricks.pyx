@@ -256,6 +256,95 @@ def get_mapping(
 
   return remap
 
+def find_border_targets(
+    cnp.ndarray[float, ndim=2] dt,
+    cnp.ndarray[uint32_t, ndim=2] cc_labels
+  ):
+  """
+  Given connected components that line within a plane,
+  assign the maximum. If there are multiple maxima,
+  it's important to pick one based on a topological 
+  feature, not based on the coordinate system as the
+  coordinates may be flipped between two faces.
+
+  On a rectangle, there are three interesting locations:
+    a) Center - Most useful, as it is a unique, coordinate 
+      system independent point.
+    b) Corner - Nearness to a corner... but there are four.
+    c) Edge - Least usefully, how close it is to the edge.
+
+  The worst case would be an annulus drawn around the center,
+  which would result in four equally eligible pixels....
+
+  Hopefully this won't happen too often...
+  """
+  cdef size_t sx, sy
+  sx = dt.shape[0]
+  sy = dt.shape[1]
+
+  cdef size_t x, y
+
+  mx = defaultdict(float)
+  pts = {}
+
+  cdef uint32_t label = 0
+  cdef float cx = <float>sx / 2.0
+  cdef float cy = <float>sy / 2.0
+
+  cdef float px, py
+  cdef float dist1, dist2
+
+  for y in range(sy):
+    for x in range(sx):
+      label = cc_labels[x,y]
+      if label == 0:
+        continue
+
+      if mx[label] > dt[x,y]:
+        mx[label] = dt[x,y]
+        pts[label] = (x,y)
+      elif mx[label] == dt[x,y]:
+        # Compare "centerness"
+        px, py = pts[label]
+
+        dist1 = distsq(px,py, cx,cy)
+        dist2 = distsq( x, y, cx,cy)
+
+        if dist2 < dist1:
+          pts[label] = (x, y)
+        elif dist1 == dist2:
+          dist1 = cornerness(px, py, sx, sy)
+          dist2 = cornerness( x,  y, sx, sy)
+          if dist2 < dist1:
+            pts[label] = (x, y)
+          elif dist1 == dist2:
+            dist1 = edgeness(px, py, sx, sy)
+            dist2 = edgeness( x,  y, sx, sy)
+            if dist2 < dist1:
+              pts[label] = (x, y)
+
+  return pts
+
+cdef float edgeness(float x, float y, float sx, float sy):
+  return min(
+    x - 0.5,
+    sx - 0.5 - x,
+    y - 0.5,
+    sy - 0.5 - y
+  )
+
+cdef float cornerness(float x, float y, float sx, float sy):
+  return min( 
+    distsq(x,y,-0.5,-0.5), 
+    distsq(x,y,sx-0.5,-0.5),
+    distsq(x,y,sx-0.5,sy-0.5),
+    distsq(x,y,-0.5,sx-0.5)
+  )
+
+cdef float distsq(float p1x, float p1y, float p2x, float p2y):
+  p1x = (p1x - p2x)
+  p1y = (p1y - p2y)
+  return p1x * p1x + p1y * p1y 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
