@@ -27,7 +27,7 @@ DEFAULT_TEASAR_PARAMS = {
 def skeletonize(
     all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
     object_ids=None, dust_threshold=1000, cc_safety_factor=1,
-    progress=False, fix_branching=True
+    progress=False, fix_branching=True, in_place=False
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -65,6 +65,8 @@ def skeletonize(
       the actual path divergence. However, there is a performance penalty
       associated with this as dijkstra's algorithm is computed once per a path
       rather than once per a skeleton.
+    in_place: if true, allow input labels to be modified to reduce
+      memory usage and possibly improve performance.
 
   Returns: { $segid: cloudvolume.PrecomputedSkeleton, ... }
   """
@@ -72,7 +74,10 @@ def skeletonize(
   if all_labels.ndim not in (2,3):
     raise DimensionError("Can only skeletonize arrays of dimension 2 or 3.")
 
-  all_labels = np.asfortranarray(all_labels)
+  if in_place:
+    all_labels = fastremap.asfortranarray(all_labels)
+  else:
+    all_labels = np.copy(all_labels, order='F')
 
   if all_labels.ndim == 2:
     all_labels = all_labels[..., np.newaxis ]
