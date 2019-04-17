@@ -110,6 +110,11 @@ def skeletonize(
 
   all_slices = scipy.ndimage.find_objects(cc_labels)
 
+  if fix_borders:
+    border_targets = compute_border_targets(cc_labels)
+  else:
+    border_targets = []
+
   skeletons = defaultdict(list)
   for segid in tqdm(cc_segids, disable=(not progress), desc="Skeletonizing Labels"):
     if segid == 0:
@@ -131,6 +136,7 @@ def skeletonize(
       dbf, 
       anisotropy=anisotropy, 
       fix_branching=fix_branching, 
+      border_targets=border_targets,
       **teasar_params
     )
     skeleton.vertices[:,0] += roi.minpt.x
@@ -174,21 +180,34 @@ def compute_cc_labels(all_labels, cc_safety_factor):
   return cc_labels, remapping
 
 def compute_border_targets(cc_labels):
+  sx, sy, sz = cc_labels.shape
+
   planes = (
-    cc_labels[:,:,0], # top
-    cc_labels[:,:,-1], # bottom
-    cc_labels[:,0,:], # left 
-    cc_labels[:,-1,:], # right 
-    cc_labels[0,:,:], # front
-    cc_labels[-1,:,:] # back
+    ( cc_labels[:,:,0], lambda x,y: (x, y, 0) ),     # top
+    ( cc_labels[:,:,-1], lambda x,y: (x, y, sz-1) ), # bottom
+    ( cc_labels[:,0,:], lambda x,y: (x, 0, y) ),     # left 
+    ( cc_labels[:,-1,:], lambda x,y: (x, sy-1, y) ), # right 
+    ( cc_labels[0,:,:], lambda x,y: (0, x, y) ),     # front
+    ( cc_labels[-1,:,:], lambda x,y: (sx-1, x, y) )  # back
   )
 
-  for plane in planes:
+  target_list = defaultdict(list)
+
+  for plane, rotatefn in planes:
     plane = np.copy(plane, order='F')
     cc_plane = cc3d.connected_components(plane)
-    dt_plane = edt.edt(cc_plane)
+    dt_plane = edt.edt(cc_plane, black_border=True)
 
+    plane_targets = kimimaro.skeletontricks.find_border_targets(
+      dt_plane, cc_plane
+    )
+    remapping = kimimaro.skeletontricks.get_mapping(plane, cc_labels)
 
+    for label, pt in plane_targets.items():
+      label = remapping[label]
+      target_list[label].append(rotatefn(pt))
+
+  return target_list
 
 
 def merge(skeletons):

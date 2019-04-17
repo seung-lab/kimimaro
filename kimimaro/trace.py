@@ -29,6 +29,7 @@ def trace(
     soma_invalidation_scale=0.5,
     soma_invalidation_const=0,
     fix_branching=True,
+    border_targets=[],
   ):
   """
   Given the euclidean distance transform of a label ("Distance to Boundary Function"), 
@@ -117,7 +118,8 @@ def trace(
   paths = compute_paths(
     root, labels, DBF, DAF, 
     parents, scale, const, anisotropy, 
-    soma_mode, soma_radius, fix_branching
+    soma_mode, soma_radius, fix_branching,
+    border_targets
   )
 
   skel = PrecomputedSkeleton.simple_merge(
@@ -132,7 +134,8 @@ def trace(
 def compute_paths(
     root, labels, DBF, DAF, 
     parents, scale, const, anisotropy, 
-    soma_mode, soma_radius, fix_branching
+    soma_mode, soma_radius, fix_branching,
+    border_targets
   ):
   """
   Given the labels, DBF, DAF, dijkstra parents,
@@ -150,7 +153,10 @@ def compute_paths(
   valid_labels = np.count_nonzero(labels)
 
   while valid_labels > 0:
-    target = kimimaro.skeletontricks.find_target(labels, DAF)
+    if border_targets:
+      target = border_targets.pop()
+    else:
+      target = kimimaro.skeletontricks.find_target(labels, DAF)
 
     if fix_branching:
       path = dijkstra3d.dijkstra(parents, root, target)
