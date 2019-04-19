@@ -1,6 +1,19 @@
 CHANGES
 =======
 
+0.2.2
+-----
+
+* fix: accept C order arrays (#7)
+* docs: reduce redundancy in example vs performance
+* docs: add benchmark description
+* docs: added benchmark photo
+* docs: add link to citation 4
+* docs: use citations 3 and 4
+* docs: described "roll invalidation cube"
+* docs: described algorithm in steps
+* docs: describing the algorithm
+
 0.2.1
 -----
 

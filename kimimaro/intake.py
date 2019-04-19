@@ -150,8 +150,9 @@ def apply_object_mask(all_labels, object_ids):
   if len(object_ids) == 1:
     all_labels = kimimaro.skeletontricks.zero_out_all_except(all_labels, object_ids[0]) # faster
   else:
-    all_labels[~np.isin(all_labels, object_ids)] = 0
-
+    mask = { i: 0 for i in object_ids }
+    all_labels = fastremap.remap(all_labels, mask, preserve_missing_labels=True)
+  
   return all_labels
 
 def compute_cc_labels(all_labels, cc_safety_factor):
