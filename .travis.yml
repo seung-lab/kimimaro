@@ -11,7 +11,6 @@ install:
 - if [[ $PYTHON_MAJOR_VERSION == 2 ]]; then virtualenv venv; fi
 - if [[ $PYTHON_MAJOR_VERSION == 3 ]]; then virtualenv -p python3 venv; fi
 - source venv/bin/activate
-- cd python
 - if [[ $PYTHON_MAJOR_VERSION == 2 ]]; then pip install numpy; fi
 - if [[ $PYTHON_MAJOR_VERSION == 3 ]]; then pip3 install numpy; fi
 - if [[ $PYTHON_MAJOR_VERSION == 2 ]]; then pip install -e .; fi
