@@ -299,8 +299,9 @@ def find_border_targets(
       label = cc_labels[x,y]
       if label == 0:
         continue
-
-      if dt[x,y] > mx[label]:
+      elif dt[x,y] == 0:
+        continue
+      elif dt[x,y] > mx[label]:
         mx[label] = dt[x,y]
         pts[label] = (x,y)
       elif mx[label] == dt[x,y]:
