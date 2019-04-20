@@ -110,10 +110,9 @@ def skeletonize(
 
   all_slices = scipy.ndimage.find_objects(cc_labels)
 
+  border_targets = defaultdict(list)
   if fix_borders:
     border_targets = compute_border_targets(cc_labels)
-  else:
-    border_targets = []
 
   skeletons = defaultdict(list)
   for segid in tqdm(cc_segids, disable=(not progress), desc="Skeletonizing Labels"):
@@ -131,20 +130,27 @@ def skeletonize(
 
     roi = Bbox.from_slices(slices)
 
+    initial_targets = []
+    if border_targets[segid]:
+      initial_targets = np.array(border_targets[segid])
+      initial_targets -= roi.minpt.astype(np.uint32)
+      initial_targets = initial_targets.tolist()
+
     skeleton = kimimaro.trace.trace(
       labels, 
       dbf, 
       anisotropy=anisotropy, 
       fix_branching=fix_branching, 
-      border_targets=border_targets,
+      border_targets=initial_targets,
       **teasar_params
     )
-    skeleton.vertices[:,0] += roi.minpt.x
-    skeleton.vertices[:,1] += roi.minpt.y
-    skeleton.vertices[:,2] += roi.minpt.z
 
     if skeleton.empty():
       continue
+
+    skeleton.vertices[:,0] += roi.minpt.x
+    skeleton.vertices[:,1] += roi.minpt.y
+    skeleton.vertices[:,2] += roi.minpt.z
 
     orig_segid = remapping[segid]
     skeleton.id = orig_segid
@@ -201,11 +207,16 @@ def compute_border_targets(cc_labels):
     plane_targets = kimimaro.skeletontricks.find_border_targets(
       dt_plane, cc_plane
     )
-    remapping = kimimaro.skeletontricks.get_mapping(plane, cc_labels)
+
+    plane = plane[..., np.newaxis]
+    cc_plane = cc_plane[..., np.newaxis]
+    remapping = kimimaro.skeletontricks.get_mapping(plane, cc_plane)
 
     for label, pt in plane_targets.items():
       label = remapping[label]
-      target_list[label].append(rotatefn(pt))
+      target_list[label].append(
+        np.array(rotatefn(*pt), dtype=np.uint32)
+      )
 
   return target_list
 
