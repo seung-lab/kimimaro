@@ -3,9 +3,9 @@ import pytest
 import numpy as np
 
 from cloudvolume import *
+import edt
 
 import kimimaro
-
 
 def test_square():
   labels = np.ones( (1000, 1000), dtype=np.uint8)
@@ -49,3 +49,12 @@ def test_cube():
   assert abs(skel.cable_length() - 255 * np.sqrt(3)) < 0.001
 
   
+def test_find_border_targets():
+  labels = np.zeros( (257, 257), dtype=np.uint8)
+  labels[1:-1,1:-1] = 1 
+
+  dt = edt.edt(labels)
+  targets = kimimaro.skeletontricks.find_border_targets(dt, labels.astype(np.uint32))
+
+  assert len(targets) == 1
+  assert targets[1] == (128, 128)

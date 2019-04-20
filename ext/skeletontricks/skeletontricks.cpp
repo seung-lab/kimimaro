@@ -8708,7 +8708,7 @@ static PyObject *__pyx_pf_14skeletontricks_16find_border_targets(CYTHON_UNUSED P
  *       if label == 0:
  *         continue             # <<<<<<<<<<<<<<
  * 
- *       if mx[label] > dt[x,y]:
+ *       if dt[x,y] > mx[label]:
  */
         goto __pyx_L5_continue;
 
@@ -8724,12 +8724,10 @@ static PyObject *__pyx_pf_14skeletontricks_16find_border_targets(CYTHON_UNUSED P
       /* "skeletontricks.pyx":303
  *         continue
  * 
- *       if mx[label] > dt[x,y]:             # <<<<<<<<<<<<<<
+ *       if dt[x,y] > mx[label]:             # <<<<<<<<<<<<<<
  *         mx[label] = dt[x,y]
  *         pts[label] = (x,y)
  */
-      __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_mx, __pyx_v_label, uint32_t, 0, __Pyx_PyInt_From_uint32_t, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 303, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_14 = __pyx_v_x;
       __pyx_t_15 = __pyx_v_y;
       __pyx_t_12 = -1;
@@ -8739,7 +8737,9 @@ static PyObject *__pyx_pf_14skeletontricks_16find_border_targets(CYTHON_UNUSED P
         __Pyx_RaiseBufferIndexError(__pyx_t_12);
         __PYX_ERR(0, 303, __pyx_L1_error)
       }
-      __pyx_t_2 = PyFloat_FromDouble((*__Pyx_BufPtrStrided2d(float *, __pyx_pybuffernd_dt.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_dt.diminfo[0].strides, __pyx_t_15, __pyx_pybuffernd_dt.diminfo[1].strides))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 303, __pyx_L1_error)
+      __pyx_t_1 = PyFloat_FromDouble((*__Pyx_BufPtrStrided2d(float *, __pyx_pybuffernd_dt.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_dt.diminfo[0].strides, __pyx_t_15, __pyx_pybuffernd_dt.diminfo[1].strides))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 303, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_mx, __pyx_v_label, uint32_t, 0, __Pyx_PyInt_From_uint32_t, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 303, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_2, Py_GT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 303, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -8750,7 +8750,7 @@ static PyObject *__pyx_pf_14skeletontricks_16find_border_targets(CYTHON_UNUSED P
 
         /* "skeletontricks.pyx":304
  * 
- *       if mx[label] > dt[x,y]:
+ *       if dt[x,y] > mx[label]:
  *         mx[label] = dt[x,y]             # <<<<<<<<<<<<<<
  *         pts[label] = (x,y)
  *       elif mx[label] == dt[x,y]:
@@ -8770,7 +8770,7 @@ static PyObject *__pyx_pf_14skeletontricks_16find_border_targets(CYTHON_UNUSED P
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
         /* "skeletontricks.pyx":305
- *       if mx[label] > dt[x,y]:
+ *       if dt[x,y] > mx[label]:
  *         mx[label] = dt[x,y]
  *         pts[label] = (x,y)             # <<<<<<<<<<<<<<
  *       elif mx[label] == dt[x,y]:
@@ -8797,7 +8797,7 @@ static PyObject *__pyx_pf_14skeletontricks_16find_border_targets(CYTHON_UNUSED P
         /* "skeletontricks.pyx":303
  *         continue
  * 
- *       if mx[label] > dt[x,y]:             # <<<<<<<<<<<<<<
+ *       if dt[x,y] > mx[label]:             # <<<<<<<<<<<<<<
  *         mx[label] = dt[x,y]
  *         pts[label] = (x,y)
  */

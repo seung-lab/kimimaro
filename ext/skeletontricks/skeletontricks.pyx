@@ -300,7 +300,7 @@ def find_border_targets(
       if label == 0:
         continue
 
-      if mx[label] > dt[x,y]:
+      if dt[x,y] > mx[label]:
         mx[label] = dt[x,y]
         pts[label] = (x,y)
       elif mx[label] == dt[x,y]:
