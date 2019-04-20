@@ -407,11 +407,11 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
     index[e2].add(e1)
 
   cdef int root = edges[0,0]
-  cdef int node
-  cdef int child
-  cdef int parent
-  cdef int depth
-  cdef int i
+  cdef int node = -1
+  cdef int child = -1
+  cdef int parent = -1
+  cdef int depth = -1
+  cdef int i = 0
 
   cdef list stack = [root]
   cdef list parents = [-1]
