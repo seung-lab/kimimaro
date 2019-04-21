@@ -84,7 +84,7 @@ def trace(
     root = np.unravel_index(np.argmax(DBF), DBF.shape)
     soma_radius = dbf_max * soma_invalidation_scale + soma_invalidation_const
   else:
-    root = find_root(labels, anisotropy)
+    root = find_root(labels, border_targets, anisotropy)
     soma_radius = 0.0
 
   if root is None:
@@ -185,13 +185,16 @@ def compute_paths(
 
   return paths
 
-def find_root(labels, anisotropy):
+def find_root(labels, border_targets, anisotropy):
   """
   "4.4 DAF:  Compute distance from any voxel field"
   Compute DAF, but we immediately convert to the PDRF
   The extremal point of the PDRF is a valid root node
   even if the DAF is computed from an arbitrary pixel.
   """
+  if len(border_targets):
+    return border_targets.pop()
+
   any_voxel = kimimaro.skeletontricks.first_label(labels)   
   if any_voxel is None: 
     return None
