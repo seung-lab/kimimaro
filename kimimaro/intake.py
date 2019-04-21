@@ -176,7 +176,7 @@ def compute_cc_labels(all_labels, cc_safety_factor):
 
   tmp_labels = all_labels
   if np.dtype(all_labels.dtype).itemsize > 1:
-    tmp_labels, remapping = fastremap.renumber(all_labels, in_place=True)
+    tmp_labels, remapping = fastremap.renumber(all_labels, in_place=False)
 
   cc_labels = cc3d.connected_components(tmp_labels, max_labels=int(tmp_labels.size * cc_safety_factor))
 
