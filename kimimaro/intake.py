@@ -200,7 +200,7 @@ def compute_border_targets(cc_labels):
 
   for plane, rotatefn in planes:
     plane = np.copy(plane, order='F')
-    cc_plane = cc3d.connected_components(plane)
+    cc_plane = cc3d.connected_components(np.ascontiguousarray(plane))
     dt_plane = edt.edt(cc_plane, black_border=True)
 
     plane_targets = kimimaro.skeletontricks.find_border_targets(
