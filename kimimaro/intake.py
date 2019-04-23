@@ -148,9 +148,7 @@ def skeletonize(
     if skeleton.empty():
       continue
 
-    skeleton.vertices[:,0] += roi.minpt.x
-    skeleton.vertices[:,1] += roi.minpt.y
-    skeleton.vertices[:,2] += roi.minpt.z
+    skeleton.vertices += roi.minpt
 
     orig_segid = remapping[segid]
     skeleton.id = orig_segid
@@ -167,7 +165,7 @@ def apply_object_mask(all_labels, object_ids):
     all_labels = kimimaro.skeletontricks.zero_out_all_except(all_labels, object_ids[0]) # faster
   else:
     all_labels = fastremap.mask(all_labels, object_ids, in_place=True)
-  
+
   return all_labels
 
 def compute_cc_labels(all_labels, cc_safety_factor):
