@@ -17,7 +17,6 @@ import kimimaro.trace
 class DimensionError(Exception):
   pass
 
-
 DEFAULT_TEASAR_PARAMS = {
   'scale': 10, 'const': 50,
   'pdrf_scale': 100000,
@@ -28,7 +27,7 @@ def skeletonize(
     all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
     object_ids=None, dust_threshold=1000, cc_safety_factor=1,
     progress=False, fix_branching=True, in_place=False, 
-    fix_borders=False
+    fix_borders=True
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
