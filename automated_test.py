@@ -12,7 +12,7 @@ def test_square():
   labels[-1,0] = 0
   labels[0,-1] = 0
   
-  skels = kimimaro.skeletonize(labels)
+  skels = kimimaro.skeletonize(labels, fix_borders=False)
 
   assert len(skels) == 1
 
@@ -25,7 +25,7 @@ def test_square():
   labels[0,0] = 0
   labels[-1,-1] = 0
 
-  skels = kimimaro.skeletonize(labels)
+  skels = kimimaro.skeletonize(labels, fix_borders=False)
 
   assert len(skels) == 1
 
@@ -39,7 +39,7 @@ def test_cube():
   labels[0, 0, 0] = 0
   labels[-1, -1, -1] = 0
   
-  skels = kimimaro.skeletonize(labels)
+  skels = kimimaro.skeletonize(labels, fix_borders=False)
 
   assert len(skels) == 1
 
