@@ -170,12 +170,13 @@ def compute_paths(
         (path[:1,:], path[dist_to_soma_root > soma_radius, :])
       )
 
-    invalidated, labels = kimimaro.skeletontricks.roll_invalidation_cube(
-      labels, DBF, path, scale, const, 
-      anisotropy=anisotropy, invalid_vertices=invalid_vertices,
-    )
+    if valid_labels > 0:
+      invalidated, labels = kimimaro.skeletontricks.roll_invalidation_cube(
+        labels, DBF, path, scale, const, 
+        anisotropy=anisotropy, invalid_vertices=invalid_vertices,
+      )
+      valid_labels -= invalidated
 
-    valid_labels -= invalidated
     for vertex in path:
       invalid_vertices[tuple(vertex)] = True
       if fix_branching:
