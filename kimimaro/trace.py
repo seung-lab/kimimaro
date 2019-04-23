@@ -152,7 +152,7 @@ def compute_paths(
   paths = []
   valid_labels = np.count_nonzero(labels)
 
-  while valid_labels > 0:
+  while valid_labels > 0 or border_targets:
     if border_targets:
       target = border_targets.pop()
     else:
