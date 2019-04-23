@@ -186,12 +186,12 @@ def compute_border_targets(cc_labels):
   sx, sy, sz = cc_labels.shape
 
   planes = (
-    ( cc_labels[:,:,0], lambda x,y: (x, y, 0) ),     # top
-    ( cc_labels[:,:,-1], lambda x,y: (x, y, sz-1) ), # bottom
-    ( cc_labels[:,0,:], lambda x,y: (x, 0, y) ),     # left 
-    ( cc_labels[:,-1,:], lambda x,y: (x, sy-1, y) ), # right 
-    ( cc_labels[0,:,:], lambda x,y: (0, x, y) ),     # front
-    ( cc_labels[-1,:,:], lambda x,y: (sx-1, x, y) )  # back
+    ( cc_labels[:,:,0], lambda x,y: (x, y, 0) ),     # top xy
+    ( cc_labels[:,:,-1], lambda x,y: (x, y, sz-1) ), # bottom xy
+    ( cc_labels[:,0,:], lambda x,z: (x, 0, z) ),     # left xz
+    ( cc_labels[:,-1,:], lambda x,z: (x, sy-1, z) ), # right xz
+    ( cc_labels[0,:,:], lambda y,z: (0, y, z) ),     # front yz
+    ( cc_labels[-1,:,:], lambda y,z: (sx-1, y, z) )  # back yz
   )
 
   target_list = defaultdict(list)
