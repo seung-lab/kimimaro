@@ -52,6 +52,7 @@ skels = kimimaro.skeletonize(
   dust_threshold=1000,
   anisotropy=(16,16,40),
   fix_branching=True,
+  fix_borders=True,
   progress=True,
 )
 ```
@@ -156,13 +157,35 @@ The DAF provides a very helpful gradient to follow between the root and the targ
 
 The original paper also called for selecting targets using the max(PDRF) foreground values. However, this is a bit strange since the PDRF values are dominated by boundary effects rather than a pure distance metric. Therefore, we select targets from the max(DAF) forground value.
 
-### Zero Weighting Previous Paths
+### Zero Weighting Previous Paths (`fix_branching=True`)
 
 The 2001 skeletonization paper [2] called for correcting early forking by computing a DAF using already computed path vertices as field sources. This allows Dijkstra's algorithm to trace the existing path cost free and diverge from it at a closer point to the target.  
 
 As we have strongly deemphasized the role of the DAF in dijkstra path finding, computing this field is unnecessary and we only need to set the PDRF to zero along the path of existing skeletons to achieve this effect. This saves us an expensive repeated DAF calculation per path.  
 
 However, we still incur a substantial cost for taking this approach because we had been computing a dijkstra "parental field" that recorded the shortest path to the root from every foreground voxel. We then used this saved result to rapidly compute all paths. However, as this zero weighting modification makes successive calculations dependent upon previous ones, we need to compute Dijkstra's algorithm anew for each path.
+
+### Non-Overlapped Chunked Processing (`fix_borders=True`)
+
+When processing large volumes, a sensible approach for mass producing skeletons is to chunk the volume, process the chunks independently, and merge the resulting skeleton fragments at the end. However, this is complicated by the "edge effect" induced by a loss of context which makes it impossible to expect the endpoints of skeleton fragments produced by adjacent chunks to align. In contrast, it is easy to join mesh fragments because the vertices of the edge of mesh fragments lie at predictable identical locations given one pixel of overlap.  
+
+Previously, we had used 50% overlap to join adjacent skeleton fragments which increased the compute cost of skeletonizing a large volume by eight times. However, if we could force skeletons to lie at predictable locations on the border, we could use single pixel overlap and copy the simple mesh joining approach. As an (incorrect but useful) intuition for how one might go about this, consider computing the centroid of each connected component on each border plane and adding that as a required path target. This would guarantee that both sides of the plane connect at the same pixel. However, the centroid may not lie inside of non-convex hulls so we have to be more sophisticated and select some real point inside of the shape.
+
+To this end, we again repurpose the euclidean distance transform and apply it to each of the six planes of connected components and select the maximum value as a mandatory target. This works well for many types of objects that contact a single plane and have a single maximum. However, we must treat the corners of the box and shapes that have multiple maxima.  
+
+To handle shapes that contact multiple sides of the box, we simply assign targets to all connected components. If this introduces a cycle in post-processing, we already have cycle removing code to handle it in Igneous. If it introduces tiny useless appendages, we also have code to handle this.  
+
+If a shape has multiple distance transform maxima, it is important to choose the same pixel without needing to communicate between spatially adjacent tasks which may run at different times on different machines. Additionally, the same plane on adjacent tasks has the coordinate system flipped. One simple approach might be to pick the coordinate with minimum x and y (or some other coordinate based criterion) in one of the coordinate frames, but this requires tracking the flips on all six planes and is annoying. Instead, we use a series of coordinate-free topology based filters which is both more fun, effort efficient, and picks something reasonable looking. A valid criticism of this approach is that it will fail on a perfectly symmetrical object, but these objects are rare in biological data.  
+
+We apply a series of filters and pick the point based on the first filter it passes:
+
+1. The voxel closest to the centroid of the current label.
+2. The voxel closest to the centroid of the image plane.
+3. Closest to a corner of the plane.
+4. Closest to an edge of the plane.
+5. The previously found maxima.
+
+It is important that filter #1 be based on the shape of the label so that kinks are minimimized for convex hulls. For example, originally we used only filters two thru five, but this caused skeletons for neurites located away from the center of a chunk to suddenly jink towards the center of the chunk at chunk boundaries.
 
 ### Rolling Invalidation Cube
 
