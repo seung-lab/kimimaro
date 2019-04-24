@@ -43,7 +43,8 @@ def trace(
     soma_invalidation_scale=0.5,
     soma_invalidation_const=0,
     fix_branching=True,
-    border_targets=[],
+    manual_targets=[],
+    max_paths=None,
   ):
   """
   Given the euclidean distance transform of a label ("Distance to Boundary Function"), 
@@ -68,7 +69,12 @@ def trace(
     the actual path divergence. However, there is a large performance penalty
     associated with this as dijkstra's algorithm is computed once per a path
     rather than once per a skeleton.
-  
+  manual_targets: list of (x,y,z) that coorrespond to locations that must 
+    have paths drawn to. Used for specifying root and border targets for
+    merging adjacent chunks out-of-core.
+  max_paths: If a label requires drawing this number of paths or more,
+    abort and move onto the next label.
+
   Based on the algorithm by:
 
   M. Sato, I. Bitter, M. Bender, A. Kaufman, and M. Nakajima. 
@@ -98,7 +104,7 @@ def trace(
     root = np.unravel_index(np.argmax(DBF), DBF.shape)
     soma_radius = dbf_max * soma_invalidation_scale + soma_invalidation_const
   else:
-    root = find_root(labels, border_targets, anisotropy)
+    root = find_root(labels, manual_targets, anisotropy)
     soma_radius = 0.0
 
   if root is None:
@@ -133,7 +139,7 @@ def trace(
     root, labels, DBF, DAF, 
     parents, scale, const, anisotropy, 
     soma_mode, soma_radius, fix_branching,
-    border_targets
+    manual_targets, max_paths
   )
 
   skel = PrecomputedSkeleton.simple_merge(
@@ -149,7 +155,7 @@ def compute_paths(
     root, labels, DBF, DAF, 
     parents, scale, const, anisotropy, 
     soma_mode, soma_radius, fix_branching,
-    border_targets
+    manual_targets, max_paths
   ):
   """
   Given the labels, DBF, DAF, dijkstra parents,
@@ -165,10 +171,15 @@ def compute_paths(
 
   paths = []
   valid_labels = np.count_nonzero(labels)
+  if max_paths is None:
+    max_paths = valid_labels
 
-  while valid_labels > 0 or border_targets:
-    if border_targets:
-      target = border_targets.pop()
+  if len(manual_targets) >= max_paths:
+    return paths
+
+  while (valid_labels > 0 or manual_targets) and len(paths) < max_paths:
+    if manual_targets:
+      target = manual_targets.pop()
     else:
       target = kimimaro.skeletontricks.find_target(labels, DAF)
 
@@ -200,15 +211,15 @@ def compute_paths(
 
   return paths
 
-def find_root(labels, border_targets, anisotropy):
+def find_root(labels, manual_targets, anisotropy):
   """
   "4.4 DAF:  Compute distance from any voxel field"
   Compute DAF, but we immediately convert to the PDRF
   The extremal point of the PDRF is a valid root node
   even if the DAF is computed from an arbitrary pixel.
   """
-  if len(border_targets):
-    return border_targets.pop()
+  if len(manual_targets):
+    return manual_targets.pop()
 
   any_voxel = kimimaro.skeletontricks.first_label(labels)   
   if any_voxel is None: 

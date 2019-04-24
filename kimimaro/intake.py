@@ -146,18 +146,18 @@ def skeletonize(
 
     roi = Bbox.from_slices(slices)
 
-    initial_targets = []
+    manual_targets = []
     if border_targets[segid]:
-      initial_targets = np.array(border_targets[segid])
-      initial_targets -= roi.minpt.astype(np.uint32)
-      initial_targets = initial_targets.tolist()
+      manual_targets = np.array(border_targets[segid])
+      manual_targets -= roi.minpt.astype(np.uint32)
+      manual_targets = manual_targets.tolist()
 
     skeleton = kimimaro.trace.trace(
       labels, 
       dbf, 
       anisotropy=anisotropy, 
       fix_branching=fix_branching, 
-      border_targets=initial_targets,
+      manual_targets=manual_targets,
       **teasar_params
     )
 
