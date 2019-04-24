@@ -6,6 +6,23 @@ and the euclidean distance transform) have a home here.
 Author: William Silversmith
 Affiliation: Seung Lab, Princeton Neuroscience Institute
 Date: August 2018
+
+*****************************************************************
+This file is part of Kimimaro.
+
+Kimimaro is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Kimimaro is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
+*****************************************************************
 """
 cimport cython
 from libc.stdlib cimport calloc, free
@@ -27,6 +44,11 @@ from collections import defaultdict
 cdef extern from "math.h":
   float INFINITY
 
+ctypedef fused INTEGER: 
+  cython.int  
+  cython.uint 
+  unsigned char
+
 cdef extern from "skeletontricks.hpp" namespace "skeletontricks":
   cdef int _roll_invalidation_cube(
     uint8_t* labels, float* DBF,
@@ -40,6 +62,13 @@ cdef extern from "skeletontricks.hpp" namespace "skeletontricks":
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
 def inf2zero(cnp.ndarray[float, cast=True, ndim=3] field):
+  """
+  inf2zero(cnp.ndarray[float, cast=True, ndim=3] field)
+
+  Convert infinities to zeros.
+
+  Returns: field
+  """
   cdef int sx, sy, sz 
   cdef int  x,  y,  z
 
@@ -59,6 +88,13 @@ def inf2zero(cnp.ndarray[float, cast=True, ndim=3] field):
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
 def zero2inf(cnp.ndarray[float, cast=True, ndim=3] field):
+  """
+  zero2inf(cnp.ndarray[float, cast=True, ndim=3] field)
+
+  Convert zeros to positive infinities.
+
+  Returns: field
+  """
   cdef int sx, sy, sz 
   cdef int  x,  y,  z
 
@@ -74,10 +110,42 @@ def zero2inf(cnp.ndarray[float, cast=True, ndim=3] field):
 
   return field
 
+@cython.boundscheck(False)  
+@cython.wraparound(False)  # turn off negative index wrapping for entire function 
+@cython.nonecheck(False)  
+def zero_out_all_except(cnp.ndarray[INTEGER, cast=True, ndim=3] field, INTEGER leave_alone): 
+  """
+  zero_out_all_except(cnp.ndarray[INTEGER, cast=True, ndim=3] field, INTEGER leave_alone)
+
+  Change all values in field to zero except `leave_alone`.
+
+  Returns: field
+  """
+  cdef size_t sx, sy, sz   
+  cdef size_t  x,  y,  z 
+
+  sx = field.shape[0]  
+  sy = field.shape[1] 
+  sz = field.shape[2] 
+
+  for z in range(0, sz): 
+    for y in range(0, sy):  
+      for x in range(0, sx):  
+        if (field[x,y,z] != leave_alone): 
+          field[x,y,z] = 0  
+
+  return field  
+
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
 def finite_max(cnp.ndarray[float, cast=True, ndim=3] field):
+  """
+  float finite_max(cnp.ndarray[float, cast=True, ndim=3] field)
+
+  Given a field of floats that may include infinities, find the 
+  largest finite value.
+  """
   cdef int sx, sy, sz 
   cdef int  x,  y,  z
 
@@ -98,6 +166,12 @@ def finite_max(cnp.ndarray[float, cast=True, ndim=3] field):
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
 def finite_min(cnp.ndarray[float, cast=True, ndim=3] field):
+  """
+  float finite_min(cnp.ndarray[float, cast=True, ndim=3] field)
+
+  Given a field of floats that may include infinities, find the 
+  minimum finite value.
+  """
   cdef int sx, sy, sz 
   cdef int  x,  y,  z
 
@@ -118,6 +192,11 @@ def finite_min(cnp.ndarray[float, cast=True, ndim=3] field):
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
 def first_label(cnp.ndarray[uint8_t, cast=True, ndim=3] labels):
+  """
+  uint8_t first_label(cnp.ndarray[uint8_t, cast=True, ndim=3] labels)
+
+  Scan through labels to find the first non-zero value and return it.
+  """
   cdef int sx, sy, sz 
   cdef int  x,  y,  z
 
@@ -140,6 +219,15 @@ def find_target(
     cnp.ndarray[uint8_t, cast=True, ndim=3] labels, 
     cnp.ndarray[float, ndim=3] PDRF
   ):
+  """
+  find_target(ndarray[uint8_t, cast=True, ndim=3] labels, ndarray[float, ndim=3] PDRF)
+
+  Given a binary image and a coregistered map of values to it, 
+  find the coordinate of the voxel corresponding to the first
+  instance of the maximum map value.
+
+  Returns: (x, y, z)
+  """
   cdef int x,y,z
   cdef int sx, sy, sz
 
@@ -176,7 +264,21 @@ def roll_invalidation_ball(
     anisotropy=(1,1,1),
     invalid_vertices={},
   ):
-  
+  """
+  roll_invalidation_ball(
+    ndarray[uint8_t, cast=True, ndim=3] labels, ndarray[float, ndim=3] DBF, 
+    path, float scale, float const, anisotropy=(1,1,1), invalid_vertices={}
+  )
+
+  Given an anisotropic binary image, its distance transform, and a path 
+  traversing the binary image, erase the voxels surrounding the path
+  in a sphere around each vertex on the path corresponding to the 
+  equation: 
+
+  r = scale * DBF[x,y,z] + const
+
+  Returns: modified labels
+  """
   cdef int sx, sy, sz 
   sx = labels.shape[0]
   sy = labels.shape[1]
@@ -222,23 +324,25 @@ def roll_invalidation_ball(
 
   return invalidated, labels
 
-ctypedef fused ALLINT:
-  uint8_t
-  uint16_t
-  uint32_t
-  uint64_t
-  int8_t
-  int16_t
-  int32_t
-  int64_t
-
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
 def get_mapping(
-    cnp.ndarray[ALLINT, ndim=3] orig_labels, 
+    cnp.ndarray[INTEGER, ndim=3] orig_labels, 
     cnp.ndarray[uint32_t, ndim=3] cc_labels
   ):
+  """
+  get_mapping(
+    ndarray[INTEGER, ndim=3] orig_labels, 
+    ndarray[uint32_t, ndim=3] cc_labels
+  )
+
+  Given a set of possibly not connected labels 
+  and an image containing their labeled connected components, 
+  produce a dictionary containing the inverse of this mapping.
+
+  Returns: { $CC_LABEL: $ORIGINAL_LABEL }
+  """
 
   cdef int sx,sy,sz 
   sx = orig_labels.shape[0]
@@ -256,6 +360,217 @@ def get_mapping(
 
   return remap
 
+def compute_centroids(cnp.ndarray[uint32_t, ndim=2] labels):
+  """Compute the centroid for every label on a 2D image at once."""
+
+  cdef uint64_t[:] xsum = np.zeros( (labels.size,), dtype=np.uint64)
+  cdef uint64_t[:] ysum = np.zeros( (labels.size,), dtype=np.uint64)
+  cdef uint32_t[:] labelct = np.zeros( (labels.size,), dtype=np.uint32)
+
+  cdef size_t sx, sy
+  sx = labels.shape[0]
+  sy = labels.shape[1]
+
+  cdef size_t x, y
+  cdef uint32_t label = 0
+
+  for x in range(sx):
+    for y in range(sy):
+      label = labels[x,y]
+      if label == 0:
+        continue
+
+      xsum[label] += x 
+      ysum[label] += y 
+      labelct[label] += 1
+
+  result = {}
+
+  cdef float cx = sx / 2
+  cdef float cy = sy / 2
+
+  cdef float px, py
+
+  for label in range(labels.size):
+    if labelct[label] == 0:
+      continue
+
+    px = <float>xsum[label] / <float>labelct[label]
+    py = <float>ysum[label] / <float>labelct[label]
+
+    # Since we don't know which coordinate frame we 
+    # are using, round toward the center of the image
+    # to ensure we get the same pixel every time.
+    if px - cx >= 0:
+      px = (<int>px)
+    else:
+      px = (<int>px) + 1.0
+
+    if py - cy >= 0:
+      py = <int>py
+    else:
+      py = (<int>py) + 1.0
+
+    result[label] = (<int>px, <int>py)
+
+  return result
+
+def find_border_targets(
+    cnp.ndarray[float, ndim=2] dt,
+    cnp.ndarray[uint32_t, ndim=2] cc_labels
+  ):
+  """
+  find_border_targets(
+    ndarray[float, ndim=2] dt, 
+    ndarray[uint32_t, ndim=2] cc_labels
+  )
+
+  Given a set of connected components that line within 
+  a plane and their distance transform, return a map of
+  label ID to the coordinate of its maximum distance 
+  transform value. If there are multiple maxima, we 
+  disambiguate based on topological criteria that are
+  coordinate frame independent in order to avoid dealing
+  with issues that come from the six rotated frames and
+  their mirrored partners.
+
+  The purpose of this function is to fix the edge effect
+  the standard TEASAR algorithm generates and ensure that
+  we can trivially join skeletons from adjacent chunks.  
+
+  Rotating the (x,y) pairs into their appropriate frame
+  is performed in the function that calls this one.
+
+  Returns: { $SEGID: (x, y), ... }
+  """
+  cdef size_t sx, sy
+  sx = dt.shape[0]
+  sy = dt.shape[1]
+
+  cdef size_t x, y
+
+  mx = defaultdict(float)
+  pts = {}
+
+  cdef uint32_t label = 0
+  cdef dict centroids = compute_centroids(cc_labels)
+
+  cdef float px, py
+  cdef float centx, centy
+
+  for y in range(sy):
+    for x in range(sx):
+      label = cc_labels[x,y]
+      if label == 0:
+        continue
+      elif dt[x,y] == 0:
+        continue
+      elif dt[x,y] > mx[label]:
+        mx[label] = dt[x,y]
+        pts[label] = (x,y)
+      elif mx[label] == dt[x,y]:
+        px, py = pts[label]
+        centx, centy = centroids[label]
+        pts[label] = compute_tiebreaker_maxima(
+          px, py, x, y, sx, sy, centx, centy
+        )
+
+  return pts
+
+def compute_tiebreaker_maxima(
+    float px, float py, 
+    float x, float y, 
+    float sx, float sy,
+    float centx, float centy
+  ):
+  """
+  compute_tiebreaker_maxima(
+    float px, float py, 
+    float x, float y, 
+    float sx, float sy,
+    float centx, float centy
+  )
+
+  This function breaks ties for `compute_border_targets`.
+
+  (px,py): A previously found distance transform maxima 
+  (x,y): The coordinate of the newly found maxima
+  (sx,sy): The length and width of the image plane.
+  (centx, centy): The centroid of the current label.
+
+  We use following topolological criteria to achieve
+  a coordinate frame-free voxel selection. We pick
+  the result of the first criterion that is satisfied.
+
+  1) Pick the voxel closest to the centroid of the label.
+  2) The voxel closest to the centroid of the plane.
+  3) Closest to a corner of the plane.
+  4) Closest to an edge of the plane.
+  5) The previous maxima.
+
+  The worst case would be an annulus drawn around the center,
+  which would result in four equally eligible pixels....
+
+  Hopefully this won't happen too often...
+
+  Returns: some (x, y)
+  """
+  cdef float cx = <float>sx / 2.0
+  cdef float cy = <float>sy / 2.0
+
+  cdef float dist1 = distsq(px,py, centx,centy)
+  cdef float dist2 = distsq( x, y, centx,centy)
+
+  if dist2 < dist1:
+    return (x, y)
+  elif dist1 == dist2:
+    dist1 = distsq(px,py, cx,cy)
+    dist2 = distsq( x, y, cx,cy)
+    if dist2 < dist1:
+      return (x,y)
+    elif dist1 == dist2:
+      dist1 = cornerness(px, py, sx, sy)
+      dist2 = cornerness( x,  y, sx, sy)
+      if dist2 < dist1:
+        return (x, y)
+      elif dist1 == dist2:
+        dist1 = edgeness(px, py, sx, sy)
+        dist2 = edgeness( x,  y, sx, sy)
+        if dist2 < dist1:
+          return (x, y)
+
+  return (px, py)
+
+cdef float edgeness(float x, float y, float sx, float sy):
+  """
+  float edgeness(float x, float y, float sx, float sy)
+
+  Nearness of (x,y) to the edge of an image of size (sx,sy).
+  """
+  return min(
+    x - 0.5,
+    sx - 0.5 - x,
+    y - 0.5,
+    sy - 0.5 - y
+  )
+
+cdef float cornerness(float x, float y, float sx, float sy):
+  """
+  float cornerness(float x, float y, float sx, float sy)
+
+  Nearness of (x,y) to a corner of an image of size (sx,sy).
+  """
+  return min( 
+    distsq(x,y,-0.5,-0.5), 
+    distsq(x,y,sx-0.5,-0.5),
+    distsq(x,y,sx-0.5,sy-0.5),
+    distsq(x,y,-0.5,sx-0.5)
+  )
+
+cdef float distsq(float p1x, float p1y, float p2x, float p2y):
+  p1x = (p1x - p2x)
+  p1y = (p1y - p2y)
+  return p1x * p1x + p1y * p1y 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
@@ -267,7 +582,20 @@ def roll_invalidation_cube(
     anisotropy=(1,1,1),
     invalid_vertices={},
   ):
-  
+  """
+  roll_invalidation_cube(
+    ndarray[uint8_t, cast=True, ndim=3] labels, 
+    ndarray[float, ndim=3] DBF, 
+    path, float scale, float const,
+    anisotropy=(1,1,1),
+    invalid_vertices={},
+  )
+
+  Given an anisotropic binary image, its distance transform, and a path 
+  traversing the binary image, erase the voxels surrounding the path
+  in a cube around each vertex. In contrast to `roll_invalidation_ball`,
+  this function runs in time linear in the number of image pixels.
+  """
   cdef int sx, sy, sz 
   sx = labels.shape[0]
   sy = labels.shape[1]
@@ -318,11 +646,11 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
     index[e2].add(e1)
 
   cdef int root = edges[0,0]
-  cdef int node
-  cdef int child
-  cdef int parent
-  cdef int depth
-  cdef int i
+  cdef int node = -1
+  cdef int child = -1
+  cdef int parent = -1
+  cdef int depth = -1
+  cdef int i = 0
 
   cdef list stack = [root]
   cdef list parents = [-1]

@@ -3,7 +3,22 @@ Skeletonization algorithm based on TEASAR (Sato et al. 2000).
 
 Authors: Alex Bae and Will Silversmith
 Affiliation: Seung Lab, Princeton Neuroscience Institue
-Date: June-August 2018
+Date: June 2018 - April 2019
+
+This file is part of Kimimaro.
+
+Kimimaro is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Kimimaro is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 """
 from collections import defaultdict
 from math import log
@@ -15,7 +30,6 @@ from scipy import ndimage
 from PIL import Image
 
 import kimimaro.skeletontricks
-from kimimaro.skeletontricks import finite_max, finite_min
 
 from cloudvolume import PrecomputedSkeleton, view
 from cloudvolume.lib import save_images, mkdir
@@ -29,6 +43,8 @@ def trace(
     soma_invalidation_scale=0.5,
     soma_invalidation_const=0,
     fix_branching=True,
+    manual_targets=[],
+    max_paths=None,
   ):
   """
   Given the euclidean distance transform of a label ("Distance to Boundary Function"), 
@@ -53,7 +69,12 @@ def trace(
     the actual path divergence. However, there is a large performance penalty
     associated with this as dijkstra's algorithm is computed once per a path
     rather than once per a skeleton.
-  
+  manual_targets: list of (x,y,z) that coorrespond to locations that must 
+    have paths drawn to. Used for specifying root and border targets for
+    merging adjacent chunks out-of-core.
+  max_paths: If a label requires drawing this number of paths or more,
+    abort and move onto the next label.
+
   Based on the algorithm by:
 
   M. Sato, I. Bitter, M. Bender, A. Kaufman, and M. Nakajima. 
@@ -83,7 +104,7 @@ def trace(
     root = np.unravel_index(np.argmax(DBF), DBF.shape)
     soma_radius = dbf_max * soma_invalidation_scale + soma_invalidation_const
   else:
-    root = find_root(labels, anisotropy)
+    root = find_root(labels, manual_targets, anisotropy)
     soma_radius = 0.0
 
   if root is None:
@@ -117,7 +138,8 @@ def trace(
   paths = compute_paths(
     root, labels, DBF, DAF, 
     parents, scale, const, anisotropy, 
-    soma_mode, soma_radius, fix_branching
+    soma_mode, soma_radius, fix_branching,
+    manual_targets, max_paths
   )
 
   skel = PrecomputedSkeleton.simple_merge(
@@ -132,7 +154,8 @@ def trace(
 def compute_paths(
     root, labels, DBF, DAF, 
     parents, scale, const, anisotropy, 
-    soma_mode, soma_radius, fix_branching
+    soma_mode, soma_radius, fix_branching,
+    manual_targets, max_paths
   ):
   """
   Given the labels, DBF, DAF, dijkstra parents,
@@ -142,15 +165,23 @@ def compute_paths(
   root vertex.
   """
   invalid_vertices = {}
+  paths = []
+  valid_labels = np.count_nonzero(labels)
 
   if soma_mode:
     invalid_vertices[root] = True
 
-  paths = []
-  valid_labels = np.count_nonzero(labels)
+  if max_paths is None:
+    max_paths = valid_labels
 
-  while valid_labels > 0:
-    target = kimimaro.skeletontricks.find_target(labels, DAF)
+  if len(manual_targets) >= max_paths:
+    return []
+
+  while (valid_labels > 0 or manual_targets) and len(paths) < max_paths:
+    if manual_targets:
+      target = manual_targets.pop()
+    else:
+      target = kimimaro.skeletontricks.find_target(labels, DAF)
 
     if fix_branching:
       path = dijkstra3d.dijkstra(parents, root, target)
@@ -164,12 +195,13 @@ def compute_paths(
         (path[:1,:], path[dist_to_soma_root > soma_radius, :])
       )
 
-    invalidated, labels = kimimaro.skeletontricks.roll_invalidation_cube(
-      labels, DBF, path, scale, const, 
-      anisotropy=anisotropy, invalid_vertices=invalid_vertices,
-    )
+    if valid_labels > 0:
+      invalidated, labels = kimimaro.skeletontricks.roll_invalidation_cube(
+        labels, DBF, path, scale, const, 
+        anisotropy=anisotropy, invalid_vertices=invalid_vertices,
+      )
+      valid_labels -= invalidated
 
-    valid_labels -= invalidated
     for vertex in path:
       invalid_vertices[tuple(vertex)] = True
       if fix_branching:
@@ -179,13 +211,16 @@ def compute_paths(
 
   return paths
 
-def find_root(labels, anisotropy):
+def find_root(labels, manual_targets, anisotropy):
   """
   "4.4 DAF:  Compute distance from any voxel field"
   Compute DAF, but we immediately convert to the PDRF
   The extremal point of the PDRF is a valid root node
   even if the DAF is computed from an arbitrary pixel.
   """
+  if len(manual_targets):
+    return manual_targets.pop()
+
   any_voxel = kimimaro.skeletontricks.first_label(labels)   
   if any_voxel is None: 
     return None

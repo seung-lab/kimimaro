@@ -1,3 +1,20 @@
+"""
+This file is part of Kimimaro.
+
+Kimimaro is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Kimimaro is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 from collections import defaultdict
 
 import numpy as np
@@ -17,7 +34,6 @@ import kimimaro.trace
 class DimensionError(Exception):
   pass
 
-
 DEFAULT_TEASAR_PARAMS = {
   'scale': 10, 'const': 50,
   'pdrf_scale': 100000,
@@ -27,7 +43,8 @@ DEFAULT_TEASAR_PARAMS = {
 def skeletonize(
     all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
     object_ids=None, dust_threshold=1000, cc_safety_factor=1,
-    progress=False, fix_branching=True, in_place=False
+    progress=False, fix_branching=True, in_place=False, 
+    fix_borders=True
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -67,6 +84,9 @@ def skeletonize(
       rather than once per a skeleton.
     in_place: if true, allow input labels to be modified to reduce
       memory usage and possibly improve performance.
+    fix_borders: ensure that segments touching the border place a 
+      skeleton endpoint in a predictable place to make merging 
+      adjacent chunks easier.
 
   Returns: { $segid: cloudvolume.PrecomputedSkeleton, ... }
   """
@@ -106,6 +126,10 @@ def skeletonize(
 
   all_slices = scipy.ndimage.find_objects(cc_labels)
 
+  border_targets = defaultdict(list)
+  if fix_borders:
+    border_targets = compute_border_targets(cc_labels)
+
   skeletons = defaultdict(list)
   for segid in tqdm(cc_segids, disable=(not progress), desc="Skeletonizing Labels"):
     if segid == 0:
@@ -122,19 +146,25 @@ def skeletonize(
 
     roi = Bbox.from_slices(slices)
 
+    manual_targets = []
+    if border_targets[segid]:
+      manual_targets = np.array(border_targets[segid])
+      manual_targets -= roi.minpt.astype(np.uint32)
+      manual_targets = manual_targets.tolist()
+
     skeleton = kimimaro.trace.trace(
       labels, 
       dbf, 
       anisotropy=anisotropy, 
       fix_branching=fix_branching, 
+      manual_targets=manual_targets,
       **teasar_params
     )
-    skeleton.vertices[:,0] += roi.minpt.x
-    skeleton.vertices[:,1] += roi.minpt.y
-    skeleton.vertices[:,2] += roi.minpt.z
 
     if skeleton.empty():
       continue
+
+    skeleton.vertices += roi.minpt
 
     orig_segid = remapping[segid]
     skeleton.id = orig_segid
@@ -150,9 +180,8 @@ def apply_object_mask(all_labels, object_ids):
   if len(object_ids) == 1:
     all_labels = kimimaro.skeletontricks.zero_out_all_except(all_labels, object_ids[0]) # faster
   else:
-    mask = { i: 0 for i in object_ids }
-    all_labels = fastremap.remap(all_labels, mask, preserve_missing_labels=True)
-  
+    all_labels = fastremap.mask(all_labels, object_ids, in_place=True)
+
   return all_labels
 
 def compute_cc_labels(all_labels, cc_safety_factor):
@@ -161,13 +190,49 @@ def compute_cc_labels(all_labels, cc_safety_factor):
 
   tmp_labels = all_labels
   if np.dtype(all_labels.dtype).itemsize > 1:
-    tmp_labels, remapping = fastremap.renumber(all_labels, in_place=True)
+    tmp_labels, remapping = fastremap.renumber(all_labels, in_place=False)
 
   cc_labels = cc3d.connected_components(tmp_labels, max_labels=int(tmp_labels.size * cc_safety_factor))
 
   del tmp_labels
   remapping = kimimaro.skeletontricks.get_mapping(all_labels, cc_labels) 
   return cc_labels, remapping
+
+def compute_border_targets(cc_labels):
+  sx, sy, sz = cc_labels.shape
+
+  planes = (
+    ( cc_labels[:,:,0], lambda x,y: (x, y, 0) ),     # top xy
+    ( cc_labels[:,:,-1], lambda x,y: (x, y, sz-1) ), # bottom xy
+    ( cc_labels[:,0,:], lambda x,z: (x, 0, z) ),     # left xz
+    ( cc_labels[:,-1,:], lambda x,z: (x, sy-1, z) ), # right xz
+    ( cc_labels[0,:,:], lambda y,z: (0, y, z) ),     # front yz
+    ( cc_labels[-1,:,:], lambda y,z: (sx-1, y, z) )  # back yz
+  )
+
+  target_list = defaultdict(list)
+
+  for plane, rotatefn in planes:
+    plane = np.copy(plane, order='F')
+    cc_plane = cc3d.connected_components(np.ascontiguousarray(plane))
+    dt_plane = edt.edt(cc_plane, black_border=True)
+
+    plane_targets = kimimaro.skeletontricks.find_border_targets(
+      dt_plane, cc_plane
+    )
+
+    plane = plane[..., np.newaxis]
+    cc_plane = cc_plane[..., np.newaxis]
+    remapping = kimimaro.skeletontricks.get_mapping(plane, cc_plane)
+
+    for label, pt in plane_targets.items():
+      label = remapping[label]
+      target_list[label].append(
+        np.array(rotatefn(*pt), dtype=np.uint32)
+      )
+
+  return target_list
+
 
 def merge(skeletons):
   merged_skels = {}

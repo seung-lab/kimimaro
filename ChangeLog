@@ -1,6 +1,24 @@
 CHANGES
 =======
 
+* refactor: use fastremap.mask instead of fastremap.remap
+* fix: add missing function from igneous
+* fix: fix\_border=True runs
+* fix: cover dt[x,y] == 0 case in find\_border\_targets
+* chore: add test.py to .gitignore
+* fix: incorrect comparison in find\_border\_targets
+* fix: uninitialized variable warnings in find\_cycle
+* wip: provide border targets to tracing engine
+* wip: added topographical border target finder
+* test+fix: remove "cd python"
+* docs: add Travis CI badge
+* chore: add Travis CI
+* test: add basic test for skeletonizing diagonal of square and cube
+* perf: improve memory consumption of object masking
+* perf: introduce in\_place flag to make it safe to modify input data
+* perf: use fastremap's new in\_place flag for lower memory and perf
+* docs: updated credits
+
 0.2.2
 -----
 
