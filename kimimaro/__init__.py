@@ -1,5 +1,5 @@
 """
-TEASAR derived skeletonization for 3D densely labeled images.
+Kimimaro: TEASAR derived skeletonization for 3D densely labeled images.
 
 Kimimaro is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
