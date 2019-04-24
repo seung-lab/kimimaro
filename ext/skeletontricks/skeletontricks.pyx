@@ -505,7 +505,7 @@ def compute_tiebreaker_maxima(
   1) Pick the voxel closest to the centroid of the label.
   2) The voxel closest to the centroid of the plane.
   3) Closest to a corner of the plane.
-  4) Closet to an edge of the plane.
+  4) Closest to an edge of the plane.
   5) The previous maxima.
 
   The worst case would be an annulus drawn around the center,
