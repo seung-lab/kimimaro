@@ -3,7 +3,22 @@ Skeletonization algorithm based on TEASAR (Sato et al. 2000).
 
 Authors: Alex Bae and Will Silversmith
 Affiliation: Seung Lab, Princeton Neuroscience Institue
-Date: June-August 2018
+Date: June 2018 - April 2019
+
+This file is part of Kimimaro.
+
+Kimimaro is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Kimimaro is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 """
 from collections import defaultdict
 from math import log
