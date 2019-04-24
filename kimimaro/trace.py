@@ -165,17 +165,17 @@ def compute_paths(
   root vertex.
   """
   invalid_vertices = {}
+  paths = []
+  valid_labels = np.count_nonzero(labels)
 
   if soma_mode:
     invalid_vertices[root] = True
 
-  paths = []
-  valid_labels = np.count_nonzero(labels)
   if max_paths is None:
     max_paths = valid_labels
 
   if len(manual_targets) >= max_paths:
-    return paths
+    return []
 
   while (valid_labels > 0 or manual_targets) and len(paths) < max_paths:
     if manual_targets:
