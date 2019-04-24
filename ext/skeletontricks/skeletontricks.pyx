@@ -363,8 +363,8 @@ def get_mapping(
 def compute_centroids(cnp.ndarray[uint32_t, ndim=2] labels):
   """Compute the centroid for every label on a 2D image at once."""
 
-  cdef uint32_t[:] xsum = np.zeros( (labels.size,), dtype=np.uint32)
-  cdef uint32_t[:] ysum = np.zeros( (labels.size,), dtype=np.uint32)
+  cdef uint64_t[:] xsum = np.zeros( (labels.size,), dtype=np.uint64)
+  cdef uint64_t[:] ysum = np.zeros( (labels.size,), dtype=np.uint64)
   cdef uint32_t[:] labelct = np.zeros( (labels.size,), dtype=np.uint32)
 
   cdef size_t sx, sy
@@ -377,6 +377,9 @@ def compute_centroids(cnp.ndarray[uint32_t, ndim=2] labels):
   for x in range(sx):
     for y in range(sy):
       label = labels[x,y]
+      if label == 0:
+        continue
+
       xsum[label] += x 
       ysum[label] += y 
       labelct[label] += 1
