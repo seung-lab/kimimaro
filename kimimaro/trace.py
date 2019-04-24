@@ -30,7 +30,6 @@ from scipy import ndimage
 from PIL import Image
 
 import kimimaro.skeletontricks
-from kimimaro.skeletontricks import finite_max, finite_min
 
 from cloudvolume import PrecomputedSkeleton, view
 from cloudvolume.lib import save_images, mkdir
