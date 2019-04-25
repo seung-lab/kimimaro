@@ -16,13 +16,16 @@ along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 from collections import defaultdict
+from functools import partial
 
 import numpy as np
+import pathos.pools
 import scipy.ndimage
 from tqdm import tqdm
 
 import cloudvolume
 from cloudvolume import CloudVolume, PrecomputedSkeleton, Bbox
+import cloudvolume.sharedmemory as shm
 
 import cc3d # connected components
 import edt # euclidean distance transform
@@ -44,7 +47,7 @@ def skeletonize(
     all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
     object_ids=None, dust_threshold=1000, cc_safety_factor=1,
     progress=False, fix_branching=True, in_place=False, 
-    fix_borders=True
+    fix_borders=True, parallel=1
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -122,7 +125,7 @@ def skeletonize(
   #   all_dbf = all_dbf.astype(np.float16)
 
   cc_segids, pxct = np.unique(cc_labels, return_counts=True)
-  cc_segids = [ sid for sid, ct in zip(cc_segids, pxct) if ct > dust_threshold ]
+  cc_segids = [ sid for sid, ct in zip(cc_segids, pxct) if ct > dust_threshold and sid != 0 ]
 
   all_slices = scipy.ndimage.find_objects(cc_labels)
 
@@ -130,11 +133,70 @@ def skeletonize(
   if fix_borders:
     border_targets = compute_border_targets(cc_labels)
 
+  if parallel == 1:
+    return skeletonize_subset(
+      all_dbf, cc_labels, remapping, 
+      teasar_params, anisotropy, all_slices, border_targets, 
+      progress, fix_borders, fix_branching, 
+      cc_segids
+    )
+  else:
+    dbf_shm_location = 'kimimaro-shm-dbf'
+    cc_shm_location = 'kimimaro-shm-cc-labels'
+
+    dbf_mmap, all_dbf_shm = shm.ndarray( all_dbf.shape, all_dbf.dtype, dbf_shm_location, order='F')
+    cc_mmap, cc_labels_shm = shm.ndarray( cc_labels.shape, cc_labels.dtype, cc_shm_location, order='F')    
+    all_dbf_shm[:] = all_dbf 
+    cc_labels_shm[:] = cc_labels 
+    del all_dbf 
+    del cc_labels
+    
+    skeletonizefn = partial(parallel_skeletonize_subset, 
+      dbf_shm_location, cc_shm_location, remapping, 
+      teasar_params, anisotropy, all_slices, 
+      border_targets, progress, fix_borders, fix_branching
+    )
+
+    ccids = []
+    for i in range(parallel):
+      ccids.append(cc_segids[i::parallel])
+
+    skeletons = defaultdict(list)
+    with pathos.pools.ProcessPool(parallel) as executor:
+      for skels in executor.map(skeletonizefn, ccids):
+        for segid, skel in skels.items():
+          skeletons[segid].append(skel)
+
+    shm.unlink('kimimaro-shm-dbf')
+    shm.unlink('kimimaro-shm-cc-labels')
+    dbf_mmap.close()
+    cc_mmap.close()
+
+    return merge(skeletons)
+
+def parallel_skeletonize_subset(    
+    dbf_shm_location, cc_shm_location, *args, **kwargs
+  ):
+  
+  dbf_mmap, all_dbf = shm.ndarray( (512,512,512), dtype=np.float32, location=dbf_shm_location, order='F')
+  cc_mmap, cc_labels = shm.ndarray( (512,512,512), dtype=np.uint32, location=cc_shm_location, order='F')
+
+  skels = skeletonize_subset(all_dbf, cc_labels, *args, **kwargs)
+
+  dbf_mmap.close()
+  cc_mmap.close()
+
+  return skels
+
+def skeletonize_subset(
+    all_dbf, cc_labels, remapping, teasar_params,
+    anisotropy, all_slices, border_targets,
+    progress, fix_borders, fix_branching,
+    cc_segids
+  ):
+
   skeletons = defaultdict(list)
   for segid in tqdm(cc_segids, disable=(not progress), desc="Skeletonizing Labels"):
-    if segid == 0:
-      continue 
-
     # Crop DBF to ROI
     slices = all_slices[segid - 1]
     if slices is None:
@@ -232,7 +294,6 @@ def compute_border_targets(cc_labels):
       )
 
   return target_list
-
 
 def merge(skeletons):
   merged_skels = {}
