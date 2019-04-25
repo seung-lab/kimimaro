@@ -17,6 +17,7 @@ along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 
 from collections import defaultdict
 from functools import partial
+import signal
 
 import numpy as np
 import pathos.pools
@@ -150,7 +151,17 @@ def skeletonize(
     cc_labels_shm[:] = cc_labels 
     del all_dbf 
     del cc_labels
+
+    prevsigint = signal.getsignal(signal.SIGINT)
+    prevsigterm = signal.getsignal(signal.SIGTERM)
     
+    def cleanup(signum, frame):
+      shm.unlink(dbf_shm_location)
+      shm.unlink(cc_shm_location)
+
+    signal.signal(signal.SIGINT, cleanup)
+    signal.signal(signal.SIGTERM, cleanup)   
+
     skeletonizefn = partial(parallel_skeletonize_subset, 
       dbf_shm_location, all_dbf_shm.shape, all_dbf_shm.dtype, 
       cc_shm_location, cc_labels_shm.shape, cc_labels_shm.dtype,
@@ -168,8 +179,11 @@ def skeletonize(
         for segid, skel in skels.items():
           skeletons[segid].append(skel)
 
-    shm.unlink('kimimaro-shm-dbf')
-    shm.unlink('kimimaro-shm-cc-labels')
+
+    signal.signal(signal.SIGINT, prevsigint)
+    signal.signal(signal.SIGTERM, prevsigterm)
+
+    cleanup()
     dbf_mmap.close()
     cc_mmap.close()
 
