@@ -152,8 +152,9 @@ def skeletonize(
     del cc_labels
     
     skeletonizefn = partial(parallel_skeletonize_subset, 
-      dbf_shm_location, cc_shm_location, remapping, 
-      teasar_params, anisotropy, all_slices, 
+      dbf_shm_location, all_dbf_shm.shape, all_dbf_shm.dtype, 
+      cc_shm_location, cc_labels_shm.shape, cc_labels_shm.dtype,
+      remapping, teasar_params, anisotropy, all_slices, 
       border_targets, progress, fix_borders, fix_branching
     )
 
@@ -175,11 +176,12 @@ def skeletonize(
     return merge(skeletons)
 
 def parallel_skeletonize_subset(    
-    dbf_shm_location, cc_shm_location, *args, **kwargs
+    dbf_shm_location, dbf_shape, dbf_dtype, 
+    cc_shm_location, cc_shape, cc_dtype, *args, **kwargs
   ):
   
-  dbf_mmap, all_dbf = shm.ndarray( (512,512,512), dtype=np.float32, location=dbf_shm_location, order='F')
-  cc_mmap, cc_labels = shm.ndarray( (512,512,512), dtype=np.uint32, location=cc_shm_location, order='F')
+  dbf_mmap, all_dbf = shm.ndarray( dbf_shape, dtype=dbf_dtype, location=dbf_shm_location, order='F')
+  cc_mmap, cc_labels = shm.ndarray( cc_shape, dtype=cc_dtype, location=cc_shm_location, order='F')
 
   skels = skeletonize_subset(all_dbf, cc_labels, *args, **kwargs)
 
