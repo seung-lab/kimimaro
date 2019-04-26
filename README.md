@@ -55,6 +55,7 @@ skels = kimimaro.skeletonize(
   fix_branching=True, # default True
   fix_borders=True, # default True
   progress=True, # default False
+  parallel=1, # <= 0 all cpu, 1 single process, 2+ multiprocess
 )
 ```
 

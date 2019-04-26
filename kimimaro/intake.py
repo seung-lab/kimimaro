@@ -16,13 +16,20 @@ along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 from collections import defaultdict
+from functools import partial
+import gc
+import multiprocessing as mp
+import signal
+import uuid
 
 import numpy as np
+import pathos.pools
 import scipy.ndimage
 from tqdm import tqdm
 
 import cloudvolume
 from cloudvolume import CloudVolume, PrecomputedSkeleton, Bbox
+import cloudvolume.sharedmemory as shm
 
 import cc3d # connected components
 import edt # euclidean distance transform
@@ -44,7 +51,7 @@ def skeletonize(
     all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
     object_ids=None, dust_threshold=1000, cc_safety_factor=1,
     progress=False, fix_branching=True, in_place=False, 
-    fix_borders=True
+    fix_borders=True, parallel=1
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -87,6 +94,10 @@ def skeletonize(
     fix_borders: ensure that segments touching the border place a 
       skeleton endpoint in a predictable place to make merging 
       adjacent chunks easier.
+    parallel: number of subprocesses to use.
+      <= 0: Use multiprocessing.count_cpu() 
+         1: Only use the main process.
+      >= 2: Use this number of subprocesses.
 
   Returns: { $segid: cloudvolume.PrecomputedSkeleton, ... }
   """
@@ -122,7 +133,7 @@ def skeletonize(
   #   all_dbf = all_dbf.astype(np.float16)
 
   cc_segids, pxct = np.unique(cc_labels, return_counts=True)
-  cc_segids = [ sid for sid, ct in zip(cc_segids, pxct) if ct > dust_threshold ]
+  cc_segids = [ sid for sid, ct in zip(cc_segids, pxct) if ct > dust_threshold and sid != 0 ]
 
   all_slices = scipy.ndimage.find_objects(cc_labels)
 
@@ -130,11 +141,117 @@ def skeletonize(
   if fix_borders:
     border_targets = compute_border_targets(cc_labels)
 
+  print_quotes(parallel) # easter egg
+
+  if parallel <= 0:
+    parallel = mp.cpu_count()
+
+  if parallel == 1:
+    return skeletonize_subset(
+      all_dbf, cc_labels, remapping, 
+      teasar_params, anisotropy, all_slices, border_targets, 
+      progress, fix_borders, fix_branching, 
+      cc_segids
+    )
+  else:
+    # The following section can't be moved into 
+    # skeletonize parallel because then all_dbf 
+    # and cc_labels can't be deleted to save memory.
+    suffix = uuid.uuid1().hex
+
+    dbf_shm_location = 'kimimaro-shm-dbf-' + suffix
+    cc_shm_location = 'kimimaro-shm-cc-labels-' + suffix
+
+    dbf_mmap, all_dbf_shm = shm.ndarray( all_dbf.shape, all_dbf.dtype, dbf_shm_location, order='F')
+    cc_mmap, cc_labels_shm = shm.ndarray( cc_labels.shape, cc_labels.dtype, cc_shm_location, order='F')    
+    all_dbf_shm[:] = all_dbf 
+    cc_labels_shm[:] = cc_labels 
+    del all_dbf 
+    del cc_labels
+
+    skeletons = skeletonize_parallel(      
+      all_dbf_shm, dbf_shm_location, 
+      cc_labels_shm, cc_shm_location, remapping, 
+      teasar_params, anisotropy, all_slices, border_targets, 
+      progress, fix_borders, fix_branching, 
+      cc_segids, parallel
+    )
+
+    dbf_mmap.close()
+    cc_mmap.close()
+
+    return skeletons
+
+def skeletonize_parallel(
+    all_dbf_shm, dbf_shm_location, 
+    cc_labels_shm, cc_shm_location, remapping, 
+    teasar_params, anisotropy, all_slices, border_targets, 
+    progress, fix_borders, fix_branching, 
+    cc_segids, parallel
+  ):
+    prevsigint = signal.getsignal(signal.SIGINT)
+    prevsigterm = signal.getsignal(signal.SIGTERM)
+    
+    executor = pathos.pools.ProcessPool(parallel)
+
+    def cleanup(signum, frame):
+      shm.unlink(dbf_shm_location)
+      shm.unlink(cc_shm_location)
+      executor.terminate()
+
+    signal.signal(signal.SIGINT, cleanup)
+    signal.signal(signal.SIGTERM, cleanup)   
+
+    skeletonizefn = partial(parallel_skeletonize_subset, 
+      dbf_shm_location, all_dbf_shm.shape, all_dbf_shm.dtype, 
+      cc_shm_location, cc_labels_shm.shape, cc_labels_shm.dtype,
+      remapping, teasar_params, anisotropy, all_slices, 
+      border_targets, progress, fix_borders, fix_branching
+    )
+
+    ccids = []
+    for i in range(parallel):
+      ccids.append(cc_segids[i::parallel])
+
+    skeletons = defaultdict(list)
+    for skels in executor.map(skeletonizefn, ccids):
+      for segid, skel in skels.items():
+        skeletons[segid].append(skel)
+    executor.close()
+    executor.join()
+
+    signal.signal(signal.SIGINT, prevsigint)
+    signal.signal(signal.SIGTERM, prevsigterm)
+    
+    shm.unlink(dbf_shm_location)
+    shm.unlink(cc_shm_location)
+
+    return merge(skeletons)
+
+def parallel_skeletonize_subset(    
+    dbf_shm_location, dbf_shape, dbf_dtype, 
+    cc_shm_location, cc_shape, cc_dtype, *args, **kwargs
+  ):
+  
+  dbf_mmap, all_dbf = shm.ndarray( dbf_shape, dtype=dbf_dtype, location=dbf_shm_location, order='F')
+  cc_mmap, cc_labels = shm.ndarray( cc_shape, dtype=cc_dtype, location=cc_shm_location, order='F')
+
+  skels = skeletonize_subset(all_dbf, cc_labels, *args, **kwargs)
+
+  dbf_mmap.close()
+  cc_mmap.close()
+
+  return skels
+
+def skeletonize_subset(
+    all_dbf, cc_labels, remapping, teasar_params,
+    anisotropy, all_slices, border_targets,
+    progress, fix_borders, fix_branching,
+    cc_segids
+  ):
+
   skeletons = defaultdict(list)
   for segid in tqdm(cc_segids, disable=(not progress), desc="Skeletonizing Labels"):
-    if segid == 0:
-      continue 
-
     # Crop DBF to ROI
     slices = all_slices[segid - 1]
     if slices is None:
@@ -233,7 +350,6 @@ def compute_border_targets(cc_labels):
 
   return target_list
 
-
 def merge(skeletons):
   merged_skels = {}
   for segid, skels in skeletons.items():
@@ -241,3 +357,12 @@ def merge(skeletons):
     merged_skels[segid] = skel.consolidate()
 
   return merged_skels
+
+def print_quotes(parallel):
+  if parallel == -1:
+    print("Against the power of will I possess... The capability of my body is nothing.")
+  elif parallel == -2:
+    print("I will see the truth of this world... OROCHIMARU-SAMA WILL SHOW ME!!!")
+
+  if -2 <= parallel < 0:
+    print("CURSED SEAL OF THE EARTH!!!")  
