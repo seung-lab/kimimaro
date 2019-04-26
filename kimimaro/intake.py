@@ -152,33 +152,9 @@ def skeletonize(
       cc_segids
     )
   else:
-    # This bizzare construction is a hack
-    # to get around Python's garbage collection
-    # behavior. If we simply pass all_dbf and cc_labels
-    # to skeletonize parallel, this function will retain
-    # a reference to them even after deleting them in the
-    # called function. Therefore, we pack them into a container
-    # whose reference counts we can manipulate in the callee.
-    alldbf_cclabels = [ all_dbf, cc_labels ]
-    del all_dbf
-    del cc_labels
-    return skeletonize_parallel(      
-      alldbf_cclabels, remapping, 
-      teasar_params, anisotropy, all_slices, border_targets, 
-      progress, fix_borders, fix_branching, 
-      cc_segids, parallel
-    )
-
-
-def skeletonize_parallel(
-    alldbf_cclabels, remapping, 
-    teasar_params, anisotropy, all_slices, border_targets, 
-    progress, fix_borders, fix_branching, 
-    cc_segids, parallel
-  ):
-    all_dbf, cc_labels = alldbf_cclabels
-    del alldbf_cclabels
-
+    # The following section can't be moved into 
+    # skeletonize parallel because then all_dbf 
+    # and cc_labels can't be deleted to save memory.
     suffix = uuid.uuid1().hex
 
     dbf_shm_location = 'kimimaro-shm-dbf-' + suffix
@@ -190,16 +166,36 @@ def skeletonize_parallel(
     cc_labels_shm[:] = cc_labels 
     del all_dbf 
     del cc_labels
-    # Make sure all_dbf and cc_labels are eradicated
-    # before proceeding. Double base memory is not good.
-    gc.collect() 
 
+    skeletons = skeletonize_parallel(      
+      all_dbf_shm, dbf_shm_location, 
+      cc_labels_shm, cc_shm_location, remapping, 
+      teasar_params, anisotropy, all_slices, border_targets, 
+      progress, fix_borders, fix_branching, 
+      cc_segids, parallel
+    )
+
+    dbf_mmap.close()
+    cc_mmap.close()
+
+    return skeletons
+
+def skeletonize_parallel(
+    all_dbf_shm, dbf_shm_location, 
+    cc_labels_shm, cc_shm_location, remapping, 
+    teasar_params, anisotropy, all_slices, border_targets, 
+    progress, fix_borders, fix_branching, 
+    cc_segids, parallel
+  ):
     prevsigint = signal.getsignal(signal.SIGINT)
     prevsigterm = signal.getsignal(signal.SIGTERM)
     
+    executor = pathos.pools.ProcessPool(parallel)
+
     def cleanup(signum, frame):
       shm.unlink(dbf_shm_location)
       shm.unlink(cc_shm_location)
+      executor.terminate()
 
     signal.signal(signal.SIGINT, cleanup)
     signal.signal(signal.SIGTERM, cleanup)   
@@ -216,18 +212,17 @@ def skeletonize_parallel(
       ccids.append(cc_segids[i::parallel])
 
     skeletons = defaultdict(list)
-    with pathos.pools.ProcessPool(parallel) as executor:
-      for skels in executor.map(skeletonizefn, ccids):
-        for segid, skel in skels.items():
-          skeletons[segid].append(skel)
-
+    for skels in executor.map(skeletonizefn, ccids):
+      for segid, skel in skels.items():
+        skeletons[segid].append(skel)
+    executor.close()
+    executor.join()
 
     signal.signal(signal.SIGINT, prevsigint)
     signal.signal(signal.SIGTERM, prevsigterm)
-
-    cleanup(None, None)
-    dbf_mmap.close()
-    cc_mmap.close()
+    
+    shm.unlink(dbf_shm_location)
+    shm.unlink(cc_shm_location)
 
     return merge(skeletons)
 
