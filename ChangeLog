@@ -1,15 +1,21 @@
 CHANGES
 =======
 
-* refactor: use fastremap.mask instead of fastremap.remap
-* fix: add missing function from igneous
-* fix: fix\_border=True runs
-* fix: cover dt[x,y] == 0 case in find\_border\_targets
-* chore: add test.py to .gitignore
-* fix: incorrect comparison in find\_border\_targets
-* fix: uninitialized variable warnings in find\_cycle
-* wip: provide border targets to tracing engine
-* wip: added topographical border target finder
+0.4.0
+-----
+
+* feat: parallel implementation (Cursed Seal Mode) (#10)
+
+0.3.1
+-----
+
+* fix: INTEGER type did not include all integers
+
+0.3.0
+-----
+
+* docs: updated credits with fix\_borders
+* feat: add fix\_borders parameter & max\_paths parameter (#9)
 * test+fix: remove "cd python"
 * docs: add Travis CI badge
 * chore: add Travis CI
