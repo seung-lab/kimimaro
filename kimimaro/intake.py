@@ -94,6 +94,10 @@ def skeletonize(
     fix_borders: ensure that segments touching the border place a 
       skeleton endpoint in a predictable place to make merging 
       adjacent chunks easier.
+    parallel: number of subprocesses to use.
+      <= 0: Use multiprocessing.count_cpu() 
+         1: Only use the main process.
+      >= 2: Use this number of subprocesses.
 
   Returns: { $segid: cloudvolume.PrecomputedSkeleton, ... }
   """
