@@ -1,5 +1,6 @@
 import pytest
 
+import edt
 import numpy as np
 from cloudvolume import *
 
