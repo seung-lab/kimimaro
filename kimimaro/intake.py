@@ -17,7 +17,10 @@ along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 
 from collections import defaultdict
 from functools import partial
+import gc
+import multiprocessing as mp
 import signal
+import uuid
 
 import numpy as np
 import pathos.pools
@@ -134,6 +137,9 @@ def skeletonize(
   if fix_borders:
     border_targets = compute_border_targets(cc_labels)
 
+  if parallel <= 0:
+    parallel = mp.cpu_count()
+
   if parallel == 1:
     return skeletonize_subset(
       all_dbf, cc_labels, remapping, 
@@ -142,8 +148,37 @@ def skeletonize(
       cc_segids
     )
   else:
-    dbf_shm_location = 'kimimaro-shm-dbf'
-    cc_shm_location = 'kimimaro-shm-cc-labels'
+    # This bizzare construction is a hack
+    # to get around Python's garbage collection
+    # behavior. If we simply pass all_dbf and cc_labels
+    # to skeletonize parallel, this function will retain
+    # a reference to them even after deleting them in the
+    # called function. Therefore, we pack them into a container
+    # whose reference counts we can manipulate in the callee.
+    alldbf_cclabels = [ all_dbf, cc_labels ]
+    del all_dbf
+    del cc_labels
+    return skeletonize_parallel(      
+      alldbf_cclabels, remapping, 
+      teasar_params, anisotropy, all_slices, border_targets, 
+      progress, fix_borders, fix_branching, 
+      cc_segids, parallel
+    )
+
+
+def skeletonize_parallel(
+    alldbf_cclabels, remapping, 
+    teasar_params, anisotropy, all_slices, border_targets, 
+    progress, fix_borders, fix_branching, 
+    cc_segids, parallel
+  ):
+    all_dbf, cc_labels = alldbf_cclabels
+    del alldbf_cclabels
+
+    suffix = uuid.uuid1().hex
+
+    dbf_shm_location = 'kimimaro-shm-dbf-' + suffix
+    cc_shm_location = 'kimimaro-shm-cc-labels-' + suffix
 
     dbf_mmap, all_dbf_shm = shm.ndarray( all_dbf.shape, all_dbf.dtype, dbf_shm_location, order='F')
     cc_mmap, cc_labels_shm = shm.ndarray( cc_labels.shape, cc_labels.dtype, cc_shm_location, order='F')    
@@ -151,6 +186,9 @@ def skeletonize(
     cc_labels_shm[:] = cc_labels 
     del all_dbf 
     del cc_labels
+    # Make sure all_dbf and cc_labels are eradicated
+    # before proceeding. Double base memory is not good.
+    gc.collect() 
 
     prevsigint = signal.getsignal(signal.SIGINT)
     prevsigterm = signal.getsignal(signal.SIGTERM)
@@ -183,7 +221,7 @@ def skeletonize(
     signal.signal(signal.SIGINT, prevsigint)
     signal.signal(signal.SIGTERM, prevsigterm)
 
-    cleanup()
+    cleanup(None, None)
     dbf_mmap.close()
     cc_mmap.close()
 

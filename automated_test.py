@@ -1,9 +1,7 @@
 import pytest
 
 import numpy as np
-
 from cloudvolume import *
-import edt
 
 import kimimaro
 
@@ -142,4 +140,41 @@ def test_fix_borders_y():
   assert np.all(skel.vertices[:,0] == 129)
   assert np.all(skel.vertices[:,1] == np.arange(256))
   assert np.all(skel.vertices[:,2] == 129)
+
+def test_parallel():
+  labels = np.zeros((256, 256, 128), dtype=np.uint8)
+  labels[ 0:128, 0:128, : ] = 1
+  labels[ 0:128, 128:256, : ] = 2
+  labels[ 128:256, 0:128, : ] = 3
+  labels[ 128:256, 128:256, : ] = 4
+
+  skels = kimimaro.skeletonize(
+    labels,
+    teasar_params={
+      'const': 250,
+      'scale': 10,
+      'pdrf_exponent': 4,
+      'pdrf_scale': 100000,
+    }, 
+    anisotropy=(1,1,1),
+    object_ids=None, 
+    dust_threshold=1000, 
+    cc_safety_factor=1,
+    progress=True, 
+    fix_branching=True, 
+    in_place=False, 
+    fix_borders=True,
+    parallel=2,
+  )
+
+  assert len(skels) == 4
+
+
+
+
+
+
+
+
+
   
