@@ -141,6 +141,8 @@ def skeletonize(
   if fix_borders:
     border_targets = compute_border_targets(cc_labels)
 
+  print_quotes(parallel) # easter egg
+
   if parallel <= 0:
     parallel = mp.cpu_count()
 
@@ -355,3 +357,12 @@ def merge(skeletons):
     merged_skels[segid] = skel.consolidate()
 
   return merged_skels
+
+def print_quotes(parallel):
+  if parallel == -1:
+    print("Against the power of will I possess... The capability of my body is nothing.")
+  elif parallel == -2:
+    print("I will see the truth of this world... OROCHIMARU-SAMA WILL SHOW ME!!!")
+
+  if -2 <= parallel < 0:
+    print("CURSED SEAL OF THE EARTH!!!")  
