@@ -139,7 +139,7 @@ def skeletonize(
 
   border_targets = defaultdict(list)
   if fix_borders:
-    border_targets = compute_border_targets(cc_labels)
+    border_targets = compute_border_targets(cc_labels, anisotropy)
 
   print_quotes(parallel) # easter egg
 
@@ -315,24 +315,25 @@ def compute_cc_labels(all_labels, cc_safety_factor):
   remapping = kimimaro.skeletontricks.get_mapping(all_labels, cc_labels) 
   return cc_labels, remapping
 
-def compute_border_targets(cc_labels):
+def compute_border_targets(cc_labels, anisotropy):
   sx, sy, sz = cc_labels.shape
 
   planes = (
-    ( cc_labels[:,:,0], lambda x,y: (x, y, 0) ),     # top xy
-    ( cc_labels[:,:,-1], lambda x,y: (x, y, sz-1) ), # bottom xy
-    ( cc_labels[:,0,:], lambda x,z: (x, 0, z) ),     # left xz
-    ( cc_labels[:,-1,:], lambda x,z: (x, sy-1, z) ), # right xz
-    ( cc_labels[0,:,:], lambda y,z: (0, y, z) ),     # front yz
-    ( cc_labels[-1,:,:], lambda y,z: (sx-1, y, z) )  # back yz
+    ( cc_labels[:,:,0], (0, 1), lambda x,y: (x, y, 0) ),     # top xy
+    ( cc_labels[:,:,-1], (0, 1), lambda x,y: (x, y, sz-1) ), # bottom xy
+    ( cc_labels[:,0,:], (0, 2), lambda x,z: (x, 0, z) ),     # left xz
+    ( cc_labels[:,-1,:], (0, 2), lambda x,z: (x, sy-1, z) ), # right xz
+    ( cc_labels[0,:,:], (1, 2), lambda y,z: (0, y, z) ),     # front yz
+    ( cc_labels[-1,:,:], (1, 2), lambda y,z: (sx-1, y, z) )  # back yz
   )
 
   target_list = defaultdict(list)
 
-  for plane, rotatefn in planes:
+  for plane, dims, rotatefn in planes:
+    wx, wy = anisotropy[dims[0]], anisotropy[dims[1]]
     plane = np.copy(plane, order='F')
     cc_plane = cc3d.connected_components(np.ascontiguousarray(plane))
-    dt_plane = edt.edt(cc_plane, black_border=True)
+    dt_plane = edt.edt(cc_plane, black_border=True, anisotropy=(wx, wy))
 
     plane_targets = kimimaro.skeletontricks.find_border_targets(
       dt_plane, cc_plane
