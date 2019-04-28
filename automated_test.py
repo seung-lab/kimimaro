@@ -53,7 +53,9 @@ def test_find_border_targets():
   labels[1:-1,1:-1] = 1 
 
   dt = edt.edt(labels)
-  targets = kimimaro.skeletontricks.find_border_targets(dt, labels.astype(np.uint32))
+  targets = kimimaro.skeletontricks.find_border_targets(
+    dt, labels.astype(np.uint32), wx=100, wy=100
+  )
 
   assert len(targets) == 1
   assert targets[1] == (128, 128)
