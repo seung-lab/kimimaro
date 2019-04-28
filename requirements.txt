@@ -1,7 +1,7 @@
 connected-components-3d
 cloud-volume
 dijkstra3d
-edt>=1.2.3
+edt>=1.2.4
 fastremap>=1.5.1
 numpy>=1.16.1
 pathos
