@@ -336,7 +336,7 @@ def compute_border_targets(cc_labels, anisotropy):
     dt_plane = edt.edt(cc_plane, black_border=True, anisotropy=(wx, wy))
 
     plane_targets = kimimaro.skeletontricks.find_border_targets(
-      dt_plane, cc_plane
+      dt_plane, cc_plane, wx, wy
     )
 
     plane = plane[..., np.newaxis]
