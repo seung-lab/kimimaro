@@ -33,7 +33,7 @@ def test_square():
   assert skel.edges.shape[0] == 999
   assert abs(skel.cable_length() - 999 * np.sqrt(2)) < 0.001
 
-def test_cube():
+def test_cube_isotropic():
   labels = np.ones( (256, 256, 256), dtype=np.uint8)
   labels[0, 0, 0] = 0
   labels[-1, -1, -1] = 0
@@ -46,6 +46,43 @@ def test_cube():
   assert skel.vertices.shape[0] == 256
   assert skel.edges.shape[0] == 255
   assert abs(skel.cable_length() - 255 * np.sqrt(3)) < 0.001
+
+def test_cube_high_anisotropy():
+  shape = (256, 256, 256)
+  anisotropy = (512, 512, 512)
+
+  labels = np.ones( shape, dtype=np.uint8)
+  labels[0, 0, 0] = 0
+  labels[-1, -1, -1] = 0
+  
+  skels = kimimaro.skeletonize(
+    labels, fix_borders=False, anisotropy=anisotropy,
+    teasar_params={ "pdrf_exponent": 4, "pdrf_scale": 100, },
+  )
+
+  assert len(skels) == 1
+
+  skel = skels[1]
+  assert skel.vertices.shape[0] == shape[0]
+  assert skel.edges.shape[0] == shape[0] - 1
+
+  length = np.sqrt(
+      (shape[0] * anisotropy[0]) ** 2 
+    + (shape[1] * anisotropy[1]) ** 2 
+    + (shape[2] * anisotropy[2]) ** 2 
+  )
+
+  # print(skels[1].vertices)
+
+  # zeros = np.zeros( (256, 256, 256), np.uint8)
+  # for v in skels[1].vertices:
+  #   v = (v / 512).astype(int)
+  #   zeros[v[0], v[1], v[2]] = 255 
+
+  # # view(zeros)
+
+
+  assert abs(skel.cable_length() - length) < 0.001
 
   
 def test_find_border_targets():
