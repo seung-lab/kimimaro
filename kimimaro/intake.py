@@ -126,6 +126,7 @@ def skeletonize(
     anisotropy=anisotropy,
     black_border=False,
     order='F',
+    parallel=parallel,
   )
   # slows things down, but saves memory
   # max_all_dbf = np.max(all_dbf)
