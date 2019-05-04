@@ -265,7 +265,7 @@ def skeletonize_subset(
     roi = Bbox.from_slices(slices)
 
     manual_targets = []
-    if border_targets[segid]:
+    if len(border_targets[segid]) > 0:
       manual_targets = np.array(border_targets[segid])
       manual_targets -= roi.minpt.astype(np.uint32)
       manual_targets = manual_targets.tolist()
@@ -328,7 +328,7 @@ def compute_border_targets(cc_labels, anisotropy):
     ( cc_labels[-1,:,:], (1, 2), lambda y,z: (sx-1, y, z) )  # back yz
   )
 
-  target_list = defaultdict(list)
+  target_list = defaultdict(set)
 
   for plane, dims, rotatefn in planes:
     wx, wy = anisotropy[dims[0]], anisotropy[dims[1]]
@@ -346,9 +346,13 @@ def compute_border_targets(cc_labels, anisotropy):
 
     for label, pt in plane_targets.items():
       label = remapping[label]
-      target_list[label].append(
-        np.array(rotatefn(*pt), dtype=np.uint32)
+      target_list[label].add(
+        rotatefn( int(pt[0]), int(pt[1]) )
       )
+
+  target_list.default_factory = lambda: np.array([], np.uint32)
+  for label, pts in target_list.items():
+    target_list[label] = np.array(list(pts), dtype=np.uint32)
 
   return target_list
 
