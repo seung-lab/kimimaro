@@ -96,8 +96,11 @@ def trace(
     del DBF
     labels = ndimage.binary_fill_holes(labels)
     labels = np.asfortranarray(labels)
-    DBF = edt.edt(labels, anisotropy=anisotropy, order='F')   
-    dbf_max = np.max(DBF)
+    DBF = edt.edt(
+      labels, anisotropy=anisotropy, order='F',
+      black_border=np.all(labels)
+    )
+    dbf_max = np.max(DBF) 
     soma_mode = dbf_max > soma_acceptance_threshold
 
   if soma_mode:
