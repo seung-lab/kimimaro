@@ -272,11 +272,13 @@ def skeletonize_subset(
     if slices is None:
       continue
 
+    roi = Bbox.from_slices(slices)
+    if roi.volume() <= 1:
+      continue
+
     labels = cc_labels[slices]
     labels = (labels == segid)
     dbf = (labels * all_dbf[slices]).astype(np.float32)
-
-    roi = Bbox.from_slices(slices)
 
     manual_targets = []
     if len(border_targets[segid]) > 0:
