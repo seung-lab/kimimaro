@@ -172,10 +172,25 @@ def test_parallel():
 
   assert len(skels) == 4
 
+def test_dimensions():
+  labels = np.zeros((10,), dtype=np.uint8)
+  skel = kimimaro.skeletonize(labels)
 
+  labels = np.zeros((10,10), dtype=np.uint8)
+  skel = kimimaro.skeletonize(labels)
 
+  labels = np.zeros((10,10,10), dtype=np.uint8)
+  skel = kimimaro.skeletonize(labels)
 
+  labels = np.zeros((10,10,10,1), dtype=np.uint8)
+  skel = kimimaro.skeletonize(labels)
 
+  try:
+    labels = np.zeros((10,10,10,2), dtype=np.uint8)
+    skel = kimimaro.skeletonize(labels)
+    assert False
+  except kimimaro.DimensionError:
+    pass
 
 
 
