@@ -53,7 +53,9 @@ def test_find_border_targets():
   labels[1:-1,1:-1] = 1 
 
   dt = edt.edt(labels)
-  targets = kimimaro.skeletontricks.find_border_targets(dt, labels.astype(np.uint32))
+  targets = kimimaro.skeletontricks.find_border_targets(
+    dt, labels.astype(np.uint32), wx=100, wy=100
+  )
 
   assert len(targets) == 1
   assert targets[1] == (128, 128)
@@ -170,12 +172,72 @@ def test_parallel():
 
   assert len(skels) == 4
 
+def test_dimensions():
+  labels = np.zeros((10,), dtype=np.uint8)
+  skel = kimimaro.skeletonize(labels)
 
+  labels = np.zeros((10,10), dtype=np.uint8)
+  skel = kimimaro.skeletonize(labels)
 
+  labels = np.zeros((10,10,10), dtype=np.uint8)
+  skel = kimimaro.skeletonize(labels)
 
+  labels = np.zeros((10,10,10,1), dtype=np.uint8)
+  skel = kimimaro.skeletonize(labels)
 
+  try:
+    labels = np.zeros((10,10,10,2), dtype=np.uint8)
+    skel = kimimaro.skeletonize(labels)
+    assert False
+  except kimimaro.DimensionError:
+    pass
 
+def test_joinability():
+  def skeletionize(labels, fix_borders):
+    return kimimaro.skeletonize(
+      labels,
+      teasar_params={
+        'const': 10,
+        'scale': 10,
+        'pdrf_exponent': 4,
+        'pdrf_scale': 100000,
+      }, 
+      anisotropy=(1,1,1),
+      object_ids=None, 
+      dust_threshold=0, 
+      cc_safety_factor=1,
+      progress=True, 
+      fix_branching=True, 
+      in_place=False, 
+      fix_borders=fix_borders,
+      parallel=1,
+    )
 
+  def testlabels(labels):
+    skels1 = skeletionize(labels[:,:,:10], True)
+    skels1 = skels1[1]
 
+    skels2 = skeletionize(labels[:,:,9:], True)
+    skels2 = skels2[1]
+    skels2.vertices[:,2] += 9
 
-  
+    skels = skels1.merge(skels2)
+    assert len(skels.components()) == 1
+
+    skels1 = skeletionize(labels[:,:,:10], False)
+    skels1 = skels1[1]
+
+    skels2 = skeletionize(labels[:,:,9:], False)
+    skels2 = skels2[1]
+    skels2.vertices[:,2] += 9
+
+    skels = skels1.merge(skels2)
+    assert len(skels.components()) == 2
+
+  labels = np.zeros((256, 256, 20), dtype=np.uint8)
+  labels[ :, 32:160, : ] = 1
+  testlabels(labels)
+
+  labels = np.zeros((256, 256, 20), dtype=np.uint8)
+  labels[ 32:160, :, : ] = 1
+  testlabels(labels)

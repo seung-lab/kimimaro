@@ -102,18 +102,9 @@ def skeletonize(
   Returns: { $segid: cloudvolume.PrecomputedSkeleton, ... }
   """
 
-  if all_labels.ndim not in (2,3):
-    raise DimensionError("Can only skeletonize arrays of dimension 2 or 3.")
-
-  if in_place:
-    all_labels = fastremap.asfortranarray(all_labels)
-  else:
-    all_labels = np.copy(all_labels, order='F')
-
-  if all_labels.ndim == 2:
-    all_labels = all_labels[..., np.newaxis ]
-
   anisotropy = np.array(anisotropy, dtype=np.float32)
+
+  all_labels = format_labels(all_labels, in_place=in_place)
 
   all_labels = apply_object_mask(all_labels, object_ids)
   if not np.any(all_labels):
@@ -126,6 +117,7 @@ def skeletonize(
     anisotropy=anisotropy,
     black_border=False,
     order='F',
+    parallel=parallel,
   )
   # slows things down, but saves memory
   # max_all_dbf = np.max(all_dbf)
@@ -139,7 +131,7 @@ def skeletonize(
 
   border_targets = defaultdict(list)
   if fix_borders:
-    border_targets = compute_border_targets(cc_labels)
+    border_targets = compute_border_targets(cc_labels, anisotropy)
 
   print_quotes(parallel) # easter egg
 
@@ -181,6 +173,29 @@ def skeletonize(
     cc_mmap.close()
 
     return skeletons
+
+def format_labels(labels, in_place):
+  if in_place:
+    labels = fastremap.asfortranarray(labels)
+  else:
+    labels = np.copy(labels, order='F')
+
+  original_shape = labels.shape
+
+  while labels.ndim < 3:
+    labels = labels[..., np.newaxis ]
+
+  while labels.ndim > 3:
+    if labels.shape[-1] == 1:
+      labels = labels[..., 0]
+    else:
+      raise DimensionError(
+        "Input labels may be no more than three non-trivial dimensions. Got: {}".format(
+          original_shape
+        )
+      )
+
+  return labels
 
 def skeletonize_parallel(
     all_dbf_shm, dbf_shm_location, 
@@ -264,7 +279,7 @@ def skeletonize_subset(
     roi = Bbox.from_slices(slices)
 
     manual_targets = []
-    if border_targets[segid]:
+    if len(border_targets[segid]) > 0:
       manual_targets = np.array(border_targets[segid])
       manual_targets -= roi.minpt.astype(np.uint32)
       manual_targets = manual_targets.tolist()
@@ -315,27 +330,28 @@ def compute_cc_labels(all_labels, cc_safety_factor):
   remapping = kimimaro.skeletontricks.get_mapping(all_labels, cc_labels) 
   return cc_labels, remapping
 
-def compute_border_targets(cc_labels):
+def compute_border_targets(cc_labels, anisotropy):
   sx, sy, sz = cc_labels.shape
 
   planes = (
-    ( cc_labels[:,:,0], lambda x,y: (x, y, 0) ),     # top xy
-    ( cc_labels[:,:,-1], lambda x,y: (x, y, sz-1) ), # bottom xy
-    ( cc_labels[:,0,:], lambda x,z: (x, 0, z) ),     # left xz
-    ( cc_labels[:,-1,:], lambda x,z: (x, sy-1, z) ), # right xz
-    ( cc_labels[0,:,:], lambda y,z: (0, y, z) ),     # front yz
-    ( cc_labels[-1,:,:], lambda y,z: (sx-1, y, z) )  # back yz
+    ( cc_labels[:,:,0], (0, 1), lambda x,y: (x, y, 0) ),     # top xy
+    ( cc_labels[:,:,-1], (0, 1), lambda x,y: (x, y, sz-1) ), # bottom xy
+    ( cc_labels[:,0,:], (0, 2), lambda x,z: (x, 0, z) ),     # left xz
+    ( cc_labels[:,-1,:], (0, 2), lambda x,z: (x, sy-1, z) ), # right xz
+    ( cc_labels[0,:,:], (1, 2), lambda y,z: (0, y, z) ),     # front yz
+    ( cc_labels[-1,:,:], (1, 2), lambda y,z: (sx-1, y, z) )  # back yz
   )
 
-  target_list = defaultdict(list)
+  target_list = defaultdict(set)
 
-  for plane, rotatefn in planes:
+  for plane, dims, rotatefn in planes:
+    wx, wy = anisotropy[dims[0]], anisotropy[dims[1]]
     plane = np.copy(plane, order='F')
     cc_plane = cc3d.connected_components(np.ascontiguousarray(plane))
-    dt_plane = edt.edt(cc_plane, black_border=True)
+    dt_plane = edt.edt(cc_plane, black_border=True, anisotropy=(wx, wy))
 
     plane_targets = kimimaro.skeletontricks.find_border_targets(
-      dt_plane, cc_plane
+      dt_plane, cc_plane, wx, wy
     )
 
     plane = plane[..., np.newaxis]
@@ -344,9 +360,13 @@ def compute_border_targets(cc_labels):
 
     for label, pt in plane_targets.items():
       label = remapping[label]
-      target_list[label].append(
-        np.array(rotatefn(*pt), dtype=np.uint32)
+      target_list[label].add(
+        rotatefn( int(pt[0]), int(pt[1]) )
       )
+
+  target_list.default_factory = lambda: np.array([], np.uint32)
+  for label, pts in target_list.items():
+    target_list[label] = np.array(list(pts), dtype=np.uint32)
 
   return target_list
 
