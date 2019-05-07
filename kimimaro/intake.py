@@ -105,8 +105,8 @@ def skeletonize(
   anisotropy = np.array(anisotropy, dtype=np.float32)
 
   all_labels = format_labels(all_labels, in_place=in_place)
-
   all_labels = apply_object_mask(all_labels, object_ids)
+  
   if not np.any(all_labels):
     return {}
 
@@ -272,11 +272,13 @@ def skeletonize_subset(
     if slices is None:
       continue
 
+    roi = Bbox.from_slices(slices)
+    if roi.volume() <= 1:
+      continue
+
     labels = cc_labels[slices]
     labels = (labels == segid)
     dbf = (labels * all_dbf[slices]).astype(np.float32)
-
-    roi = Bbox.from_slices(slices)
 
     manual_targets = []
     if len(border_targets[segid]) > 0:
