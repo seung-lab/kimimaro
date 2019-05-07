@@ -105,8 +105,8 @@ def skeletonize(
   anisotropy = np.array(anisotropy, dtype=np.float32)
 
   all_labels = format_labels(all_labels, in_place=in_place)
-
   all_labels = apply_object_mask(all_labels, object_ids)
+  
   if not np.any(all_labels):
     return {}
 
