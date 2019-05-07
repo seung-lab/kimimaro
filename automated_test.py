@@ -192,7 +192,48 @@ def test_dimensions():
   except kimimaro.DimensionError:
     pass
 
+def test_joinability():
+  labels = np.zeros((256, 256, 20), dtype=np.uint8)
+  labels[ :, 32:160, : ] = 1
 
+  def skeletionize(labels, fix_borders):
+    return kimimaro.skeletonize(
+      labels,
+      teasar_params={
+        'const': 10,
+        'scale': 10,
+        'pdrf_exponent': 4,
+        'pdrf_scale': 100000,
+      }, 
+      anisotropy=(1,1,1),
+      object_ids=None, 
+      dust_threshold=0, 
+      cc_safety_factor=1,
+      progress=True, 
+      fix_branching=True, 
+      in_place=False, 
+      fix_borders=fix_borders,
+      parallel=1,
+    )
 
+  skels1 = skeletionize(labels[:,:,:10], True)
+  skels1 = skels1[1]
+
+  skels2 = skeletionize(labels[:,:,9:], True)
+  skels2 = skels2[1]
+  skels2.vertices[:,2] += 9
+
+  skels = skels1.merge(skels2)
+  assert len(skels.components()) == 1
+
+  skels1 = skeletionize(labels[:,:,:10], False)
+  skels1 = skels1[1]
+
+  skels2 = skeletionize(labels[:,:,9:], False)
+  skels2 = skels2[1]
+  skels2.vertices[:,2] += 9
+
+  skels = skels1.merge(skels2)
+  assert len(skels.components()) == 2
 
   
