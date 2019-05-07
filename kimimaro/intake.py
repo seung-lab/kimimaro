@@ -102,18 +102,9 @@ def skeletonize(
   Returns: { $segid: cloudvolume.PrecomputedSkeleton, ... }
   """
 
-  if all_labels.ndim not in (2,3):
-    raise DimensionError("Can only skeletonize arrays of dimension 2 or 3.")
-
-  if in_place:
-    all_labels = fastremap.asfortranarray(all_labels)
-  else:
-    all_labels = np.copy(all_labels, order='F')
-
-  if all_labels.ndim == 2:
-    all_labels = all_labels[..., np.newaxis ]
-
   anisotropy = np.array(anisotropy, dtype=np.float32)
+
+  all_labels = format_labels(all_labels, in_place=in_place)
 
   all_labels = apply_object_mask(all_labels, object_ids)
   if not np.any(all_labels):
@@ -182,6 +173,29 @@ def skeletonize(
     cc_mmap.close()
 
     return skeletons
+
+def format_labels(labels, in_place):
+  if in_place:
+    labels = fastremap.asfortranarray(labels)
+  else:
+    labels = np.copy(labels, order='F')
+
+  original_shape = labels.shape
+
+  while labels.ndim < 3:
+    labels = labels[..., np.newaxis ]
+
+  while labels.ndim > 3:
+    if labels.shape[-1] == 1:
+      labels = labels[..., 0]
+    else:
+      raise DimensionError(
+        "Input labels may be no more than three non-trivial dimensions. Got: {}".format(
+          original_shape
+        )
+      )
+
+  return labels
 
 def skeletonize_parallel(
     all_dbf_shm, dbf_shm_location, 
