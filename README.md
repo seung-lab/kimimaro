@@ -75,11 +75,11 @@ The connectomics field commonly generates very large densely labeled volumes of 
 
 There are several implementations of TEASAR used in the connectomics field [3][5], however it is commonly understood that implementations of TEASAR are slow and can use tens of gigabytes of memory. Our goal to skeletonize all labels in a petavoxel scale image quickly showed clear that existing sparse implementations are impractical. While adapting a sparse approach to a cloud pipeline, we noticed that there are inefficiencies in repeated evaluation of the Euclidean Distance Transform (EDT), the repeated evaluation of the connected components algorithm, in the construction of the graph used by Dijkstra's algorithm where the edges are implied by the spatial relationships between voxels, in the memory cost, quadratic in the number of voxels, of representing a graph that is implicit in image, in the unnecessarily large data type used to represent relatively small cutouts, and in the repeated downloading of overlapping regions. We also found that the naive implmentation of TEASAR's "rolling invalidation ball" unnecessarily reevaluated large numbers of voxels in a way that could be loosely characterized as quadratic in the skeleton path length.   
 
-We further found that commodity implementations of the EDT supported only binary images and did not support anisotropic dimensions (though many papers defining those techniques included anisotropic operation). We were unable to find any available Python or C++ libraries for performing Dijkstra's shortest path on an image. Commodity implementations of connected components algorithms for images supported only binary images. Therefore, several libraries were devised to remedy these deficits (see Related Projects). 
+We further found that commodity implementations of the EDT supported only binary images. We were unable to find any available Python or C++ libraries for performing Dijkstra's shortest path on an image. Commodity implementations of connected components algorithms for images supported only binary images. Therefore, several libraries were devised to remedy these deficits (see Related Projects). 
 
 ## Why TEASAR?
 
-TEASAR: Tree-structure Extraction Algorithm for Accurate and Robust skeletons, a 2000 paper by M. Sato and others [1], is a member of a family of algorithms that transform two and three dimensional structures into a one dimensional "skeleton" embedded in that higher dimension. One might concieve of a skeleton as extracting a stick figure drawing of a binary image. This problem is more difficult than it might seem. There are different ways one might concieve of such a drawing. For example, a stick drawing of a banana might merely be a curved centerline and a drawing of a doughnut might be a closed loop. In our case of analyzing neurons, sometimes we want the skeleton to include spines, short protrusions from dendrites that usually have synapses attached, and sometimes we want only the characterize the run length of the main trunk of a neurite.  
+TEASAR: Tree-structure Extraction Algorithm for Accurate and Robust skeletons, a 2000 paper by M. Sato and others [1], is a member of a family of algorithms that transform two and three dimensional structures into a one dimensional "skeleton" embedded in that higher dimension. One might concieve of a skeleton as extracting a stick figure drawing from a binary image. This problem is more difficult than it might seem. There are different situations one must consider when making such a drawing. For example, a stick drawing of a banana might merely be a curved centerline and a drawing of a doughnut might be a closed loop. In our case of analyzing neurons, sometimes we want the skeleton to include spines, short protrusions from dendrites that usually have synapses attached, and sometimes we want only the characterize the run length of the main trunk of a neurite.  
 
 Additionally, data quality issues can be challenging as well. If one is skeletonizing a 2D image of a doughnut, but the angle were sufficiently declinated from the ring's orthogonal axis, would it even be possible to perform this task accurately? In a 3D case, if there are breaks or mergers in the labeling of a neuron, will the algorithm function sensibly? These issues are common in both manual and automatic image sementations.
 
@@ -87,9 +87,9 @@ In our problem domain of skeletonizing neurons from anisotropic voxel labels, ou
 
 ## TEASAR Derived Algorthm
 
-We implemented TEASAR but made several important deviations from the published algorithm in order to improve path centeredness, increase performance, and handle bulging cell somas. We opted not to implement the gradient vector field step from [2] as our implementation is already quite fast. The paper claims a reduction of 70-85% in input voxels, so it might be worth investigating.  
+We implemented TEASAR but made several deviations from the published algorithm in order to improve path centeredness, increase performance, handle bulging cell somas, and enable efficient chunked evaluation of large images. We opted not to implement the gradient vector field step from [2] as our implementation is already quite fast. The paper claims a reduction of 70-85% in input voxels, so it might be worth investigating.  
 
-In order to work with images that contain many labels, our general strategy is to perform as many actions as possible in such a way that all labels are treated in a single pass. Several of the component algorithms (e.g. connected components, euclidean distance transform) in our implementation can take several seconds to run per a pass, so it is important that they not be run hundreds or thousands of times. A large part of the engineering contribution of this package lies in the efficiency of these operations which reduce the runtime from the scale of hours to minutes.  
+In order to work with images that contain many labels, our general strategy is to perform as many actions as possible in such a way that all labels are treated in a single pass. Several of the component algorithms (e.g. connected components, euclidean distance transform) in our implementation can take several seconds per a pass, so it is important that they not be run hundreds or thousands of times. A large part of the engineering contribution of this package lies in the efficiency of these operations which reduce the runtime from the scale of hours to minutes.  
 
 Given a 3D labeled voxel array, *I*, with N >= 0 labels, and ordered triple describing voxel anisotropy *A*, our algorithm can be divided into three phases, the pramble, skeletonization, and finalization in that order.
 
@@ -141,7 +141,7 @@ If soma processing is considered, we modify the root (*r*) search process as fol
 
 In the final phase, we agglomerate the disparate connected component skeletons into single skeletons and assign their labels corresponding to the input image. This step is artificially broken out compared to how intermingled its implementation is with skeletonization, but it's conceptually separate.
 
-## Discussion of Deviations from TEASAR
+## Deviations from TEASAR
 
 There were several places where we took a different approach than called for by the TEASAR authors.
 
@@ -193,9 +193,9 @@ It is important that filter #1 be based on the shape of the label so that kinks 
 
 ### Rolling Invalidation Cube
 
-The original TEASAR paper calls for a "rolling invalidation ball" that erases foreground voxels in step 6(iii). A naive implementation of this ball is very expensive as each voxel in the path requires its own ball, and many of these voxels overlap. In some cases, it is possible that the whole volume will need to be pointlessly reevaluated for every voxel along the path from root to target. While it's possible to specical case the worst case, in the more common general case, a large amount of duplicate effort is being expended.
+The original TEASAR paper calls for a "rolling invalidation ball" that erases foreground voxels in step 6(iii). A naive implementation of this ball is very expensive as each voxel in the path requires its own ball, and many of these voxels overlap. In some cases, it is possible that the whole volume will need to be pointlessly reevaluated for every voxel along the path from root to target. While it's possible to special case the worst case, in the more common general case, a large amount of duplicate effort is expended.
 
-Therefore, we applied an algorithm using topological cues to perform the invalidation operation in linear time. For simplicity of implmentation, we substituted a cube shape instead of a sphere, but it would be possible to use one. The function name `roll_invalidation_cube` is intended to evoke this awkwardness though it hasn't appeared to have been very important.  
+Therefore, we applied an algorithm using topological cues to perform the invalidation operation in linear time. For simplicity of implmentation, we substituted a cube shape instead of a sphere. The function name `roll_invalidation_cube` is intended to evoke this awkwardness, though it hasn't appeared to have been  important.  
 
 The two-pass algorithm is as follows. Given a binary image *I*, a skeleton *S*, and a set of vertices *V*:
 
