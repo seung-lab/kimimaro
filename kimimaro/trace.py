@@ -104,7 +104,7 @@ def trace(
     soma_mode = dbf_max > soma_acceptance_threshold
 
   if soma_mode:
-    root = np.unravel_index(np.argmax(DBF), DBF.shape)
+    root = find_soma_root(DBF, dbf_max)    
     soma_radius = dbf_max * soma_invalidation_scale + soma_invalidation_const
   else:
     root = find_root(labels, manual_targets, anisotropy)
@@ -213,6 +213,28 @@ def compute_paths(
     paths.append(path)
 
   return paths
+
+def find_soma_root(DBF, dbf_max):
+  """
+  This perhaps overcomplicates things, but it's possible,
+  for example in a rectangular cuboid, for there to be
+  many multiple maxima at the center of a shape. We pick
+  the one closest to the centroid of the shape to ensure
+  the choice is sensible.
+
+  Returns: (x,y,z) as integers
+  """
+  maxima = (DBF == dbf_max)
+  com = ndimage.measurements.center_of_mass(maxima)
+  com = np.array(com, dtype=np.float32)
+  
+  coords = np.where(maxima)
+  coords = np.vstack( coords ).T
+  root = np.argmin(
+    np.sum((coords - com) ** 2, axis=1)
+  )
+
+  return tuple(coords[root].astype(np.uint32))
 
 def find_root(labels, manual_targets, anisotropy):
   """
