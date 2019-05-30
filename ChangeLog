@@ -1,6 +1,15 @@
 CHANGES
 =======
 
+0.4.2
+-----
+
+* release: 0.4.2
+* chore: tell PyPI we're using markdown
+* fix: ensure we pick max dbf close to centroid of detected somata
+* chore: update ChangeLog
+* docs: various corrections to the README
+
 0.4.1
 -----
 
