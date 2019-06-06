@@ -1,6 +1,37 @@
 CHANGES
 =======
 
+0.4.2
+-----
+
+* release: 0.4.2
+* chore: tell PyPI we're using markdown
+* fix: ensure we pick max dbf close to centroid of detected somata
+* chore: update ChangeLog
+* docs: various corrections to the README
+
+0.4.1
+-----
+
+* fix: add defense against setting the dust threshold lower than 1
+* chore: formatting around all\_labels
+* test: x and y joinability
+* test: show that two 1px overlapping volumes join properly
+* Update README.md
+* feat: accept N-dimensional arrays with trivial dimensions above 3
+* docs: add Google TEASAR run to boslster case for popularity
+* fix: prevent duplicate border targets
+* feat: parallel edt implementation
+* fix: add support for anisotropy to distance calculations
+* test: add distortion to border test
+* wip: propogate anisotropy to fix\_borders calls
+* fix: cuboid soma processing
+* fix: bump edt to 1.2.4 to correct part of large anisotropy issue
+* perf: faster masking operations with newer fastremap
+* docs: encouraged the use of parallel processing in README.md
+* chore: add GPLv3 classifer to setup.cfg
+* chore: add ChangeLog
+
 0.4.0
 -----
 

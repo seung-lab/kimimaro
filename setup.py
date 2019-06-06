@@ -16,7 +16,6 @@ setuptools.setup(
   extras_require={
      ':python_version == "2.7"': ['futures'],
   },
-  pbr=True,
   ext_modules=[
     setuptools.Extension(
       'kimimaro.skeletontricks',
@@ -28,5 +27,7 @@ setuptools.setup(
       ]
     ),
   ],
+  long_description_content_type='text/markdown',
+  pbr=True,
 )
 
