@@ -736,3 +736,110 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
     )
 
   return elist
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)  # turn off negative index wrapping for entire function
+@cython.nonecheck(False)
+def binary_fill_holes(
+    cnp.ndarray[uint8_t, ndim=3, cast=True] labels
+  ):
+  """
+  The morphological approach in scipy for binary_fill_holes
+  which uses serial dilation and erosion is pretty slow.  
+
+  Here we use a seven pass algorithm, two on each axis plus
+  a render pass, to completely fill all holes in binary labels. 
+
+  We exploit the fact that numpy boolean arrays are actually 
+  uint8 in order to treat it as a bitmask that records
+  information from each pass.   
+
+  For a one dimensional single connected component, 
+  one way to fill its holes is to mark all pixels
+  to the right of its leftmost edge, mark all the pixels
+  to the left of its rightmost edge and label their 
+  intersection as the set of labeled pixels.  
+
+  In two dimensions, we must include the vertical direction
+  to deal with curved or lipped protrusions. The same goes
+  for the depth dimension in 3D.
+
+  Returns: 3D boolean array with holes filled
+  """
+  cdef size_t x, y, z 
+  cdef size_t sx, sy, sz 
+  sx, sy, sz = labels.shape[:3]
+
+  cdef bool found_edge = False
+  for z in range(sz):
+    for y in range(sy):
+      found_edge = False
+      for x in range(sx):
+        if (labels[x,y,z] & 0x1):
+          found_edge = True
+        if found_edge:
+          labels[x,y,z] |= 2
+
+  for z in range(sz):
+    for y in range(sy):
+      found_edge = False
+      for x in range(sx - 1, -1, -1):
+        if (labels[x,y,z] & 0x1):
+          found_edge = True
+        if found_edge:
+          labels[x,y,z] |= 4
+
+  for z in range(sz):
+    for x in range(sx):
+      found_edge = False
+      for y in range(sy):
+        if (labels[x,y,z] & 0x1):
+          found_edge = True
+        if found_edge:
+          labels[x,y,z] |= 8
+
+  for z in range(sz):
+    for x in range(sx):
+      found_edge = False
+      for y in range(sy - 1, -1, -1):
+        if (labels[x,y,z] & 0x1):
+          found_edge = True
+        if found_edge:
+          labels[x,y,z] |= 16
+
+  for x in range(sx):
+    for y in range(sy):
+      found_edge = False
+      for z in range(sz):
+        if (labels[x,y,z] & 0x1):
+          found_edge = True
+        if found_edge:
+          labels[x,y,z] |= 32
+
+  for x in range(sx):
+    for y in range(sy):
+      found_edge = False
+      for z in range(sz - 1, -1, -1):
+        if (labels[x,y,z] & 0x1):
+          found_edge = True
+
+        # check if bits 2,3,4,5,6 are set.
+        # if we are about to set the seventh, set
+        # to true, else false.
+
+        # We are condensing the render pass into
+        # the final z pass.
+        if found_edge:
+          labels[x,y,z] = <uint8_t>(labels[x,y,z] >= 62)
+        else:
+          labels[x,y,z] = 0
+
+  return labels 
+
+
+
+
+
+
+
