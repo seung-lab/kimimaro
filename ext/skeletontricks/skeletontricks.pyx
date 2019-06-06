@@ -743,15 +743,16 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
-def binary_fill_holes(
+def convex_binary_fill_holes(
     cnp.ndarray[uint8_t, ndim=3, cast=True] labels
   ):
   """
+  Only works completely correctly for convex shapes. E.g.
+  an internal spiral that connects to outside will get 
+  filled in.
+
   The morphological approach in scipy for binary_fill_holes
   which uses serial dilation and erosion is pretty slow.  
-
-  Here we use a seven pass algorithm, two on each axis plus
-  a render pass, to completely fill all holes in binary labels. 
 
   We exploit the fact that numpy boolean arrays are actually 
   uint8 in order to treat it as a bitmask that records
@@ -764,8 +765,10 @@ def binary_fill_holes(
   intersection as the set of labeled pixels.  
 
   In two dimensions, we must include the vertical direction
-  to deal with curved or lipped protrusions. The same goes
-  for the depth dimension in 3D.
+  to deal with curved or lipped protrusions. To prevent 
+  the shadow of one shape in 2D from affecting another,
+  we run connected components and work on each component
+  seperately.
 
   Returns: 3D boolean array with holes filled
   """

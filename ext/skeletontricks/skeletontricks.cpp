@@ -2819,7 +2819,6 @@ static const char __pyx_k_reduce[] = "__reduce__";
 static const char __pyx_k_result[] = "result";
 static const char __pyx_k_struct[] = "struct";
 static const char __pyx_k_uint32[] = "uint32";
-static const char __pyx_k_unique[] = "unique";
 static const char __pyx_k_unpack[] = "unpack";
 static const char __pyx_k_update[] = "update";
 static const char __pyx_k_cclabel[] = "cclabel";
@@ -3145,7 +3144,6 @@ static PyObject *__pyx_n_s_uint8_t;
 static PyObject *__pyx_kp_s_unable_to_allocate_array_data;
 static PyObject *__pyx_kp_s_unable_to_allocate_shape_and_str;
 static PyObject *__pyx_n_s_uniq;
-static PyObject *__pyx_n_s_unique;
 static PyObject *__pyx_kp_u_unknown_dtype_code_in_numpy_pxd;
 static PyObject *__pyx_n_s_unpack;
 static PyObject *__pyx_kp_s_unsigned_char;
@@ -15916,10 +15914,10 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
   PyObject *__pyx_t_15 = NULL;
   PyObject *__pyx_t_16 = NULL;
   Py_ssize_t __pyx_t_17;
-  PyObject *(*__pyx_t_18)(PyObject *);
-  size_t __pyx_t_19;
-  int __pyx_t_20;
-  PyArrayObject *__pyx_t_21 = NULL;
+  size_t __pyx_t_18;
+  int __pyx_t_19;
+  PyArrayObject *__pyx_t_20 = NULL;
+  size_t __pyx_t_21;
   size_t __pyx_t_22;
   size_t __pyx_t_23;
   size_t __pyx_t_24;
@@ -15941,7 +15939,6 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
   size_t __pyx_t_40;
   size_t __pyx_t_41;
   size_t __pyx_t_42;
-  size_t __pyx_t_43;
   __Pyx_RefNannySetupContext("binary_fill_holes", 0);
   __pyx_pybuffer_cclabel.pybuffer.buf = NULL;
   __pyx_pybuffer_cclabel.refcount = 0;
@@ -16001,7 +15998,7 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *   for z in range(sz):
  * 
  *     cc_all = cc3d.connected_components(labels[:,:,z])             # <<<<<<<<<<<<<<
- *     uniq = np.unique(cc_all)
+ *     uniq = [1,2]#np.unique(cc_all)
  * 
  */
     __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_cc3d); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 782, __pyx_L1_error)
@@ -16067,82 +16064,40 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
     /* "skeletontricks.pyx":783
  * 
  *     cc_all = cc3d.connected_components(labels[:,:,z])
- *     uniq = np.unique(cc_all)             # <<<<<<<<<<<<<<
+ *     uniq = [1,2]#np.unique(cc_all)             # <<<<<<<<<<<<<<
  * 
  *     for i in uniq:
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_n_s_np); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 783, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_unique); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 783, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_10 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_9))) {
-      __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_9);
-      if (likely(__pyx_t_10)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
-        __Pyx_INCREF(__pyx_t_10);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_9, function);
-      }
-    }
-    __pyx_t_8 = (__pyx_t_10) ? __Pyx_PyObject_Call2Args(__pyx_t_9, __pyx_t_10, ((PyObject *)__pyx_v_cc_all)) : __Pyx_PyObject_CallOneArg(__pyx_t_9, ((PyObject *)__pyx_v_cc_all));
-    __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 783, __pyx_L1_error)
+    __pyx_t_8 = PyList_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 783, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_uniq, __pyx_t_8);
+    __Pyx_INCREF(__pyx_int_1);
+    __Pyx_GIVEREF(__pyx_int_1);
+    PyList_SET_ITEM(__pyx_t_8, 0, __pyx_int_1);
+    __Pyx_INCREF(__pyx_int_2);
+    __Pyx_GIVEREF(__pyx_int_2);
+    PyList_SET_ITEM(__pyx_t_8, 1, __pyx_int_2);
+    __Pyx_XDECREF_SET(__pyx_v_uniq, ((PyObject*)__pyx_t_8));
     __pyx_t_8 = 0;
 
     /* "skeletontricks.pyx":785
- *     uniq = np.unique(cc_all)
+ *     uniq = [1,2]#np.unique(cc_all)
  * 
  *     for i in uniq:             # <<<<<<<<<<<<<<
  *       if i == 0:
  *         continue
  */
-    if (likely(PyList_CheckExact(__pyx_v_uniq)) || PyTuple_CheckExact(__pyx_v_uniq)) {
-      __pyx_t_8 = __pyx_v_uniq; __Pyx_INCREF(__pyx_t_8); __pyx_t_17 = 0;
-      __pyx_t_18 = NULL;
-    } else {
-      __pyx_t_17 = -1; __pyx_t_8 = PyObject_GetIter(__pyx_v_uniq); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 785, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_18 = Py_TYPE(__pyx_t_8)->tp_iternext; if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 785, __pyx_L1_error)
-    }
+    __pyx_t_8 = __pyx_v_uniq; __Pyx_INCREF(__pyx_t_8); __pyx_t_17 = 0;
     for (;;) {
-      if (likely(!__pyx_t_18)) {
-        if (likely(PyList_CheckExact(__pyx_t_8))) {
-          if (__pyx_t_17 >= PyList_GET_SIZE(__pyx_t_8)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_9 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_17); __Pyx_INCREF(__pyx_t_9); __pyx_t_17++; if (unlikely(0 < 0)) __PYX_ERR(0, 785, __pyx_L1_error)
-          #else
-          __pyx_t_9 = PySequence_ITEM(__pyx_t_8, __pyx_t_17); __pyx_t_17++; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 785, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_9);
-          #endif
-        } else {
-          if (__pyx_t_17 >= PyTuple_GET_SIZE(__pyx_t_8)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_9 = PyTuple_GET_ITEM(__pyx_t_8, __pyx_t_17); __Pyx_INCREF(__pyx_t_9); __pyx_t_17++; if (unlikely(0 < 0)) __PYX_ERR(0, 785, __pyx_L1_error)
-          #else
-          __pyx_t_9 = PySequence_ITEM(__pyx_t_8, __pyx_t_17); __pyx_t_17++; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 785, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_9);
-          #endif
-        }
-      } else {
-        __pyx_t_9 = __pyx_t_18(__pyx_t_8);
-        if (unlikely(!__pyx_t_9)) {
-          PyObject* exc_type = PyErr_Occurred();
-          if (exc_type) {
-            if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 785, __pyx_L1_error)
-          }
-          break;
-        }
-        __Pyx_GOTREF(__pyx_t_9);
-      }
-      __pyx_t_19 = __Pyx_PyInt_As_size_t(__pyx_t_9); if (unlikely((__pyx_t_19 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 785, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __pyx_v_i = __pyx_t_19;
+      if (__pyx_t_17 >= PyList_GET_SIZE(__pyx_t_8)) break;
+      #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+      __pyx_t_10 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_17); __Pyx_INCREF(__pyx_t_10); __pyx_t_17++; if (unlikely(0 < 0)) __PYX_ERR(0, 785, __pyx_L1_error)
+      #else
+      __pyx_t_10 = PySequence_ITEM(__pyx_t_8, __pyx_t_17); __pyx_t_17++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 785, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      #endif
+      __pyx_t_18 = __Pyx_PyInt_As_size_t(__pyx_t_10); if (unlikely((__pyx_t_18 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 785, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __pyx_v_i = __pyx_t_18;
 
       /* "skeletontricks.pyx":786
  * 
@@ -16151,8 +16106,8 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *         continue
  * 
  */
-      __pyx_t_20 = ((__pyx_v_i == 0) != 0);
-      if (__pyx_t_20) {
+      __pyx_t_19 = ((__pyx_v_i == 0) != 0);
+      if (__pyx_t_19) {
 
         /* "skeletontricks.pyx":787
  *     for i in uniq:
@@ -16179,16 +16134,16 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  * 
  *       for y in range(sy):
  */
-      __pyx_t_9 = __Pyx_PyInt_FromSize_t(__pyx_v_i); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 789, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = PyObject_RichCompare(((PyObject *)__pyx_v_cc_all), __pyx_t_9, Py_EQ); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 789, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      if (!(likely(((__pyx_t_10) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_10, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 789, __pyx_L1_error)
-      __pyx_t_21 = ((PyArrayObject *)__pyx_t_10);
+      __pyx_t_10 = __Pyx_PyInt_FromSize_t(__pyx_v_i); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 789, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      __pyx_t_9 = PyObject_RichCompare(((PyObject *)__pyx_v_cc_all), __pyx_t_10, Py_EQ); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 789, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      if (!(likely(((__pyx_t_9) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_9, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 789, __pyx_L1_error)
+      __pyx_t_20 = ((PyArrayObject *)__pyx_t_9);
       {
         __Pyx_BufFmt_StackElem __pyx_stack[1];
         __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_cclabel.rcbuffer->pybuffer);
-        __pyx_t_13 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cclabel.rcbuffer->pybuffer, (PyObject*)__pyx_t_21, &__Pyx_TypeInfo_nn_uint8_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 1, __pyx_stack);
+        __pyx_t_13 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cclabel.rcbuffer->pybuffer, (PyObject*)__pyx_t_20, &__Pyx_TypeInfo_nn_uint8_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 1, __pyx_stack);
         if (unlikely(__pyx_t_13 < 0)) {
           PyErr_Fetch(&__pyx_t_16, &__pyx_t_15, &__pyx_t_14);
           if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_cclabel.rcbuffer->pybuffer, (PyObject*)__pyx_v_cclabel, &__Pyx_TypeInfo_nn_uint8_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 1, __pyx_stack) == -1)) {
@@ -16202,9 +16157,9 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
         __pyx_pybuffernd_cclabel.diminfo[0].strides = __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_cclabel.diminfo[0].shape = __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_cclabel.diminfo[1].strides = __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_cclabel.diminfo[1].shape = __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.shape[1];
         if (unlikely(__pyx_t_13 < 0)) __PYX_ERR(0, 789, __pyx_L1_error)
       }
-      __pyx_t_21 = 0;
-      __Pyx_XDECREF_SET(__pyx_v_cclabel, ((PyArrayObject *)__pyx_t_10));
-      __pyx_t_10 = 0;
+      __pyx_t_20 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_cclabel, ((PyArrayObject *)__pyx_t_9));
+      __pyx_t_9 = 0;
 
       /* "skeletontricks.pyx":791
  *       cclabel = (cc_all == i)
@@ -16213,10 +16168,10 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *         found_edge = False
  *         for x in range(sx):
  */
-      __pyx_t_19 = __pyx_v_sy;
-      __pyx_t_22 = __pyx_t_19;
-      for (__pyx_t_23 = 0; __pyx_t_23 < __pyx_t_22; __pyx_t_23+=1) {
-        __pyx_v_y = __pyx_t_23;
+      __pyx_t_18 = __pyx_v_sy;
+      __pyx_t_21 = __pyx_t_18;
+      for (__pyx_t_22 = 0; __pyx_t_22 < __pyx_t_21; __pyx_t_22+=1) {
+        __pyx_v_y = __pyx_t_22;
 
         /* "skeletontricks.pyx":792
  * 
@@ -16234,10 +16189,10 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *           if (cclabel[x,y] & 0x1):
  *             found_edge = True
  */
-        __pyx_t_24 = __pyx_v_sx;
-        __pyx_t_25 = __pyx_t_24;
-        for (__pyx_t_26 = 0; __pyx_t_26 < __pyx_t_25; __pyx_t_26+=1) {
-          __pyx_v_x = __pyx_t_26;
+        __pyx_t_23 = __pyx_v_sx;
+        __pyx_t_24 = __pyx_t_23;
+        for (__pyx_t_25 = 0; __pyx_t_25 < __pyx_t_24; __pyx_t_25+=1) {
+          __pyx_v_x = __pyx_t_25;
 
           /* "skeletontricks.pyx":794
  *         found_edge = False
@@ -16246,10 +16201,10 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *             found_edge = True
  *           if found_edge:
  */
-          __pyx_t_27 = __pyx_v_x;
-          __pyx_t_28 = __pyx_v_y;
-          __pyx_t_20 = (((*__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_27, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_28, __pyx_pybuffernd_cclabel.diminfo[1].strides)) & 0x1) != 0);
-          if (__pyx_t_20) {
+          __pyx_t_26 = __pyx_v_x;
+          __pyx_t_27 = __pyx_v_y;
+          __pyx_t_19 = (((*__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_26, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_27, __pyx_pybuffernd_cclabel.diminfo[1].strides)) & 0x1) != 0);
+          if (__pyx_t_19) {
 
             /* "skeletontricks.pyx":795
  *         for x in range(sx):
@@ -16276,8 +16231,8 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *             cclabel[x,y] |= 2
  * 
  */
-          __pyx_t_20 = (__pyx_v_found_edge != 0);
-          if (__pyx_t_20) {
+          __pyx_t_19 = (__pyx_v_found_edge != 0);
+          if (__pyx_t_19) {
 
             /* "skeletontricks.pyx":797
  *             found_edge = True
@@ -16286,9 +16241,9 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  * 
  *       for y in range(sy):
  */
-            __pyx_t_29 = __pyx_v_x;
-            __pyx_t_30 = __pyx_v_y;
-            *__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_30, __pyx_pybuffernd_cclabel.diminfo[1].strides) |= 2;
+            __pyx_t_28 = __pyx_v_x;
+            __pyx_t_29 = __pyx_v_y;
+            *__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_28, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_29, __pyx_pybuffernd_cclabel.diminfo[1].strides) |= 2;
 
             /* "skeletontricks.pyx":796
  *           if (cclabel[x,y] & 0x1):
@@ -16308,10 +16263,10 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *         found_edge = False
  *         for x in range(sx - 1, -1, -1):
  */
-      __pyx_t_19 = __pyx_v_sy;
-      __pyx_t_22 = __pyx_t_19;
-      for (__pyx_t_23 = 0; __pyx_t_23 < __pyx_t_22; __pyx_t_23+=1) {
-        __pyx_v_y = __pyx_t_23;
+      __pyx_t_18 = __pyx_v_sy;
+      __pyx_t_21 = __pyx_t_18;
+      for (__pyx_t_22 = 0; __pyx_t_22 < __pyx_t_21; __pyx_t_22+=1) {
+        __pyx_v_y = __pyx_t_22;
 
         /* "skeletontricks.pyx":800
  * 
@@ -16329,8 +16284,8 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *           if (cclabel[x,y] & 0x1):
  *             found_edge = True
  */
-        for (__pyx_t_24 = (__pyx_v_sx - 1) + 1; __pyx_t_24 > -1L + 1; ) { __pyx_t_24-=1;
-          __pyx_v_x = __pyx_t_24;
+        for (__pyx_t_23 = (__pyx_v_sx - 1) + 1; __pyx_t_23 > -1L + 1; ) { __pyx_t_23-=1;
+          __pyx_v_x = __pyx_t_23;
 
           /* "skeletontricks.pyx":802
  *         found_edge = False
@@ -16339,10 +16294,10 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *             found_edge = True
  *           if found_edge:
  */
-          __pyx_t_25 = __pyx_v_x;
-          __pyx_t_26 = __pyx_v_y;
-          __pyx_t_20 = (((*__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_26, __pyx_pybuffernd_cclabel.diminfo[1].strides)) & 0x1) != 0);
-          if (__pyx_t_20) {
+          __pyx_t_24 = __pyx_v_x;
+          __pyx_t_25 = __pyx_v_y;
+          __pyx_t_19 = (((*__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_24, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_25, __pyx_pybuffernd_cclabel.diminfo[1].strides)) & 0x1) != 0);
+          if (__pyx_t_19) {
 
             /* "skeletontricks.pyx":803
  *         for x in range(sx - 1, -1, -1):
@@ -16369,8 +16324,8 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *             cclabel[x,y] |= 4
  * 
  */
-          __pyx_t_20 = (__pyx_v_found_edge != 0);
-          if (__pyx_t_20) {
+          __pyx_t_19 = (__pyx_v_found_edge != 0);
+          if (__pyx_t_19) {
 
             /* "skeletontricks.pyx":805
  *             found_edge = True
@@ -16379,9 +16334,9 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  * 
  *       for x in range(sx):
  */
-            __pyx_t_31 = __pyx_v_x;
-            __pyx_t_32 = __pyx_v_y;
-            *__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_31, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_32, __pyx_pybuffernd_cclabel.diminfo[1].strides) |= 4;
+            __pyx_t_30 = __pyx_v_x;
+            __pyx_t_31 = __pyx_v_y;
+            *__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_cclabel.diminfo[1].strides) |= 4;
 
             /* "skeletontricks.pyx":804
  *           if (cclabel[x,y] & 0x1):
@@ -16401,10 +16356,10 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *         found_edge = False
  *         for y in range(sy):
  */
-      __pyx_t_19 = __pyx_v_sx;
-      __pyx_t_22 = __pyx_t_19;
-      for (__pyx_t_23 = 0; __pyx_t_23 < __pyx_t_22; __pyx_t_23+=1) {
-        __pyx_v_x = __pyx_t_23;
+      __pyx_t_18 = __pyx_v_sx;
+      __pyx_t_21 = __pyx_t_18;
+      for (__pyx_t_22 = 0; __pyx_t_22 < __pyx_t_21; __pyx_t_22+=1) {
+        __pyx_v_x = __pyx_t_22;
 
         /* "skeletontricks.pyx":808
  * 
@@ -16422,10 +16377,10 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *           if (cclabel[x,y] & 0x1):
  *             found_edge = True
  */
-        __pyx_t_24 = __pyx_v_sy;
-        __pyx_t_33 = __pyx_t_24;
-        for (__pyx_t_34 = 0; __pyx_t_34 < __pyx_t_33; __pyx_t_34+=1) {
-          __pyx_v_y = __pyx_t_34;
+        __pyx_t_23 = __pyx_v_sy;
+        __pyx_t_32 = __pyx_t_23;
+        for (__pyx_t_33 = 0; __pyx_t_33 < __pyx_t_32; __pyx_t_33+=1) {
+          __pyx_v_y = __pyx_t_33;
 
           /* "skeletontricks.pyx":810
  *         found_edge = False
@@ -16434,10 +16389,10 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *             found_edge = True
  *           if found_edge:
  */
-          __pyx_t_35 = __pyx_v_x;
-          __pyx_t_36 = __pyx_v_y;
-          __pyx_t_20 = (((*__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_35, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_36, __pyx_pybuffernd_cclabel.diminfo[1].strides)) & 0x1) != 0);
-          if (__pyx_t_20) {
+          __pyx_t_34 = __pyx_v_x;
+          __pyx_t_35 = __pyx_v_y;
+          __pyx_t_19 = (((*__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_35, __pyx_pybuffernd_cclabel.diminfo[1].strides)) & 0x1) != 0);
+          if (__pyx_t_19) {
 
             /* "skeletontricks.pyx":811
  *         for y in range(sy):
@@ -16464,8 +16419,8 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *             cclabel[x,y] |= 8
  * 
  */
-          __pyx_t_20 = (__pyx_v_found_edge != 0);
-          if (__pyx_t_20) {
+          __pyx_t_19 = (__pyx_v_found_edge != 0);
+          if (__pyx_t_19) {
 
             /* "skeletontricks.pyx":813
  *             found_edge = True
@@ -16474,9 +16429,9 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  * 
  *       for x in range(sx):
  */
-            __pyx_t_37 = __pyx_v_x;
-            __pyx_t_38 = __pyx_v_y;
-            *__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_cclabel.diminfo[1].strides) |= 8;
+            __pyx_t_36 = __pyx_v_x;
+            __pyx_t_37 = __pyx_v_y;
+            *__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_36, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_37, __pyx_pybuffernd_cclabel.diminfo[1].strides) |= 8;
 
             /* "skeletontricks.pyx":812
  *           if (cclabel[x,y] & 0x1):
@@ -16496,10 +16451,10 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *         found_edge = False
  *         for y in range(sy - 1, -1, -1):
  */
-      __pyx_t_19 = __pyx_v_sx;
-      __pyx_t_22 = __pyx_t_19;
-      for (__pyx_t_23 = 0; __pyx_t_23 < __pyx_t_22; __pyx_t_23+=1) {
-        __pyx_v_x = __pyx_t_23;
+      __pyx_t_18 = __pyx_v_sx;
+      __pyx_t_21 = __pyx_t_18;
+      for (__pyx_t_22 = 0; __pyx_t_22 < __pyx_t_21; __pyx_t_22+=1) {
+        __pyx_v_x = __pyx_t_22;
 
         /* "skeletontricks.pyx":816
  * 
@@ -16517,8 +16472,8 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *           if (cclabel[x,y] & 0x1):
  *             found_edge = True
  */
-        for (__pyx_t_24 = (__pyx_v_sy - 1) + 1; __pyx_t_24 > -1L + 1; ) { __pyx_t_24-=1;
-          __pyx_v_y = __pyx_t_24;
+        for (__pyx_t_23 = (__pyx_v_sy - 1) + 1; __pyx_t_23 > -1L + 1; ) { __pyx_t_23-=1;
+          __pyx_v_y = __pyx_t_23;
 
           /* "skeletontricks.pyx":818
  *         found_edge = False
@@ -16527,10 +16482,10 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *             found_edge = True
  * 
  */
-          __pyx_t_33 = __pyx_v_x;
-          __pyx_t_34 = __pyx_v_y;
-          __pyx_t_20 = (((*__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_33, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_34, __pyx_pybuffernd_cclabel.diminfo[1].strides)) & 0x1) != 0);
-          if (__pyx_t_20) {
+          __pyx_t_32 = __pyx_v_x;
+          __pyx_t_33 = __pyx_v_y;
+          __pyx_t_19 = (((*__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_32, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_33, __pyx_pybuffernd_cclabel.diminfo[1].strides)) & 0x1) != 0);
+          if (__pyx_t_19) {
 
             /* "skeletontricks.pyx":819
  *         for y in range(sy - 1, -1, -1):
@@ -16557,8 +16512,8 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  *             labels[x,y,z] |= <uint8_t>(cclabel[x,y] >= 14)
  * 
  */
-          __pyx_t_20 = (__pyx_v_found_edge != 0);
-          if (__pyx_t_20) {
+          __pyx_t_19 = (__pyx_v_found_edge != 0);
+          if (__pyx_t_19) {
 
             /* "skeletontricks.pyx":822
  * 
@@ -16567,12 +16522,12 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
  * 
  *   return labels
  */
-            __pyx_t_39 = __pyx_v_x;
-            __pyx_t_40 = __pyx_v_y;
-            __pyx_t_41 = __pyx_v_x;
-            __pyx_t_42 = __pyx_v_y;
-            __pyx_t_43 = __pyx_v_z;
-            *__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_41, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_42, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_43, __pyx_pybuffernd_labels.diminfo[2].strides) |= ((uint8_t)((*__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_39, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_40, __pyx_pybuffernd_cclabel.diminfo[1].strides)) >= 14));
+            __pyx_t_38 = __pyx_v_x;
+            __pyx_t_39 = __pyx_v_y;
+            __pyx_t_40 = __pyx_v_x;
+            __pyx_t_41 = __pyx_v_y;
+            __pyx_t_42 = __pyx_v_z;
+            *__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_41, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_42, __pyx_pybuffernd_labels.diminfo[2].strides) |= ((uint8_t)((*__Pyx_BufPtrStrided2d(uint8_t *, __pyx_pybuffernd_cclabel.rcbuffer->pybuffer.buf, __pyx_t_38, __pyx_pybuffernd_cclabel.diminfo[0].strides, __pyx_t_39, __pyx_pybuffernd_cclabel.diminfo[1].strides)) >= 14));
 
             /* "skeletontricks.pyx":821
  *             found_edge = True
@@ -16586,7 +16541,7 @@ static PyObject *__pyx_pf_14skeletontricks_28binary_fill_holes(CYTHON_UNUSED PyO
       }
 
       /* "skeletontricks.pyx":785
- *     uniq = np.unique(cc_all)
+ *     uniq = [1,2]#np.unique(cc_all)
  * 
  *     for i in uniq:             # <<<<<<<<<<<<<<
  *       if i == 0:
@@ -33402,7 +33357,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_unable_to_allocate_array_data, __pyx_k_unable_to_allocate_array_data, sizeof(__pyx_k_unable_to_allocate_array_data), 0, 0, 1, 0},
   {&__pyx_kp_s_unable_to_allocate_shape_and_str, __pyx_k_unable_to_allocate_shape_and_str, sizeof(__pyx_k_unable_to_allocate_shape_and_str), 0, 0, 1, 0},
   {&__pyx_n_s_uniq, __pyx_k_uniq, sizeof(__pyx_k_uniq), 0, 0, 1, 1},
-  {&__pyx_n_s_unique, __pyx_k_unique, sizeof(__pyx_k_unique), 0, 0, 1, 1},
   {&__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_k_unknown_dtype_code_in_numpy_pxd, sizeof(__pyx_k_unknown_dtype_code_in_numpy_pxd), 0, 1, 0, 0},
   {&__pyx_n_s_unpack, __pyx_k_unpack, sizeof(__pyx_k_unpack), 0, 0, 1, 1},
   {&__pyx_kp_s_unsigned_char, __pyx_k_unsigned_char, sizeof(__pyx_k_unsigned_char), 0, 0, 1, 0},
@@ -33473,7 +33427,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *   for z in range(sz):
  * 
  *     cc_all = cc3d.connected_components(labels[:,:,z])             # <<<<<<<<<<<<<<
- *     uniq = np.unique(cc_all)
+ *     uniq = [1,2]#np.unique(cc_all)
  * 
  */
   __pyx_slice__8 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__8)) __PYX_ERR(0, 782, __pyx_L1_error)
