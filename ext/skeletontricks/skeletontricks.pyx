@@ -39,6 +39,8 @@ from libcpp.vector cimport vector
 cimport numpy as cnp
 import numpy as np
 
+import cc3d
+
 from collections import defaultdict
 
 cdef extern from "math.h":
@@ -767,73 +769,57 @@ def binary_fill_holes(
 
   Returns: 3D boolean array with holes filled
   """
-  cdef size_t x, y, z 
+  cdef size_t x, y, z, i
   cdef size_t sx, sy, sz 
   sx, sy, sz = labels.shape[:3]
 
+  cdef cnp.ndarray[uint8_t, ndim=2, cast=True] cclabel
+  cdef cnp.ndarray[uint32_t, ndim=2, cast=True] cc_all
+
   cdef bool found_edge = False
   for z in range(sz):
-    for y in range(sy):
-      found_edge = False
-      for x in range(sx):
-        if (labels[x,y,z] & 0x1):
-          found_edge = True
-        if found_edge:
-          labels[x,y,z] |= 2
 
-  for z in range(sz):
-    for y in range(sy):
-      found_edge = False
-      for x in range(sx - 1, -1, -1):
-        if (labels[x,y,z] & 0x1):
-          found_edge = True
-        if found_edge:
-          labels[x,y,z] |= 4
+    cc_all = cc3d.connected_components(labels[:,:,z])
+    uniq = np.unique(cc_all)
+    
+    for i in uniq:
+      if i == 0:
+        continue 
 
-  for z in range(sz):
-    for x in range(sx):
-      found_edge = False
+      cclabel = (cc_all == i)
+
       for y in range(sy):
-        if (labels[x,y,z] & 0x1):
-          found_edge = True
-        if found_edge:
-          labels[x,y,z] |= 8
+        found_edge = False
+        for x in range(sx):
+          if (cclabel[x,y] & 0x1):
+            found_edge = True
+          if found_edge:
+            cclabel[x,y] |= 2
 
-  for z in range(sz):
-    for x in range(sx):
-      found_edge = False
-      for y in range(sy - 1, -1, -1):
-        if (labels[x,y,z] & 0x1):
-          found_edge = True
-        if found_edge:
-          labels[x,y,z] |= 16
+      for y in range(sy):
+        found_edge = False
+        for x in range(sx - 1, -1, -1):
+          if (cclabel[x,y] & 0x1):
+            found_edge = True
+          if found_edge:
+            cclabel[x,y] |= 4
 
-  for x in range(sx):
-    for y in range(sy):
-      found_edge = False
-      for z in range(sz):
-        if (labels[x,y,z] & 0x1):
-          found_edge = True
-        if found_edge:
-          labels[x,y,z] |= 32
+      for x in range(sx):
+        found_edge = False
+        for y in range(sy):
+          if (cclabel[x,y] & 0x1):
+            found_edge = True
+          if found_edge:
+            cclabel[x,y] |= 8
 
-  for x in range(sx):
-    for y in range(sy):
-      found_edge = False
-      for z in range(sz - 1, -1, -1):
-        if (labels[x,y,z] & 0x1):
-          found_edge = True
+      for x in range(sx):
+        found_edge = False
+        for y in range(sy - 1, -1, -1):
+          if (cclabel[x,y] & 0x1):
+            found_edge = True
 
-        # check if bits 2,3,4,5,6 are set.
-        # if we are about to set the seventh, set
-        # to true, else false.
-
-        # We are condensing the render pass into
-        # the final z pass.
-        if found_edge:
-          labels[x,y,z] = <uint8_t>(labels[x,y,z] >= 62)
-        else:
-          labels[x,y,z] = 0
+          if found_edge:
+            labels[x,y,z] |= <uint8_t>(cclabel[x,y] >= 14)
 
   return labels 
 
