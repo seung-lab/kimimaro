@@ -6,6 +6,17 @@ from cloudvolume import *
 
 import kimimaro
 
+
+def test_binary_image():
+  labels = np.ones( (256, 256, 3), dtype=np.bool)
+  labels[-1,0] = 0
+  labels[0,-1] = 0
+  
+  skels = kimimaro.skeletonize(labels, fix_borders=False)
+
+  assert len(skels) == 1
+
+
 def test_square():
   labels = np.ones( (1000, 1000), dtype=np.uint8)
   labels[-1,0] = 0
