@@ -1,6 +1,19 @@
 CHANGES
 =======
 
+0.5.0
+-----
+
+* docs: example of how to use postprocess
+* feat: import out-of-core postprocessing logic from Igneous
+* docs: add object\_ids to example
+* perf: improve speed of skeletontricks.get\_mapping
+* fix: accept binary images of type bool
+* perf: take advantage of faster segid finding if dust\_threshold == 0
+* fix: compilation warning for \_roll\_invalidation\_cube
+* test: add some manual visualization tests
+* chore: update ChangeLog
+
 0.4.2
 -----
 
