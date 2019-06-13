@@ -35,6 +35,8 @@ Figure 2 shows the memory usage and processessing time (a little over 15 minutes
 ```python
 import kimimaro
 
+# LISTING 1: Producing Skeletons from a labeled image.
+
 labels = np.load(...)
 
 skels = kimimaro.skeletonize(
@@ -57,6 +59,20 @@ skels = kimimaro.skeletonize(
   fix_borders=True, # default True
   progress=True, # default False
   parallel=1, # <= 0 all cpu, 1 single process, 2+ multiprocess
+)
+
+# LISTING 2: Combining skeletons produced from 
+#            adjacent or overlapping images.
+
+import kimimaro
+from cloudvolume import PrecomputedSkeleton
+
+skels = ... # a set of skeletons produced from the same label id
+skel = PrecomputedSkeleton.simple_merge(skels).consolidate()
+skel = kimimaro.postprocess(
+  skel, 
+  dust_threshold=1000, # physical units
+  tick_threshold=3500 # physical units
 )
 ```
 
