@@ -50,6 +50,7 @@ skels = kimimaro.skeletonize(
     'soma_invalidation_const': 300, # physical units
     'max_paths': 15, # default None
   },
+  # object_ids=[ ... ], # process only the specified labels
   dust_threshold=1000,
   anisotropy=(16,16,40), # default True
   fix_branching=True, # default True
