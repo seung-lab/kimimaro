@@ -672,6 +672,52 @@ def roll_invalidation_cube(
 
   return invalidated, labels
 
+@cython.boundscheck(False)
+@cython.wraparound(False)  # turn off negative index wrapping for entire function
+@cython.nonecheck(False)
+def unique(cnp.ndarray[INTEGER, ndim=3] labels, return_counts=False):
+  """
+  unique(cnp.ndarray[INTEGER, ndim=3] labels, return_counts=False)
+
+  Faster implementation of np.unique that depends
+  on the maximum label in the array being less than
+  the size of the array.
+  """
+  cdef size_t max_label = np.max(labels)
+
+  cdef cnp.ndarray[uint32_t, ndim=1] counts = np.zeros( 
+    (max_label+1,), dtype=np.uint32
+  )
+
+  cdef size_t x, y, z
+  cdef size_t sx = labels.shape[0]
+  cdef size_t sy = labels.shape[1]
+  cdef size_t sz = labels.shape[2]
+
+  if labels.flags['C_CONTIGUOUS']:
+    for x in range(sx):
+      for y in range(sy):
+        for z in range(sz):
+          counts[labels[x,y,z]] += 1
+  else:
+    for z in range(sz):
+      for y in range(sy):
+        for x in range(sx):
+          counts[labels[x,y,z]] += 1
+
+  cdef list segids = []
+  cdef list cts = []
+
+  cdef size_t i = 0
+  for i in range(max_label + 1):
+    if counts[i] > 0:
+      segids.append(i)
+      cts.append(counts[i])
+
+  if return_counts:
+    return segids, cts
+  else:
+    return segids
 
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
