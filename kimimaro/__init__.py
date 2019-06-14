@@ -16,3 +16,4 @@ along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 from .intake import skeletonize, DimensionError
+from .postprocess import postprocess

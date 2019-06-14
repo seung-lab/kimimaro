@@ -33,6 +33,8 @@ Fig. 2: Memory Usage on a 512x512x512 Densely Labeled Volume
 Figure 2 shows the memory usage and processessing time (a little over 15 minutes) required when Kimimaro was applied to a 512x512x512 cutout, *labels*, from a connectomics dataset containing 2124 connected components. The different sections of the algorithm are depicted. Grossly, the preamble runs for about a minute, skeletonization for about 14 minutes, and finalization within seconds. The peak memory usage was about 4.4 GB. The code below was used to process *labels*.
 
 ```python
+# LISTING 1: Producing Skeletons from a labeled image.
+
 import kimimaro
 
 labels = np.load(...)
@@ -50,12 +52,27 @@ skels = kimimaro.skeletonize(
     'soma_invalidation_const': 300, # physical units
     'max_paths': 15, # default None
   },
+  # object_ids=[ ... ], # process only the specified labels
   dust_threshold=1000,
   anisotropy=(16,16,40), # default True
   fix_branching=True, # default True
   fix_borders=True, # default True
   progress=True, # default False
   parallel=1, # <= 0 all cpu, 1 single process, 2+ multiprocess
+)
+
+# LISTING 2: Combining skeletons produced from 
+#            adjacent or overlapping images.
+
+import kimimaro
+from cloudvolume import PrecomputedSkeleton
+
+skels = ... # a set of skeletons produced from the same label id
+skel = PrecomputedSkeleton.simple_merge(skels).consolidate()
+skel = kimimaro.postprocess(
+  skel, 
+  dust_threshold=1000, # physical units
+  tick_threshold=3500 # physical units
 )
 ```
 

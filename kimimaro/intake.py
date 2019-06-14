@@ -183,6 +183,9 @@ def format_labels(labels, in_place):
   else:
     labels = np.copy(labels, order='F')
 
+  if labels.dtype == np.bool:
+    labels = labels.view(np.uint8)
+
   original_shape = labels.shape
 
   while labels.ndim < 3:

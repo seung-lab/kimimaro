@@ -359,10 +359,19 @@ def get_mapping(
 
   remap = {}
 
+  if orig_labels.size == 0:
+    return remap
+
+  cdef INTEGER last_label = orig_labels[0,0,0]
+  remap[cc_labels[0,0,0]] = orig_labels[0,0,0]
+
   for z in range(sz):
     for y in range(sy):
       for x in range(sx):
+        if last_label == orig_labels[x,y,z]:
+          continue
         remap[cc_labels[x,y,z]] = orig_labels[x,y,z]
+        last_label = orig_labels[x,y,z]
 
   return remap
 
