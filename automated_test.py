@@ -4,8 +4,7 @@ import edt
 import numpy as np
 from cloudvolume import *
 
-import kimimaro
-
+import kimimaro.skeletontricks
 
 def test_binary_image():
   labels = np.ones( (256, 256, 3), dtype=np.bool)
@@ -252,3 +251,15 @@ def test_joinability():
   labels = np.zeros((256, 256, 20), dtype=np.uint8)
   labels[ 32:160, :, : ] = 1
   testlabels(labels)
+
+def test_unique():
+  for i in range(5):
+    arr = np.random.randint( 0, 2**16, (100, 100, 100), dtype=np.uint32)
+
+    labels_npy, ct_npy = np.unique(arr, return_counts=True)
+    labels_kimi, ct_kimi = kimimaro.skeletontricks.unique(arr, return_counts=True)
+
+    assert np.all(labels_npy == labels_kimi)
+    assert np.all(ct_npy == ct_kimi)
+
+

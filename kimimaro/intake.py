@@ -124,11 +124,8 @@ def skeletonize(
   # if max_all_dbf < np.finfo(np.float16).max:
   #   all_dbf = all_dbf.astype(np.float16)
 
-  if dust_threshold > 0:
-    cc_segids, pxct = np.unique(cc_labels, return_counts=True)
-    cc_segids = [ sid for sid, ct in zip(cc_segids, pxct) if ct > dust_threshold and sid != 0 ]
-  else:
-    cc_segids = range(1, np.max(cc_labels)+1 )
+  cc_segids, pxct = kimimaro.skeletontricks.unique(cc_labels, return_counts=True)
+  cc_segids = [ sid for sid, ct in zip(cc_segids, pxct) if ct > dust_threshold and sid != 0 ]
 
   all_slices = scipy.ndimage.find_objects(cc_labels)
 
