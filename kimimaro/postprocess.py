@@ -31,6 +31,7 @@ from scipy import spatial
 from scipy.sparse import lil_matrix
 from scipy.sparse.csgraph import dijkstra
 import scipy.sparse.csgraph as csgraph
+import scipy.spatial.distance
 
 from cloudvolume import PrecomputedSkeleton, Bbox
 
@@ -65,6 +66,59 @@ def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
   skeleton = connect_pieces(skeleton)
   skeleton = remove_ticks(skeleton, tick_threshold)
   return skeleton
+
+def join_close_components(skeletons, max_radius=None):
+  """
+  Given a set of skeletons which may contain multiple connected components,
+  attempt to connect each component to the nearest other component via the
+  nearest two vertices. Repeat until no components remain or no points closer
+  than max_radius are available.
+
+  max_radius: float in same units as skeletons
+
+  Returns: PrecomputedSkeleton
+  """
+  if max_radius is not None and max_radius <= 0:
+    raise ValueError("max_radius must be greater than zero: " + str(max_radius))
+
+  skels = []
+  for skeleton in skeletons:
+    skels += skeleton.components()
+
+  skels = [ skl.consolidate() for skl in skels if not skl.empty() ]
+
+  if len(skels) == 1:
+    return skels[0]
+  elif len(skels) == 0:
+    return PrecomputedSkeleton()
+
+  while len(skels) > 1:
+    min_dists = []
+    min_idx = []
+    cur = skels.pop()
+    for skel in skels:
+      dist_matrix = scipy.spatial.distance.cdist(cur.vertices, skel.vertices)
+
+      radius = np.min(dist_matrix)
+
+      if max_radius is None or max_radius >= radius:
+        min_dists.append(radius)
+        min_idx.append(
+          np.unravel_index(np.argmin(dist_matrix), dist_matrix.shape)
+        )
+
+    if len(min_dists) == 0:
+      break
+
+    best_match = np.argmin(min_dists) + 1
+    match = skels[best_match]
+    idx1, idx2 = min_idx[best_match]
+
+    skl = PrecomputedSkeleton.simple_merge(s1, s2)
+    skl.edges += [ [ idx1, idx2 + s1.vertices.shape[0] ] ]
+    skels.append(skl)
+
+  return PrecomputedSkeleton.simple_merge(*skels)
 
 ## Implementation Details Below
 
