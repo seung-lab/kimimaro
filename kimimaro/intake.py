@@ -329,7 +329,7 @@ def apply_object_mask(all_labels, object_ids):
   if len(object_ids) == 1:
     all_labels = kimimaro.skeletontricks.zero_out_all_except(all_labels, object_ids[0]) # faster
   else:
-    all_labels = fastremap.mask(all_labels, object_ids, in_place=True)
+    all_labels = fastremap.mask_except(all_labels, object_ids, in_place=True)
 
   return all_labels
 
