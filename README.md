@@ -55,11 +55,11 @@ skels = kimimaro.skeletonize(
     'max_paths': 50, # default None
   },
   # object_ids=[ ... ], # process only the specified labels
-  dust_threshold=1000,
+  dust_threshold=1000, # skip connected components with fewer than this many voxels
   anisotropy=(16,16,40), # default True
   fix_branching=True, # default True
   fix_borders=True, # default True
-  progress=True, # default False
+  progress=True, # default False, show progress bar
   parallel=1, # <= 0 all cpu, 1 single process, 2+ multiprocess
 )
 
@@ -77,6 +77,62 @@ skel = kimimaro.postprocess(
   tick_threshold=3500 # physical units
 )
 ```
+
+### Tweaking `kimimaro.skeletonize` Parameters
+
+This algorithm works by finding a root point on a 3D object and then serially tracing paths via dijksta's shortest path algorithm through a penalty field to the most distant unvisited point. After each pass, there is a sphere (really a circumscribing cube) that expands around each vertex in the current path that marks part of the object as visited.  
+
+For more detailed information, read https://github.com/seung-lab/kimimaro#ii-skeletonization below or the [TEASAR paper](https://ieeexplore.ieee.org/abstract/document/883951/) (though we [deviate from TEASAR](https://github.com/seung-lab/kimimaro#teasar-derived-algorthm) in a few places). [1]
+
+#### `scale` and `const`
+
+Usually, the most important parameters to tweak are `scale` and `const` which control the radius of this invalidation sphere according to the equation `r(x,y,z) = scale * DBF(x,y,z) + const` where the dimensions are physical (e.g. nanometers, i.e. corrected for anisotropy). `DBF(x,y,z)` is the physical distance from the shape boundary at that point. Let's look at a few examples.
+
+examples....
+
+#### `anisotropy`
+
+Represents the physical dimension of each voxel. For example, a connectomics dataset might be scanned with an electron microscope at 4nm x 4nm per pixel and stacked in slices 40nm thick. i.e. `anisotropy=(4,4,40)`. You can use any units so long as you are consistent.
+
+#### `dust_threshold`
+
+This threshold culls connected components that are smaller than this many voxels.  
+
+#### `max_paths`  
+
+Limits the number of paths that can be drawn for the given label. Certain cells, such as glia, that may not be important for the current analysis may be expensive to process and can be aborted early.  
+
+#### `pdrf_scale` and `pdrf_exponent`
+
+The `pdrf_scale` and `pdrf_exponent` represent parameters to the penalty equation that takes the euclidean distance field (**D**) and augments it so that cutting closer to the border is very penalized to make dijkstra take paths that are more centered.   
+
+P<sub>r</sub> = `pdrf_scale` * (1 - **D** / max(**D**)) <sup>`pdrf_exponent`</sup> + (directional gradient < 1.0).  
+
+The default settings should work fairly well, but under large anisotropies or with cavernous morphologies, it's possible that you might need to tweak it. If you see the skeleton go haywire inside a large area, it could be a collapse of floating point precision.  
+
+#### `soma_acceptance_threshold` and `soma_detection_threshold`
+
+We process somas specially because they do not have a tubular geometry and instead should be represented in a hub and spoke manner. `soma_acceptance_threshold` is the physical radius (e.g. in nanometers) beyond which we classify a connected component of the image as containing a soma. The distance transform's output is depressed by holes in the label, which are frequently produced by segmentation algorithms on somata. We can fill them, but the hole filling algorithm we use is slow so we would like to only apply it occasionally. Therefore, we set a lower threshold, the `soma_acceptance_threshold`, beyond which we fill the holes and retest the soma.  
+
+#### `soma_invalidation_scale` and `soma_invalidation_const`   
+
+Once we have classified a region as a soma, we fix root of the skeletonization algorithm at one of the  points of maximum distance from the boundary (usually there is only one). We then mark as visited all voxels around that point in a spherical radius described by `r(x,y,z) = soma_invalidation_scale * DBF(x,y,z) + soma_invalidation_const` where DBF(x,y,z) is the physical distance from the shape boundary at that point. If done correctly, this can prevent skeletons from being drawn to the boundaries of the soma, and instead pulls the skeletons mainly into the processes extending from the cell body.  
+
+#### `fix_borders`
+
+This feature makes it easier to connect the skeletons of adjacent image volumes that do not fit in RAM. If enabled, skeletons will be deterministically drawn to the approximate center of the 2D contact area of each place where the shape contacts the border. This can affect the performance of the operation positively or negatively depending on the shape and number of contacts.  
+
+#### `fix_branching`  
+
+You'll probably never want to disable this, but base TEASAR is infamous for forking the skeleton at branch points way too early. This option makes it preferential to fork at a more reasonable place at a significant performance penalty. 
+
+#### `progress`
+
+Show a progress bar once the skeletonization phase begins.
+
+#### `parallel`  
+
+Use a pool of processors to skeletonize faster. Each process allocatable task is the skeletonization of one connected component (so it won't help with a single label that takes a long time to skeletonize). This option also affects the speed of the initial euclidean distance transform, which is parallel enabled and is the most expensive part of the Preamble (described below).  
 
 ### Performance Tips
 
