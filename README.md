@@ -82,13 +82,15 @@ skel = kimimaro.postprocess(
 
 This algorithm works by finding a root point on a 3D object and then serially tracing paths via dijksta's shortest path algorithm through a penalty field to the most distant unvisited point. After each pass, there is a sphere (really a circumscribing cube) that expands around each vertex in the current path that marks part of the object as visited.  
 
-For more detailed information, read https://github.com/seung-lab/kimimaro#ii-skeletonization below or the [TEASAR paper](https://ieeexplore.ieee.org/abstract/document/883951/) (though we [deviate from TEASAR](https://github.com/seung-lab/kimimaro#teasar-derived-algorthm) in a few places). [1]
+For a visual tutorial on the basics of the skeletonization procedure, check out this wiki article: [A Pictorial Guide to TEASAR Skeletonization](https://github.com/seung-lab/kimimaro/wiki/A-Pictorial-Guide-to-TEASAR-Skeletonization)
+
+For more detailed information, [read below](https://github.com/seung-lab/kimimaro#ii-skeletonization) or the [TEASAR paper](https://ieeexplore.ieee.org/abstract/document/883951/) (though we [deviate from TEASAR](https://github.com/seung-lab/kimimaro#teasar-derived-algorthm) in a few places). [1]
 
 #### `scale` and `const`
 
-Usually, the most important parameters to tweak are `scale` and `const` which control the radius of this invalidation sphere according to the equation `r(x,y,z) = scale * DBF(x,y,z) + const` where the dimensions are physical (e.g. nanometers, i.e. corrected for anisotropy). `DBF(x,y,z)` is the physical distance from the shape boundary at that point. Let's look at a few examples.
+Usually, the most important parameters to tweak are `scale` and `const` which control the radius of this invalidation sphere according to the equation `r(x,y,z) = scale * DBF(x,y,z) + const` where the dimensions are physical (e.g. nanometers, i.e. corrected for anisotropy). `DBF(x,y,z)` is the physical distance from the shape boundary at that point.  
 
-examples....
+Check out this [wiki article](https://github.com/seung-lab/kimimaro/wiki/Intuition-for-Setting-Parameters-const-and-scale) to help refine your intuition.
 
 #### `anisotropy`
 
