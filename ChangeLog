@@ -1,6 +1,28 @@
 CHANGES
 =======
 
+0.5.4
+-----
+
+* fix: sometimes get\_mapping doesn't get everything
+
+0.5.3
+-----
+
+* fix: object\_ids were being masked instead of mask\_excepted
+* docs: show performance chart for v0.5.2
+
+0.5.2
+-----
+
+* perf: improve performance of find\_objects 7x
+
+0.5.1
+-----
+
+* perf: ~20x faster unique(label, return\_counts=True) (#26)
+* docs: changelog update + small formatting adjustment to example
+
 0.5.0
 -----
 
