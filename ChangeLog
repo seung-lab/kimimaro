@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+0.6.0
+-----
+
+* feat: adds join\_close\_components to postprocess (#27)
+* docs: link to tutorial wiki articles
+* docs: add advice on tweaking parameters
+
 0.5.4
 -----
 

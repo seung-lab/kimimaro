@@ -76,6 +76,14 @@ skel = kimimaro.postprocess(
   dust_threshold=1000, # physical units
   tick_threshold=3500 # physical units
 )
+
+# Split input skeletons into connected components and
+# then join the two nearest vertices within `radius` distance
+# of each other until there is only a single connected component
+# or no pairs of points nearer than `radius` exist. 
+# Fuse all remaining components into a single skeleton.
+skel = kimimaro.join_close_components([skel1, skel2], radius=1500) # 1500 units threshold
+skel = kimimaro.join_close_components([skel1, skel2], radius=None) # no threshold
 ```
 
 ### Tweaking `kimimaro.skeletonize` Parameters
