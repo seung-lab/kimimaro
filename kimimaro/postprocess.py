@@ -33,7 +33,7 @@ from scipy.sparse.csgraph import dijkstra
 import scipy.sparse.csgraph as csgraph
 import scipy.spatial.distance
 
-from cloudvolume import PrecomputedSkeleton, Bbox
+from cloudvolume import Skeleton, Bbox
 
 import kimimaro.skeletontricks
 
@@ -59,7 +59,7 @@ def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
      removed one at a time, from smallest to largest. Branches
      larger than the physical tick_threshold are preserved. 
 
-  Returns: PrecomputedSkeleton
+  Returns: Skeleton
   """
   skeleton = remove_dust(skeleton, dust_threshold) 
   skeleton = remove_loops(skeleton)
@@ -67,19 +67,22 @@ def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
   skeleton = remove_ticks(skeleton, tick_threshold)
   return skeleton
 
-def join_close_components(skeletons, max_radius=None):
+def join_close_components(skeletons, radius=None):
   """
   Given a set of skeletons which may contain multiple connected components,
   attempt to connect each component to the nearest other component via the
   nearest two vertices. Repeat until no components remain or no points closer
-  than max_radius are available.
+  than `radius` are available.
 
-  max_radius: float in same units as skeletons
+  radius: float in same units as skeletons
 
-  Returns: PrecomputedSkeleton
+  Returns: Skeleton
   """
-  if max_radius is not None and max_radius <= 0:
-    raise ValueError("max_radius must be greater than zero: " + str(max_radius))
+  if radius is not None and radius <= 0:
+    raise ValueError("radius must be greater than zero: " + str(radius))
+
+  if isinstance(skeletons, Skeleton):
+    skeletons = [ skeletons ]
 
   skels = []
   for skeleton in skeletons:
@@ -90,35 +93,49 @@ def join_close_components(skeletons, max_radius=None):
   if len(skels) == 1:
     return skels[0]
   elif len(skels) == 0:
-    return PrecomputedSkeleton()
+    return Skeleton()
 
   while len(skels) > 1:
-    min_dists = []
-    min_idx = []
-    cur = skels.pop()
-    for skel in skels:
-      dist_matrix = scipy.spatial.distance.cdist(cur.vertices, skel.vertices)
+    N = len(skels)
 
-      radius = np.min(dist_matrix)
+    radii_matrix = np.zeros( (N, N), dtype=np.float32 ) + np.inf
+    index_matrix = np.zeros( (N, N, 2), dtype=np.uint32 ) + -1
 
-      if max_radius is None or max_radius >= radius:
-        min_dists.append(radius)
-        min_idx.append(
-          np.unravel_index(np.argmin(dist_matrix), dist_matrix.shape)
-        )
+    for i in range(len(skels)):
+      for j in range(len(skels)):
+        if i == j:
+          continue 
+        elif radii_matrix[i,j] != np.inf:
+          continue
 
-    if len(min_dists) == 0:
+        s1, s2 = skels[i], skels[j]
+        dist_matrix = scipy.spatial.distance.cdist(s1.vertices, s2.vertices)
+        radii_matrix[i,j] = np.min(dist_matrix)
+        radii_matrix[j,i] = radii_matrix[i,j]
+
+        index_matrix[i,j] = np.unravel_index( np.argmin(dist_matrix), dist_matrix.shape )
+        index_matrix[j,i] = index_matrix[i,j]
+
+    if np.all(radii_matrix) == np.inf:
       break
 
-    best_match = np.argmin(min_dists) + 1
-    match = skels[best_match]
-    idx1, idx2 = min_idx[best_match]
+    min_radius = np.min(radii_matrix)
+    if radius is not None and min_radius > radius:
+      break
 
-    skl = PrecomputedSkeleton.simple_merge(s1, s2)
-    skl.edges += [ [ idx1, idx2 + s1.vertices.shape[0] ] ]
-    skels.append(skl)
+    i, j = np.unravel_index( np.argmin(radii_matrix), radii_matrix.shape )
+    s1, s2 = skels[i], skels[j]
+    fused = Skeleton.simple_merge([s1, s2])
 
-  return PrecomputedSkeleton.simple_merge(*skels)
+    fused.edges = np.concatenate([
+      fused.edges,
+      [[ index_matrix[i,j,0], index_matrix[i,j,1] + s1.vertices.shape[0] ]]
+    ])
+    skels[i] = None
+    skels[j] = None
+    skels = [ _ for _ in skels if _ is not None ] + [ fused ]
+
+  return Skeleton.simple_merge(skels).consolidate()
 
 ## Implementation Details Below
 
@@ -156,7 +173,7 @@ def remove_dust(skeleton, dust_threshold):
     if skel.cable_length() > dust_threshold:
       skels.append(skel)
 
-  skeleton = PrecomputedSkeleton.simple_merge(skels)
+  skeleton = Skeleton.simple_merge(skels)
   return skeleton.consolidate()
 
 def connect_pieces(skeleton):
@@ -225,7 +242,7 @@ def remove_ticks(skeleton, threshold):
   for component in skeleton.components():
     skels.append(_remove_ticks(component, threshold))
 
-  return PrecomputedSkeleton.simple_merge(skels).consolidate()
+  return Skeleton.simple_merge(skels).consolidate()
 
 def _remove_ticks(skeleton, threshold):
   """
@@ -261,12 +278,12 @@ def _remove_ticks(skeleton, threshold):
   regime (though without the assistence of the constant factor of numpy speed).
 
   Requires:
-    skeleton: a PrecomputedSkeleton that is guaranteed to be a single 
+    skeleton: a Skeleton that is guaranteed to be a single 
       connected component.
     threshold: distance in nanometers below which a branch is considered
       a "tick" eligible to be removed.
 
-  Returns: a "tick" free PrecomputedSkeleton
+  Returns: a "tick" free Skeleton
   """
   if skeleton.empty():
     return skeleton
@@ -405,7 +422,7 @@ def remove_loops(skeleton):
   for component in skeleton.components():
     skels.append(_remove_loops(component))
 
-  return PrecomputedSkeleton.simple_merge(skels).consolidate()
+  return Skeleton.simple_merge(skels).consolidate()
 
 def _remove_loops(skeleton):
   nodes = skeleton.vertices

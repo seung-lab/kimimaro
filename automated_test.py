@@ -262,4 +262,42 @@ def test_unique():
     assert np.all(labels_npy == labels_kimi)
     assert np.all(ct_npy == ct_kimi)
 
+def test_join_close_components_simple():
+  skel = Skeleton([ 
+      (0,0,0), (1,0,0), (10,0,0), (11, 0, 0)
+    ], 
+    edges=[ (0,1), (2,3) ],
+    radii=[ 0, 1, 2, 3 ],
+    vertex_types=[ 0, 1, 2, 3 ],
+    segid=1337,
+  )
 
+  assert len(skel.components()) == 2
+
+  res = kimimaro.join_close_components(skel, radius=None)
+  assert len(res.components()) == 1
+
+  res = kimimaro.join_close_components(skel, radius=9)
+  assert len(res.components()) == 1
+  assert np.all(res.edges == [[0,1], [1,2], [2,3]])
+
+  res = kimimaro.join_close_components(skel, radius=8.5)
+  assert len(res.components()) == 2
+
+def test_join_close_components_complex():
+  skel = Skeleton([ 
+      (0,0,0), (1,0,0),    (4,0,0), (6,0,0),        (20,0,0), (21, 0, 0),
+      
+
+      (0,0,5), 
+      (0,0,10),
+    ], 
+    edges=[ (0,1), (2,3), (4,5), (6,7) ],
+  )
+
+  assert len(skel.components()) == 4
+
+  res = kimimaro.join_close_components(skel, radius=None)
+  assert len(res.components()) == 1
+
+  assert np.all(res.edges == [[0,1], [0,3], [1,2], [3,4], [4,5], [5,6], [6,7]])
