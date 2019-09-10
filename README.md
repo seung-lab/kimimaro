@@ -61,6 +61,7 @@ skels = kimimaro.skeletonize(
   fix_borders=True, # default True
   progress=True, # default False, show progress bar
   parallel=1, # <= 0 all cpu, 1 single process, 2+ multiprocess
+  parallel_chunk_size=100, # how many skeletons to process before updating progress bar
 )
 
 # LISTING 2: Combining skeletons produced from 
@@ -144,6 +145,12 @@ Show a progress bar once the skeletonization phase begins.
 
 Use a pool of processors to skeletonize faster. Each process allocatable task is the skeletonization of one connected component (so it won't help with a single label that takes a long time to skeletonize). This option also affects the speed of the initial euclidean distance transform, which is parallel enabled and is the most expensive part of the Preamble (described below).  
 
+#### `parallel_chunk_size`  
+
+This only applies when using parallel. Sets the number of skeletons for a subprocess before returning control to the main thread, updating the progress bar, and acquring a new task. If this value is set too low (e.g. < 10-20) the cost of interprocess communication can become significant and even dominant. If it is set too high, task starvation may occur for the other subprocesses if a subprocess gets a particularly hard skeleton and they complete quickly. Progress bar updates will be infrequent if the value is too high as well.  
+
+The actual chunk size used will be `min(parallel_chunk_size, len(cc_labels) // parallel)`. `cc_labels` represents the number of connected components in the sample.  
+
 ### Performance Tips
 
 - If you only need a few labels skeletonized, pass in `object_ids` to bypass processing all the others. If `object_ids` contains only a single label, the masking operation will run faster.
@@ -153,6 +160,7 @@ Use a pool of processors to skeletonize faster. Each process allocatable task is
 - If you are willing to sacrifice the improved branching behavior, you can set `fix_branching=False` for a moderate 1.1x to 1.5x speedup (assuming your TEASAR parameters and data allow branching).
 - If your dataset contains important cells (that may in fact be the seat of consciousness) but they take significant processing power to analyze, you can save them to savor for later by setting `max_paths` to some reasonable level which will abort and proceed to the next label after the algorithm detects that that at least that many paths will be needed.
 - Parallel distributes work across connected components and is generally a good idea if you have the cores and memory. Not only does it make single runs proceed faster, but you can also practically use a much larger context; that improves soma processing as they are less likely to be cut off. The Preamble of the algorithm (detailed below) is still single threaded at the moment, so task latency increases with size. 
+- If `parallel_chunk_size` is set very low (e.g. < 10) during parallel operation, interprocess communication can become a significant overhead. Try raising this value.  
 
 ## Motivation
 

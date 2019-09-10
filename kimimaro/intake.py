@@ -51,7 +51,7 @@ def skeletonize(
     all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
     object_ids=None, dust_threshold=1000, cc_safety_factor=1,
     progress=False, fix_branching=True, in_place=False, 
-    fix_borders=True, parallel=1
+    fix_borders=True, parallel=1, parallel_chunk_size=100
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -98,6 +98,14 @@ def skeletonize(
       <= 0: Use multiprocessing.count_cpu() 
          1: Only use the main process.
       >= 2: Use this number of subprocesses.
+    parallel_chunk_size: default number of skeletons to 
+      submit to each parallel process before returning results,
+      updating the progress bar, and submitting a new task set. 
+      Setting this number too low results in excess IPC overhead,
+      and setting it too high can result in task starvation towards
+      the end of a job and infrequent progress bar updates. If the
+      chunk size is set higher than num tasks // parallel, that number
+      is used instead.
 
   Returns: { $segid: cloudvolume.PrecomputedSkeleton, ... }
   """
@@ -166,7 +174,7 @@ def skeletonize(
       cc_labels_shm, cc_shm_location, remapping, 
       teasar_params, anisotropy, all_slices, border_targets, 
       progress, fix_borders, fix_branching, 
-      cc_segids, parallel
+      cc_segids, parallel, parallel_chunk_size
     )
 
     dbf_mmap.close()
@@ -217,7 +225,7 @@ def skeletonize_parallel(
     cc_labels_shm, cc_shm_location, remapping, 
     teasar_params, anisotropy, all_slices, border_targets, 
     progress, fix_borders, fix_branching, 
-    cc_segids, parallel, chunk_size=100
+    cc_segids, parallel, chunk_size
   ):
     prevsigint = signal.getsignal(signal.SIGINT)
     prevsigterm = signal.getsignal(signal.SIGTERM)
