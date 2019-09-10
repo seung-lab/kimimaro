@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+0.7.0
+-----
+
+* docs: add parallel\_chunk\_size to README
+* perf+feat: Reduce Parallel Task Starvation + Better Parallel Progress Bar (#32)
+* docs: add example of join\_close\_components
+
 0.6.0
 -----
 

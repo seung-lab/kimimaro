@@ -147,7 +147,7 @@ Use a pool of processors to skeletonize faster. Each process allocatable task is
 
 #### `parallel_chunk_size`  
 
-This only applies when using parallel. Sets the number of skeletons for a subprocess before returning control to the main thread, updating the progress bar, and acquring a new task. If this value is set too low (e.g. < 10-20) the cost of interprocess communication can become significant and even dominant. If it is set too high, task starvation may occur for the other subprocesses if a subprocess gets a particularly hard skeleton and they complete quickly. Progress bar updates will be infrequent if the value is too high as well.  
+This only applies when using parallel. This sets the number of skeletons a subprocess will extract before returning control to the main thread, updating the progress bar, and acquiring a new task. If this value is set too low (e.g. < 10-20) the cost of interprocess communication can become significant and even dominant. If it is set too high, task starvation may occur for the other subprocesses if a subprocess gets a particularly hard skeleton and they complete quickly. Progress bar updates will be infrequent if the value is too high as well.  
 
 The actual chunk size used will be `min(parallel_chunk_size, len(cc_labels) // parallel)`. `cc_labels` represents the number of connected components in the sample.  
 
