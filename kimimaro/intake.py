@@ -217,7 +217,7 @@ def skeletonize_parallel(
     cc_labels_shm, cc_shm_location, remapping, 
     teasar_params, anisotropy, all_slices, border_targets, 
     progress, fix_borders, fix_branching, 
-    cc_segids, parallel
+    cc_segids, parallel, chunk_size=100
   ):
     prevsigint = signal.getsignal(signal.SIGINT)
     prevsigterm = signal.getsignal(signal.SIGTERM)
@@ -240,13 +240,19 @@ def skeletonize_parallel(
     )
 
     ccids = []
-    for i in range(parallel):
-      ccids.append(cc_segids[i::parallel])
+    if chunk_size < len(cc_segids) // parallel:
+      for i in range(0, len(cc_segids), chunk_size):
+        ccids.append(cc_segids[i:i+chunk_size])
+    else:
+      for i in range(parallel):
+        ccids.append(cc_segids[i::parallel])
 
     skeletons = defaultdict(list)
-    for skels in executor.map(skeletonizefn, ccids):
-      for segid, skel in skels.items():
-        skeletons[segid].append(skel)
+    with tqdm(total=len(cc_segids), disable=(not progress), desc="Skeletonizing Labels") as pbar:
+      for skels in executor.uimap(skeletonizefn, ccids):
+        for segid, skel in skels.items():
+          skeletons[segid].append(skel)
+        pbar.update(len(skels))
     executor.close()
     executor.join()
 
@@ -281,7 +287,7 @@ def skeletonize_subset(
   ):
 
   skeletons = defaultdict(list)
-  for segid in tqdm(cc_segids, disable=(not progress), desc="Skeletonizing Labels"):
+  for segid in cc_segids:
     # Crop DBF to ROI
     slices = all_slices[segid - 1]
     if slices is None:
