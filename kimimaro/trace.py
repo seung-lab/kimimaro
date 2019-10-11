@@ -44,6 +44,7 @@ def trace(
     soma_invalidation_const=0,
     fix_branching=True,
     manual_targets=[],
+    root=None,
     max_paths=None,
   ):
   """
@@ -74,6 +75,8 @@ def trace(
     merging adjacent chunks out-of-core.
   max_paths: If a label requires drawing this number of paths or more,
     abort and move onto the next label.
+  root: If you want to force the root to be a particular voxel, you can
+    specify it here.
 
   Based on the algorithm by:
 
@@ -103,12 +106,13 @@ def trace(
     dbf_max = np.max(DBF) 
     soma_mode = dbf_max > soma_acceptance_threshold
 
-  if soma_mode:
-    root = find_soma_root(DBF, dbf_max)    
-    soma_radius = dbf_max * soma_invalidation_scale + soma_invalidation_const
-  else:
-    root = find_root(labels, manual_targets, anisotropy)
-    soma_radius = 0.0
+  if root is None:
+    if soma_mode:
+      root = find_soma_root(DBF, dbf_max)    
+      soma_radius = dbf_max * soma_invalidation_scale + soma_invalidation_const
+    else:
+      root = find_root(labels, anisotropy)
+      soma_radius = 0.0
 
   if root is None:
     return PrecomputedSkeleton()
@@ -236,16 +240,13 @@ def find_soma_root(DBF, dbf_max):
 
   return tuple(coords[root].astype(np.uint32))
 
-def find_root(labels, manual_targets, anisotropy):
+def find_root(labels, anisotropy):
   """
   "4.4 DAF:  Compute distance from any voxel field"
   Compute DAF, but we immediately convert to the PDRF
   The extremal point of the PDRF is a valid root node
   even if the DAF is computed from an arbitrary pixel.
   """
-  if len(manual_targets):
-    return manual_targets.pop()
-
   any_voxel = kimimaro.skeletontricks.first_label(labels)   
   if any_voxel is None: 
     return None

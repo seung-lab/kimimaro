@@ -51,7 +51,8 @@ def skeletonize(
     all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
     object_ids=None, dust_threshold=1000, cc_safety_factor=1,
     progress=False, fix_branching=True, in_place=False, 
-    fix_borders=True, parallel=1, parallel_chunk_size=100
+    fix_borders=True, parallel=1, parallel_chunk_size=100,
+    extra_targets={},
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -83,6 +84,13 @@ def skeletonize(
       disjoint set maps in connected_components. 1 is guaranteed to work,
       but is probably excessive and corresponds to every pixel being a different
       label. Use smaller values to save some memory.
+    extra_targets: Dict with per label list of x,y,z voxel coordinates 
+      that will all be traced to from the root regardless of the 
+      invalidation status of the object. If a point lies outside the shape,
+      it will be ignored.
+
+      e.g. { SEGID: [ (x,y,z), (x,y,z), ... ] }
+
     progress: if true, display a progress bar
     fix_branching: When enabled, zero the edge weights by of previously 
       traced paths. This causes branch points to occur closer to 
@@ -149,7 +157,8 @@ def skeletonize(
   if parallel == 1:
     return skeletonize_subset(
       all_dbf, cc_labels, remapping, 
-      teasar_params, anisotropy, all_slices, border_targets, 
+      teasar_params, anisotropy, all_slices, 
+      border_targets, extra_targets,
       progress, fix_borders, fix_branching, 
       cc_segids
     )
@@ -172,7 +181,8 @@ def skeletonize(
     skeletons = skeletonize_parallel(      
       all_dbf_shm, dbf_shm_location, 
       cc_labels_shm, cc_shm_location, remapping, 
-      teasar_params, anisotropy, all_slices, border_targets, 
+      teasar_params, anisotropy, all_slices, 
+      border_targets, extra_targets,
       progress, fix_borders, fix_branching, 
       cc_segids, parallel, parallel_chunk_size
     )
@@ -223,7 +233,8 @@ def format_labels(labels, in_place):
 def skeletonize_parallel(
     all_dbf_shm, dbf_shm_location, 
     cc_labels_shm, cc_shm_location, remapping, 
-    teasar_params, anisotropy, all_slices, border_targets, 
+    teasar_params, anisotropy, all_slices, 
+    border_targets, extra_targets,
     progress, fix_borders, fix_branching, 
     cc_segids, parallel, chunk_size
   ):
@@ -244,7 +255,8 @@ def skeletonize_parallel(
       dbf_shm_location, all_dbf_shm.shape, all_dbf_shm.dtype, 
       cc_shm_location, cc_labels_shm.shape, cc_labels_shm.dtype,
       remapping, teasar_params, anisotropy, all_slices, 
-      border_targets, progress, fix_borders, fix_branching
+      border_targets, extra_targets, progress, 
+      fix_borders, fix_branching
     )
 
     ccids = []
@@ -288,8 +300,9 @@ def parallel_skeletonize_subset(
   return skels
 
 def skeletonize_subset(
-    all_dbf, cc_labels, remapping, teasar_params,
-    anisotropy, all_slices, border_targets,
+    all_dbf, cc_labels, remapping, 
+    teasar_params, anisotropy, all_slices, 
+    border_targets, extra_targets,
     progress, fix_borders, fix_branching,
     cc_segids
   ):
@@ -310,10 +323,22 @@ def skeletonize_subset(
     dbf = (labels * all_dbf[slices]).astype(np.float32)
 
     manual_targets = []
+    root = None 
+
+    # We only source a predetermined root from 
+    # border_targets because we understand that it's
+    # located at a reasonable place at the edge of the
+    # shape. In theory, extra targets can be positioned
+    # anywhere within the shape or off the shape, making it 
+    # a dicey proposition. 
     if len(border_targets[segid]) > 0:
       manual_targets = np.array(border_targets[segid])
       manual_targets -= roi.minpt.astype(np.uint32)
       manual_targets = manual_targets.tolist()
+      root = manual_targets.pop()
+
+    if segid in extra_targets and len(extra_targets[segid]) > 0:
+      manual_targets.extend(extra_targets[segid])
 
     skeleton = kimimaro.trace.trace(
       labels, 
@@ -321,6 +346,7 @@ def skeletonize_subset(
       anisotropy=anisotropy, 
       fix_branching=fix_branching, 
       manual_targets=manual_targets,
+      root=root,
       **teasar_params
     )
 
