@@ -52,7 +52,7 @@ def skeletonize(
     object_ids=None, dust_threshold=1000, cc_safety_factor=1,
     progress=False, fix_branching=True, in_place=False, 
     fix_borders=True, parallel=1, parallel_chunk_size=100,
-    extra_targets={},
+    extra_targets=[],
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -84,10 +84,9 @@ def skeletonize(
       disjoint set maps in connected_components. 1 is guaranteed to work,
       but is probably excessive and corresponds to every pixel being a different
       label. Use smaller values to save some memory.
-    extra_targets: Dict with per label list of x,y,z voxel coordinates 
-      that will all be traced to from the root regardless of the 
-      invalidation status of the object. If a point lies outside the shape,
-      it will be ignored.
+    extra_targets: List of x,y,z voxel coordinates that will all be traced 
+      to from the root regardless of whether those points have been invalidated. 
+      If a point lies outside the shape, it will be ignored.
 
       e.g. { SEGID: [ (x,y,z), (x,y,z), ... ] }
 
@@ -128,6 +127,8 @@ def skeletonize(
 
   cc_labels, remapping = compute_cc_labels(all_labels, cc_safety_factor)
   del all_labels
+
+  extra_targets = points_to_labels(extra_targets, cc_labels)
 
   all_dbf = edt.edt(cc_labels, 
     anisotropy=anisotropy,
@@ -386,6 +387,13 @@ def compute_cc_labels(all_labels, cc_safety_factor):
   del tmp_labels
   remapping = kimimaro.skeletontricks.get_mapping(all_labels, cc_labels) 
   return cc_labels, remapping
+
+def points_to_labels(pts, cc_labels):
+  mapping = defaultdict(list)
+  for pt in pts:
+    pt = tuple(pt)
+    mapping[ cc_labels[pt] ].append(pt)
+  return mapping
 
 def compute_border_targets(cc_labels, anisotropy):
   sx, sy, sz = cc_labels.shape
