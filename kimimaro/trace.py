@@ -106,14 +106,15 @@ def trace(
     dbf_max = np.max(DBF) 
     soma_mode = dbf_max > soma_acceptance_threshold
 
+  soma_radius = 0.0
+
   if root is None:
     if soma_mode:
       root = find_soma_root(DBF, dbf_max)    
       soma_radius = dbf_max * soma_invalidation_scale + soma_invalidation_const
     else:
       root = find_root(labels, anisotropy)
-      soma_radius = 0.0
-
+      
   if root is None:
     return PrecomputedSkeleton()
  
