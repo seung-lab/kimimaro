@@ -326,6 +326,11 @@ def skeletonize_subset(
     manual_targets = []
     root = None 
 
+    def translate_to_roi(targets):
+      targets = np.array(targets)
+      targets -= roi.minpt.astype(np.uint32)
+      return targets.tolist()      
+
     # We only source a predetermined root from 
     # border_targets because we understand that it's
     # located at a reasonable place at the edge of the
@@ -333,13 +338,11 @@ def skeletonize_subset(
     # anywhere within the shape or off the shape, making it 
     # a dicey proposition. 
     if len(border_targets[segid]) > 0:
-      manual_targets = np.array(border_targets[segid])
-      manual_targets -= roi.minpt.astype(np.uint32)
-      manual_targets = manual_targets.tolist()
+      manual_targets = translate_to_roi(border_targets[segid])
       root = manual_targets.pop()
 
     if segid in extra_targets and len(extra_targets[segid]) > 0:
-      manual_targets.extend(extra_targets[segid])
+      manual_targets.extend( translate_to_roi(extra_targets[segid]) )
 
     skeleton = kimimaro.trace.trace(
       labels, 
