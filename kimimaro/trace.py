@@ -43,7 +43,8 @@ def trace(
     soma_invalidation_scale=0.5,
     soma_invalidation_const=0,
     fix_branching=True,
-    manual_targets=[],
+    manual_targets_before=[],
+    manual_targets_after=[],
     root=None,
     max_paths=None,
   ):
@@ -70,9 +71,13 @@ def trace(
     the actual path divergence. However, there is a large performance penalty
     associated with this as dijkstra's algorithm is computed once per a path
     rather than once per a skeleton.
-  manual_targets: list of (x,y,z) that coorrespond to locations that must 
+  manual_targets_before: list of (x,y,z) that correspond to locations that must 
     have paths drawn to. Used for specifying root and border targets for
-    merging adjacent chunks out-of-core.
+    merging adjacent chunks out-of-core. Targets are applied before ordinary
+    target selection.
+  manual_targets_after: Same as manual_targets_before but the additional 
+    targets are applied after the usual algorithm runs. The current 
+    invalidation status of the shape makes no difference.
   max_paths: If a label requires drawing this number of paths or more,
     abort and move onto the next label.
   root: If you want to force the root to be a particular voxel, you can
@@ -147,7 +152,8 @@ def trace(
     root, labels, DBF, DAF, 
     parents, scale, const, anisotropy, 
     soma_mode, soma_radius, fix_branching,
-    manual_targets, max_paths
+    manual_targets_before, manual_targets_after, 
+    max_paths
   )
 
   skel = PrecomputedSkeleton.simple_merge(
@@ -163,7 +169,8 @@ def compute_paths(
     root, labels, DBF, DAF, 
     parents, scale, const, anisotropy, 
     soma_mode, soma_radius, fix_branching,
-    manual_targets, max_paths
+    manual_targets_before, manual_targets_after,
+    max_paths
   ):
   """
   Given the labels, DBF, DAF, dijkstra parents,
@@ -182,12 +189,16 @@ def compute_paths(
   if max_paths is None:
     max_paths = valid_labels
 
-  if len(manual_targets) >= max_paths:
+  if len(manual_targets_before) + len(manual_targets_after) >= max_paths:
     return []
 
-  while (valid_labels > 0 or manual_targets) and len(paths) < max_paths:
-    if manual_targets:
-      target = manual_targets.pop()
+  while (valid_labels > 0 or manual_targets_before or manual_targets_after) \
+    and len(paths) < max_paths:
+
+    if manual_targets_before:
+      target = manual_targets_before.pop()
+    elif valid_labels == 0:
+      target = manual_targets_after.pop()
     else:
       target = kimimaro.skeletontricks.find_target(labels, DAF)
 
