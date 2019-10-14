@@ -55,6 +55,8 @@ skels = kimimaro.skeletonize(
     'max_paths': 50, # default None
   },
   # object_ids=[ ... ], # process only the specified labels
+  # extra_targets_before=[ (27,33,100), (44,45,46) ], # target points in voxels
+  # extra_targets_after=[ (27,33,100), (44,45,46) ], # target points in voxels
   dust_threshold=1000, # skip connected components with fewer than this many voxels
   anisotropy=(16,16,40), # default True
   fix_branching=True, # default True
@@ -108,6 +110,14 @@ Represents the physical dimension of each voxel. For example, a connectomics dat
 #### `dust_threshold`
 
 This threshold culls connected components that are smaller than this many voxels.  
+
+### `extra_targets_after`
+
+Additional voxel targets to trace to after the morphological tracing algorithm completes. For example, you might add known synapse locations to the skeleton. 
+
+### `extra_targets_before`  
+
+This is the same as `extra_targets_after` except that the additional targets are front-loaded and the paths that they cover are invalidated. This may affect the results of subsequent morphological tracing.
 
 #### `max_paths`  
 
