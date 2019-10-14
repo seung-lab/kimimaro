@@ -51,7 +51,8 @@ def skeletonize(
     all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
     object_ids=None, dust_threshold=1000, cc_safety_factor=1,
     progress=False, fix_branching=True, in_place=False, 
-    fix_borders=True, parallel=1, parallel_chunk_size=100
+    fix_borders=True, parallel=1, parallel_chunk_size=100,
+    extra_targets_before=[], extra_targets_after=[],
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -83,6 +84,17 @@ def skeletonize(
       disjoint set maps in connected_components. 1 is guaranteed to work,
       but is probably excessive and corresponds to every pixel being a different
       label. Use smaller values to save some memory.
+
+    extra_targets_before: List of x,y,z voxel coordinates that will all 
+      be traced to from the root regardless of whether those points have 
+      been invalidated. These targets will be applied BEFORE the regular
+      target selection algorithm is run.      
+
+      e.g. [ (x,y,z), (x,y,z) ]
+
+    extra_targets_after: Same as extra_targets_before but the additional
+      targets will be applied AFTER the usual algorithm runs.
+
     progress: if true, display a progress bar
     fix_branching: When enabled, zero the edge weights by of previously 
       traced paths. This causes branch points to occur closer to 
@@ -121,6 +133,9 @@ def skeletonize(
   cc_labels, remapping = compute_cc_labels(all_labels, cc_safety_factor)
   del all_labels
 
+  extra_targets_before = points_to_labels(extra_targets_before, cc_labels)
+  extra_targets_after = points_to_labels(extra_targets_after, cc_labels)
+
   all_dbf = edt.edt(cc_labels, 
     anisotropy=anisotropy,
     black_border=False,
@@ -149,7 +164,8 @@ def skeletonize(
   if parallel == 1:
     return skeletonize_subset(
       all_dbf, cc_labels, remapping, 
-      teasar_params, anisotropy, all_slices, border_targets, 
+      teasar_params, anisotropy, all_slices, 
+      border_targets, extra_targets_before, extra_targets_after,
       progress, fix_borders, fix_branching, 
       cc_segids
     )
@@ -172,7 +188,8 @@ def skeletonize(
     skeletons = skeletonize_parallel(      
       all_dbf_shm, dbf_shm_location, 
       cc_labels_shm, cc_shm_location, remapping, 
-      teasar_params, anisotropy, all_slices, border_targets, 
+      teasar_params, anisotropy, all_slices, 
+      border_targets, extra_targets_before, extra_targets_after,
       progress, fix_borders, fix_branching, 
       cc_segids, parallel, parallel_chunk_size
     )
@@ -223,7 +240,8 @@ def format_labels(labels, in_place):
 def skeletonize_parallel(
     all_dbf_shm, dbf_shm_location, 
     cc_labels_shm, cc_shm_location, remapping, 
-    teasar_params, anisotropy, all_slices, border_targets, 
+    teasar_params, anisotropy, all_slices, 
+    border_targets, extra_targets_before, extra_targets_after,
     progress, fix_borders, fix_branching, 
     cc_segids, parallel, chunk_size
   ):
@@ -244,7 +262,8 @@ def skeletonize_parallel(
       dbf_shm_location, all_dbf_shm.shape, all_dbf_shm.dtype, 
       cc_shm_location, cc_labels_shm.shape, cc_labels_shm.dtype,
       remapping, teasar_params, anisotropy, all_slices, 
-      border_targets, progress, fix_borders, fix_branching
+      border_targets, extra_targets_before, extra_targets_after, 
+      progress, fix_borders, fix_branching
     )
 
     ccids = []
@@ -288,8 +307,9 @@ def parallel_skeletonize_subset(
   return skels
 
 def skeletonize_subset(
-    all_dbf, cc_labels, remapping, teasar_params,
-    anisotropy, all_slices, border_targets,
+    all_dbf, cc_labels, remapping, 
+    teasar_params, anisotropy, all_slices, 
+    border_targets, extra_targets_before, extra_targets_after,
     progress, fix_borders, fix_branching,
     cc_segids
   ):
@@ -309,18 +329,39 @@ def skeletonize_subset(
     labels = (labels == segid)
     dbf = (labels * all_dbf[slices]).astype(np.float32)
 
-    manual_targets = []
+    manual_targets_before = []
+    manual_targets_after = []
+    root = None 
+
+    def translate_to_roi(targets):
+      targets = np.array(targets)
+      targets -= roi.minpt.astype(np.uint32)
+      return targets.tolist()      
+
+    # We only source a predetermined root from 
+    # border_targets because we understand that it's
+    # located at a reasonable place at the edge of the
+    # shape. In theory, extra targets can be positioned
+    # anywhere within the shape or off the shape, making it 
+    # a dicey proposition. 
     if len(border_targets[segid]) > 0:
-      manual_targets = np.array(border_targets[segid])
-      manual_targets -= roi.minpt.astype(np.uint32)
-      manual_targets = manual_targets.tolist()
+      manual_targets_before = translate_to_roi(border_targets[segid])
+      root = manual_targets_before.pop()
+
+    if segid in extra_targets_before and len(extra_targets_before[segid]) > 0:
+      manual_targets_before.extend( translate_to_roi(extra_targets_before[segid]) )
+
+    if segid in extra_targets_after and len(extra_targets_after[segid]) > 0:
+      manual_targets_after.extend( translate_to_roi(extra_targets_after[segid]) )
 
     skeleton = kimimaro.trace.trace(
       labels, 
       dbf, 
       anisotropy=anisotropy, 
       fix_branching=fix_branching, 
-      manual_targets=manual_targets,
+      manual_targets_before=manual_targets_before,
+      manual_targets_after=manual_targets_after,
+      root=root,
       **teasar_params
     )
 
@@ -360,6 +401,13 @@ def compute_cc_labels(all_labels, cc_safety_factor):
   del tmp_labels
   remapping = kimimaro.skeletontricks.get_mapping(all_labels, cc_labels) 
   return cc_labels, remapping
+
+def points_to_labels(pts, cc_labels):
+  mapping = defaultdict(list)
+  for pt in pts:
+    pt = tuple(pt)
+    mapping[ cc_labels[pt] ].append(pt)
+  return mapping
 
 def compute_border_targets(cc_labels, anisotropy):
   sx, sy, sz = cc_labels.shape

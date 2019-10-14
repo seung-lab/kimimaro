@@ -154,6 +154,40 @@ def test_fix_borders_y():
   assert np.all(skel.vertices[:,1] == np.arange(256))
   assert np.all(skel.vertices[:,2] == 129)
 
+def test_extra_targets():
+  labels = np.zeros((256, 256, 1), dtype=np.uint8)
+  labels[ 64:196, 64:196, : ] = 128
+
+  def skeletonize(labels, **kwargs):
+    return kimimaro.skeletonize(
+      labels,
+      teasar_params={
+        'const': 250,
+        'scale': 10,
+        'pdrf_exponent': 4,
+        'pdrf_scale': 100000,
+      }, 
+      anisotropy=(1,1,1),
+      object_ids=None, 
+      dust_threshold=1000, 
+      cc_safety_factor=1,
+      progress=True, 
+      fix_branching=True, 
+      in_place=False, 
+      fix_borders=True,
+      **kwargs
+    )[128]
+
+  skel1 = skeletonize(labels)
+  skel2 = skeletonize(labels, extra_targets_after=[ (65, 65, 0) ])
+
+  assert skel1.vertices.size < skel2.vertices.size
+
+  skel3 = skeletonize(labels, extra_targets_before=[ (65, 65, 0) ])
+
+  assert skel3.vertices.size < skel2.vertices.size
+
+
 def test_parallel():
   labels = np.zeros((256, 256, 128), dtype=np.uint8)
   labels[ 0:128, 0:128, : ] = 1
