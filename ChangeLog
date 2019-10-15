@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+1.0.0
+-----
+
+* feat: specify extra\_targets\_before and after (#33)
+* docs: fix spelling & grammar
+
 0.7.0
 -----
 
