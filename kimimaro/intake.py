@@ -263,7 +263,8 @@ def skeletonize_parallel(
       cc_shm_location, cc_labels_shm.shape, cc_labels_shm.dtype,
       remapping, teasar_params, anisotropy, all_slices, 
       border_targets, extra_targets_before, extra_targets_after, 
-      progress, fix_borders, fix_branching
+      False, # progress, use our own progress bar below
+      fix_borders, fix_branching
     )
 
     ccids = []
@@ -315,7 +316,7 @@ def skeletonize_subset(
   ):
 
   skeletons = defaultdict(list)
-  for segid in cc_segids:
+  for segid in tqdm(cc_segids, disable=(not progress), desc="Skeletonizing Labels"):
     # Crop DBF to ROI
     slices = all_slices[segid - 1]
     if slices is None:
