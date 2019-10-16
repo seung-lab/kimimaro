@@ -182,6 +182,7 @@ def compute_paths(
   invalid_vertices = {}
   paths = []
   valid_labels = np.count_nonzero(labels)
+  root = tuple(root)
 
   if soma_mode:
     invalid_vertices[root] = True
