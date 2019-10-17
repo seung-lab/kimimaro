@@ -126,6 +126,9 @@ def skeletonize(
 
   all_labels = format_labels(all_labels, in_place=in_place)
   all_labels = apply_object_mask(all_labels, object_ids)
+
+  if all_labels.size <= dust_threshold:
+    return {}
   
   if not np.any(all_labels):
     return {}

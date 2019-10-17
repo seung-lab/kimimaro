@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+1.0.1
+-----
+
+* fix: accept any root converable to a tuple
+* fix: progress bars were disrupted in parallel feature
+* docs: upload changelog
+
 1.0.0
 -----
 
