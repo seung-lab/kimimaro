@@ -286,6 +286,7 @@ def skeletonize_parallel(
         pbar.update(len(skels))
     executor.close()
     executor.join()
+    executor.clear()
 
     signal.signal(signal.SIGINT, prevsigint)
     signal.signal(signal.SIGTERM, prevsigterm)
