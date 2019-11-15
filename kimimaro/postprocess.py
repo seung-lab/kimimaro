@@ -61,10 +61,12 @@ def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
 
   Returns: Skeleton
   """
+  label = skeleton.id
   skeleton = remove_dust(skeleton, dust_threshold) 
   skeleton = remove_loops(skeleton)
   skeleton = connect_pieces(skeleton)
   skeleton = remove_ticks(skeleton, tick_threshold)
+  skeleton.id = label
   return skeleton
 
 def join_close_components(skeletons, radius=None):
