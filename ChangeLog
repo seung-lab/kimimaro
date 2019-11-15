@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+1.0.2
+-----
+
+* fix: allow multiple invocations of a pathos process pool
+* perf: skip processing if dust\_threshold larger than image
+
 1.0.1
 -----
 
