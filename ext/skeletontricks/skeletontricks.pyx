@@ -66,6 +66,21 @@ cdef extern from "skeletontricks.hpp" namespace "skeletontricks":
 
   cdef vector[T] _find_cycle[T](T* edges, size_t Ne)
 
+def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
+  """
+  Given a graph of edges that are a single connected component,
+  find a cycle via depth first search.
+
+  Returns: list of edges in a cycle (empty list if no cycle is found)
+  """
+  cdef cnp.ndarray[int32_t, ndim=1] elist = np.array(
+    _find_cycle[int32_t](
+      <int32_t*>&edges[0,0], <size_t>(edges.size // 2)
+    ),
+    dtype=np.int32
+  )
+  return elist.reshape(elist.size // 2, 2)
+
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
@@ -721,21 +736,22 @@ def unique(cnp.ndarray[INTEGER, ndim=3] labels, return_counts=False):
   else:
     return segids
 
-@cython.boundscheck(False)
-@cython.wraparound(False)  # turn off negative index wrapping for entire function
-@cython.nonecheck(False)
-def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
-  """
-  Given a graph of edges that are a single connected component,
-  find a cycle via depth first search.
+# @cython.boundscheck(False)
+# @cython.wraparound(False)  # turn off negative index wrapping for entire function
+# @cython.nonecheck(False)
+# def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
+#   """
+#   Given a graph of edges that are a single connected component,
+#   find a cycle via depth first search.
 
-  Returns: list of edges in a cycle (empty list if no cycle is found)
-  """
-  cdef cnp.ndarray[int32_t] elist = _find_cycle[int32_t](
-    <int32_t*>&edges[0,0], <size_t>(edges.size // 2)
-  )
+#   Returns: list of edges in a cycle (empty list if no cycle is found)
+#   """
+#   cdef vector[int32_t] elist = _find_cycle[int32_t](
+#     <int32_t*>&edges[0,0], <size_t>(edges.size // 2)
+#   )
+#   cdef cnp.ndarray[int32_t] nelist = elist;
 
-  return elist.reshape(len(elist) // 2, 2)
+#   return nelist.reshape(len(elist) // 2, 2)
 
   # index = defaultdict(set)
   # visited = defaultdict(int)

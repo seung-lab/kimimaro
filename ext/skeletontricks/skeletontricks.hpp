@@ -136,7 +136,7 @@ inline size_t max(T* edges, const size_t size) {
 
   size_t mx = edges[0];
   for (size_t i = 0; i < size; i++) {
-    if (edges[i] > mx) {
+    if (static_cast<size_t>(edges[i]) > mx) {
       mx = static_cast<size_t>(edges[i]);
     }
   }
@@ -144,17 +144,26 @@ inline size_t max(T* edges, const size_t size) {
   return mx;
 }
 
+// template <typename T>
+// std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
+//   printf("hello world\n");
+//   return std::vector<T>();
+// }
+
 // Ne = size of edges / 2
 // Nv = number of vertices (max of edge values)
 template <typename T>
 std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
   if (Ne == 0) {
-    return std::vector<T>();
+    return std::vector<T>(0);
   }
 
-  size_t Nv = max(edges, Ne * 2);
+  size_t Nv = max(edges, Ne * 2) + 1; // +1 to ensure zero is counted
 
   std::vector< std::vector<T> > index(Nv);
+  index.reserve(Nv);
+  // printf("Nv: %d Ne: %d\n", Nv, Ne);
+
   for (size_t i = 0; i < 2 * Ne; i += 2) {
     T e1 = edges[i];
     T e2 = edges[i+1];
@@ -210,11 +219,11 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
   }
 
   if (path.size() <= 1) {
-    return std::vector<T>();
+    return std::vector<T>(0);
   }
 
   // cast stack to vector w/ zero copy
-  std::vector<T> vec_path(&path.top() + 1, &path.top() + 1 - path.size());
+  std::vector<T> vec_path(&path.top() + 1 - path.size(), &path.top() + 1);
 
   // find start of loop
   size_t i;
@@ -225,16 +234,25 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
   }
 
   if (vec_path.size() - i < 3) {
-    return std::vector<T>();
+    return std::vector<T>(0);
   }
 
   const size_t new_len = vec_path.size() - i;
 
-  std::vector<T> elist;
-  elist.reserve(new_len * 2);
+  std::vector<T> elist((new_len - 1) * 2);
+  elist.reserve((new_len - 1) * 2);
   for (size_t j = 0; j < new_len - 1; j++) {
-    elist[2*j] = vec_path[i + j];
-    elist[2*j + 1] = vec_path[i + j + 1];
+    T e1 = vec_path[i + j];
+    T e2 = vec_path[i + j + 1];
+
+    if (e1 < e2) {
+      elist[2*j] = e1;
+      elist[2*j + 1] = e2;      
+    }
+    else {
+      elist[2*j] = e2;
+      elist[2*j + 1] = e1;      
+    }
   }
 
   return elist;

@@ -296,6 +296,24 @@ def test_unique():
     assert np.all(labels_npy == labels_kimi)
     assert np.all(ct_npy == ct_kimi)
 
+def test_find_cycle():
+  edges = np.array([
+    [0, 1],
+    [1, 2],
+    [2, 0],
+    [2, 3],
+    [2, 4]
+  ], dtype=np.int32)
+
+  cycle = kimimaro.skeletontricks.find_cycle(edges)
+  cycle = np.sort(cycle, axis=0)
+
+  assert np.all(cycle == np.array([ 
+    [0, 1],
+    [0, 2],
+    [1, 2],
+  ]))
+
 def test_join_close_components_simple():
   skel = Skeleton([ 
       (0,0,0), (1,0,0), (10,0,0), (11, 0, 0)
