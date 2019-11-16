@@ -64,6 +64,8 @@ cdef extern from "skeletontricks.hpp" namespace "skeletontricks":
     float scale, float constant
   )
 
+  cdef vector[T] _find_cycle[T](T* edges, size_t Ne)
+
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
@@ -729,65 +731,71 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
 
   Returns: list of edges in a cycle (empty list if no cycle is found)
   """
-  index = defaultdict(set)
-  visited = defaultdict(int)
+  cdef cnp.ndarray[int32_t] elist = _find_cycle[int32_t](
+    <int32_t*>&edges[0,0], <size_t>(edges.size // 2)
+  )
 
-  if edges.size == 0:
-    return []
+  return elist.reshape(len(elist) // 2, 2)
 
-  for e1, e2 in edges:
-    index[e1].add(e2)
-    index[e2].add(e1)
+  # index = defaultdict(set)
+  # visited = defaultdict(int)
 
-  cdef int root = edges[0,0]
-  cdef int node = -1
-  cdef int child = -1
-  cdef int parent = -1
-  cdef int depth = -1
-  cdef int i = 0
+  # if edges.size == 0:
+  #   return []
 
-  cdef list stack = [root]
-  cdef list parents = [-1]
-  cdef list depth_stack = [0]
-  cdef list path = []
+  # for e1, e2 in edges:
+  #   index[e1].add(e2)
+  #   index[e2].add(e1)
 
-  while stack:
-    node = stack.pop()
-    parent = parents.pop()
-    depth = depth_stack.pop()
+  # cdef int root = edges[0,0]
+  # cdef int node = -1
+  # cdef int child = -1
+  # cdef int parent = -1
+  # cdef int depth = -1
+  # cdef int i = 0
 
-    for i in range(len(path) - depth):
-      path.pop()
+  # cdef list stack = [root]
+  # cdef list parents = [-1]
+  # cdef list depth_stack = [0]
+  # cdef list path = []
 
-    path.append(node)
+  # while stack:
+  #   node = stack.pop()
+  #   parent = parents.pop()
+  #   depth = depth_stack.pop()
 
-    if visited[node] == 1:
-      break
+  #   for i in range(len(path) - depth):
+  #     path.pop()
 
-    visited[node] = 1
+  #   path.append(node)
 
-    for child in index[node]:
-      if child != parent:
-        stack.append(child)
-        parents.append(node)
-        depth_stack.append(depth + 1)
+  #   if visited[node] == 1:
+  #     break
 
-  if len(path) <= 1:
-    return []
+  #   visited[node] = 1
+
+  #   for child in index[node]:
+  #     if child != parent:
+  #       stack.append(child)
+  #       parents.append(node)
+  #       depth_stack.append(depth + 1)
+
+  # if len(path) <= 1:
+  #   return []
   
-  for i in range(len(path) - 1):
-    if path[i] == node:
-      break
+  # for i in range(len(path) - 1):
+  #   if path[i] == node:
+  #     break
 
-  path = path[i:]
+  # path = path[i:]
 
-  if len(path) < 3:
-    return []
+  # if len(path) < 3:
+  #   return []
 
-  cdef list elist = []
-  for i in range(len(path) - 1):
-    elist.append(
-      (path[i], path[i+1])
-    )
+  # cdef list elist = []
+  # for i in range(len(path) - 1):
+  #   elist.append(
+  #     (path[i], path[i+1])
+  #   )
 
-  return elist
+  # return elist
