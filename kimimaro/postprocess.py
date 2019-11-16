@@ -67,7 +67,7 @@ def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
   skeleton = connect_pieces(skeleton)
   skeleton = remove_ticks(skeleton, tick_threshold)
   skeleton.id = label
-  return skeleton
+  return skeleton.consolidate()
 
 def join_close_components(skeletons, radius=None):
   """
@@ -175,8 +175,7 @@ def remove_dust(skeleton, dust_threshold):
     if skel.cable_length() > dust_threshold:
       skels.append(skel)
 
-  skeleton = Skeleton.simple_merge(skels)
-  return skeleton.consolidate()
+  return Skeleton.simple_merge(skels)
 
 def connect_pieces(skeleton):
   if skeleton.empty():
@@ -217,7 +216,7 @@ def connect_pieces(skeleton):
         break
 
   skeleton.edges = edges
-  return skeleton.consolidate()
+  return skeleton.consolidate(remove_disconnected_vertices=False)
 
 def remove_ticks(skeleton, threshold):
   """
@@ -244,7 +243,7 @@ def remove_ticks(skeleton, threshold):
   for component in skeleton.components():
     skels.append(_remove_ticks(component, threshold))
 
-  return Skeleton.simple_merge(skels).consolidate()
+  return Skeleton.simple_merge(skels).consolidate(remove_disconnected_vertices=False)
 
 def _remove_ticks(skeleton, threshold):
   """
@@ -342,7 +341,7 @@ def _remove_ticks(skeleton, threshold):
 
   skel = skeleton.clone()
   skel.edges = np.array(list(G.edges), dtype=np.uint32)
-  return skel.consolidate()
+  return skel
 
 def _create_distance_graph(skeleton):
   """
@@ -424,7 +423,7 @@ def remove_loops(skeleton):
   for component in skeleton.components():
     skels.append(_remove_loops(component))
 
-  return Skeleton.simple_merge(skels).consolidate()
+  return Skeleton.simple_merge(skels).consolidate(remove_disconnected_vertices=False)
 
 def _remove_loops(skeleton):
   nodes = skeleton.vertices
