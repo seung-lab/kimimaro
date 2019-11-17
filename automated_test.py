@@ -306,12 +306,32 @@ def test_find_cycle():
   ], dtype=np.int32)
 
   cycle = kimimaro.skeletontricks.find_cycle(edges)
-  cycle = np.sort(cycle, axis=0)
 
   assert np.all(cycle == np.array([ 
     [0, 1],
-    [0, 2],
     [1, 2],
+    [0, 2],
+  ]))
+
+  edges = np.array([
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 4], [4, 10], [10, 11], [11, 12], [12, 2],
+    [4, 5],
+    [5, 6],
+    [6, 7],
+  ], dtype=np.int32)
+
+  cycle = kimimaro.skeletontricks.find_cycle(edges)
+  print(cycle)
+  assert np.all(cycle == np.array([
+    [2, 3],
+    [3, 4],
+    [4, 10],
+    [10, 11],
+    [11, 12],
+    [2, 12],
   ]))
 
 def test_join_close_components_simple():
