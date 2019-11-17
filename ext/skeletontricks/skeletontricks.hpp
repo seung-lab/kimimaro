@@ -215,7 +215,7 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
   parents.push(-1);
   depth_stack.push(0);
   
-  std::vector<bool> visited(Ne, false);
+  std::vector<bool> visited(Nv, false);
 
   while (!stack.empty()) {
     node = stack.top();
