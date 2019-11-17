@@ -144,11 +144,39 @@ inline size_t max(T* edges, const size_t size) {
   return mx;
 }
 
-// template <typename T>
-// std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
-//   printf("hello world\n");
-//   return std::vector<T>();
-// }
+template <typename T>
+void printvec(std::vector<T> vec) {
+  for (T v : vec) {
+    printf("%d, ", v);
+  }
+  printf("\n");
+}
+
+template <typename T>
+void printstack(std::stack<T> stack) {
+  while (!stack.empty()) {
+    printf("%d, ", stack.top());
+    stack.pop();
+  }
+
+  printf("\n");
+}
+
+template <typename T>
+std::vector<T> stack2vec(std::stack<T> stk) {
+  std::vector<T> vec;
+  vec.reserve(stk.size());
+
+  while (!stk.empty()) {
+    vec.push_back(stk.top());
+    stk.pop();
+  }
+
+  std::reverse(vec.begin(), vec.end());
+
+  return vec;
+}
+
 
 // Ne = size of edges / 2
 // Nv = number of vertices (max of edge values)
@@ -162,11 +190,13 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
 
   std::vector< std::vector<T> > index(Nv);
   index.reserve(Nv);
-  // printf("Nv: %d Ne: %d\n", Nv, Ne);
 
+  // NB: consolidate handles the trivial loops (e1 == e2)
+  //     and deduplication of edges
   for (size_t i = 0; i < 2 * Ne; i += 2) {
     T e1 = edges[i];
     T e2 = edges[i+1];
+
     index[e1].push_back(e2);
     index[e2].push_back(e1);
   }
@@ -196,7 +226,7 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
     parents.pop();
     depth_stack.pop();
 
-    while (path.size() > depth) {
+    while (path.size() && path.size() > depth) {
       path.pop();
     }
 
@@ -223,7 +253,7 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
   }
 
   // cast stack to vector w/ zero copy
-  std::vector<T> vec_path(&path.top() + 1 - path.size(), &path.top() + 1);
+  std::vector<T> vec_path = stack2vec<T>(path);
 
   // find start of loop
   size_t i;
@@ -245,7 +275,7 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
     T e1 = vec_path[i + j];
     T e2 = vec_path[i + j + 1];
 
-    if (e1 < e2) {
+    if (e1 > e2) {
       elist[2*j] = e1;
       elist[2*j + 1] = e2;      
     }
@@ -254,6 +284,8 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
       elist[2*j + 1] = e1;      
     }
   }
+
+  std::reverse(elist.begin(), elist.end());
 
   return elist;
 }

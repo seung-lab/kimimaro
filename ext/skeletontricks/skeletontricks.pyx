@@ -79,7 +79,7 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
     ),
     dtype=np.int32
   )
-  return elist.reshape(elist.size // 2, 2)
+  return elist.reshape(elist.size // 2, 2, order='C')
 
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
