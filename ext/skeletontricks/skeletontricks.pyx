@@ -82,6 +82,9 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
 
   Returns: list of edges in a cycle (empty list if no cycle is found)
   """
+  if edges.size == 0:
+    return np.zeros((0,0), dtype=np.uint32)
+
   cdef cnp.ndarray[int32_t, ndim=1] elist = np.array(
     _find_cycle[int32_t](
       <int32_t*>&edges[0,0], <size_t>(edges.size // 2)
