@@ -36,6 +36,9 @@ import array
 import sys
 
 from libcpp.vector cimport vector
+from libcpp.unordered_map cimport unordered_map
+from libcpp.utility cimport pair as cpp_pair
+
 cimport numpy as cnp
 import numpy as np
 
@@ -65,6 +68,12 @@ cdef extern from "skeletontricks.hpp" namespace "skeletontricks":
   )
 
   cdef vector[T] _find_cycle[T](T* edges, size_t Ne)
+  
+  cdef unordered_map[ uint64_t, float ] _create_distance_graph(
+    float* vertices, size_t Nv, 
+    uint32_t* edges, size_t Ne, uint32_t start_node,
+    vector[int32_t] critical_points_vec
+  )
 
 def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
   """
@@ -80,6 +89,96 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
     dtype=np.int32
   )
   return elist.reshape(elist.size // 2, 2, order='C')
+
+def create_distance_graph(skeleton):
+  """
+  Creates the distance "supergraph" from a single connected component 
+  skeleton as described in _remove_ticks.
+
+  Returns: a distance "supergraph" describing the physical distance
+    between the critical points in the skeleton's structure.
+
+  Example skeleton with output:
+
+      60nm   60nm   60nm     
+    1------2------3------4
+      30nm |  70nm \
+           5        ----6
+
+  { 
+    (1,2): 60,  
+    (2,3): 60,
+    (2,5): 30,
+    (3,4): 60,
+    (3,6): 70,
+  }
+  """
+  cdef cnp.ndarray[float, ndim=2] vertices = skeleton.vertices
+  cdef cnp.ndarray[uint32_t, ndim=2] edges = skeleton.edges
+
+  unique_nodes, unique_counts = np.unique(edges, return_counts=True)
+  terminal_nodes = unique_nodes[ unique_counts == 1 ]
+  branch_nodes = set(unique_nodes[ unique_counts >= 3 ])
+  
+  critical_points = set(terminal_nodes)
+  critical_points.update(branch_nodes)
+
+  res = _create_distance_graph(
+    <float*>&vertices[0,0], vertices.shape[0],
+    <uint32_t*>&edges[0,0], edges.shape[0], terminal_nodes[0],
+    list(critical_points)
+  )
+  cdef dict supergraph = res
+
+  cdef dict real_supergraph = {}
+  cdef uint64_t key = 0
+  cdef int32_t e1, e2
+
+  for key in supergraph.keys():
+    e2 = <int32_t>(key & 0xffffffff)
+    e1 = <int32_t>(key >> 32)
+    real_supergraph[ (e1, e2) ] = supergraph[key]
+
+  return real_supergraph
+
+  # tree = defaultdict(set)
+
+  # for e1, e2 in edges:
+  #   tree[e1].add(e2)
+  #   tree[e2].add(e1)
+
+  # # The below depth first search would be
+  # # more elegantly implemented as recursion,
+  # # but it quickly blows the stack, mandating
+  # # an iterative implementation.
+
+  # stack = [ terminal_nodes[0] ]
+  # parents = [ -1 ]
+  # dist_stack = [ 0.0 ]
+  # root_stack = [ terminal_nodes[0] ]
+  # distgraph = defaultdict(float) # the distance "supergraph"
+
+  # while stack:
+  #   node = stack.pop()
+  #   dist = dist_stack.pop()
+  #   root = root_stack.pop()
+  #   parent = parents.pop()
+
+  #   if node in critical_points and node != root:
+  #     distgraph[ (root, node) ] = dist
+  #     dist = 0.0
+  #     root = node
+
+  #   for child in tree[node]:
+  #     if child != parent:
+  #       stack.append(child)
+  #       parents.append(node)
+  #       dist_stack.append(
+  #         dist + np.linalg.norm(vertices[node,:] - vertices[child,:])
+  #       )
+  #       root_stack.append(root)
+
+  # return distgraph
 
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function

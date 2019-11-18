@@ -27,6 +27,8 @@
 #include <queue>
 #include <vector>
 #include <stack>
+#include <unordered_map>
+#include <set>
 
 #ifndef SKELETONTRICKS_HPP
 #define SKELETONTRICKS_HPP
@@ -289,6 +291,100 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
 
   return elist;
 }
+
+// struct pair_hash {
+//   template <class T1, class T2>
+//   std::size_t operator() (const std::pair<T1, T2> &pair) const {
+//     return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
+//   }
+// };
+
+std::unordered_map<uint64_t, float> _create_distance_graph(
+  float* vertices, size_t Nv, 
+  uint32_t* edges, size_t Ne, uint32_t start_node,
+  std::vector<int32_t> critical_points_vec
+) {
+
+  std::vector< std::vector<uint32_t> > tree(Nv);
+  tree.reserve(Nv);
+
+  std::vector<bool> critical_points(Nv, false);
+  for (uint32_t edge : critical_points_vec) {
+    critical_points[edge] = true;
+  }
+
+  for (size_t i = 0; i < Ne; i++) {
+    uint32_t e1 = edges[2*i];
+    uint32_t e2 = edges[2*i + 1];
+
+    tree[e1].push_back(e2);
+    tree[e2].push_back(e1);
+  }
+
+  std::unordered_map<uint64_t, float> distgraph;
+
+  std::stack<uint32_t> stack;
+  std::stack<int32_t> parents;
+  std::stack<float> dist_stack;
+  std::stack<uint32_t> root_stack;
+
+  stack.push(start_node);
+  parents.push(-1);
+  dist_stack.push(0.0);
+  root_stack.push(start_node);
+
+  uint32_t node, root;
+  int32_t parent;
+  float dist;
+
+  uint64_t key = 0;
+
+  while (!stack.empty()) {
+    node = stack.top();
+    dist = dist_stack.top();
+    root = root_stack.top();
+    parent = parents.top();
+
+    stack.pop();
+    dist_stack.pop();
+    root_stack.pop();
+    parents.pop();
+
+    if (critical_points[node] && node != root) {
+      key = (root < node)
+        ? static_cast<uint64_t>(root) | (static_cast<uint64_t>(node) << 32)
+        : static_cast<uint64_t>(node) | (static_cast<uint64_t>(root) << 32);
+
+      distgraph[key] = dist;
+      dist = 0.0;
+      root = node;
+    }
+
+    for (int32_t child : tree[node]) {
+      if (static_cast<int32_t>(child) != parent) {
+        continue;
+      }
+
+      float dx = vertices[3*node + 0] - vertices[3*child + 0];
+      float dy = vertices[3*node + 1] - vertices[3*child + 1];
+      float dz = vertices[3*node + 2] - vertices[3*child + 2];
+
+      dx *= dx;
+      dy *= dy;
+      dz *= dz;
+
+      stack.push(child);
+      parents.push(static_cast<int32_t>(node));
+      dist_stack.push(
+        dist + sqrt(dx + dy + dz)
+      );
+      root_stack.push(root);
+    }
+  }
+
+  return distgraph;
+}
+
 
 };
 
