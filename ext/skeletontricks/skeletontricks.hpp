@@ -361,7 +361,7 @@ std::unordered_map<uint64_t, float> _create_distance_graph(
     }
 
     for (int32_t child : tree[node]) {
-      if (static_cast<int32_t>(child) != parent) {
+      if (static_cast<int32_t>(child) == parent) {
         continue;
       }
 
