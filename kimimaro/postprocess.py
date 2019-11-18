@@ -295,7 +295,7 @@ def _remove_ticks(skeleton, threshold):
   if skeleton.empty():
     return skeleton
 
-  dgraph = _create_distance_graph(skeleton)
+  dgraph = kimimaro.skeletontricks.create_distance_graph(skeleton)
   vertices = skeleton.vertices
   edges = skeleton.edges
 
