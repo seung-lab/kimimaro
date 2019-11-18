@@ -216,7 +216,7 @@ def connect_pieces(skeleton):
         break
 
   skeleton.edges = edges
-  return skeleton.consolidate(remove_disconnected_vertices=False)
+  return skeleton
 
 def remove_ticks(skeleton, threshold):
   """
