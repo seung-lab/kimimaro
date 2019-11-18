@@ -460,6 +460,19 @@ def _remove_loops(skeleton):
     branch_cycle = nodes_cycle[np.isin(nodes_cycle,branch_nodes)]
     branch_cycle = branch_cycle.astype(np.int32)
 
+    # Summary:
+    # 0 external branches: isolated loop, just remove it
+    # 1 external branch  : remove the loop but draw a line
+    #   from the branch point to the farthest node in the loop.
+    # 2 external branches: remove the shortest path between
+    #   the two entry/exit points. 
+    #   (does this make sense?? wouldn't we keep the shortest path??)
+    # 3+ external branches: collapse the cycle into its centroid
+    #   if the radius of the centroid is less than the EDT radius
+    #   of the pixel located at the centroid. Otherwise, arbitrarily
+    #   cut an edge from the cycle to break it. This radius rule prevents
+    #   issues where we collapse to a point outside of the neurite.
+
     # Loop with a tail
     if branch_cycle.shape[0] == 1:
       branch_cycle_point = nodes[branch_cycle, :]
