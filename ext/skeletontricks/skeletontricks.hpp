@@ -290,6 +290,9 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
   return elist;
 }
 
+// Had trouble returning an unordered_map< pair<int,int>, float>
+// to python, so I decided to just pack two uint32s into a uint64
+// and unpack them on the other side.
 std::unordered_map<uint64_t, float> _create_distance_graph(
   float* vertices, size_t Nv, 
   uint32_t* edges, size_t Ne, uint32_t start_node,
