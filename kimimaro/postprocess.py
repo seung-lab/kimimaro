@@ -311,19 +311,22 @@ def _remove_ticks(skeleton, threshold):
   G = nx.Graph()
   G.add_edges_from(edges)
 
+  terminal_superedges = set([ edg for edg in dgraph.keys() if (edg[0] in terminal_nodes or edg[1] in terminal_nodes) ])
+
   def fuse_edge(edg1):
     unify = [ edg for edg in dgraph.keys() if edg1 in edg ]
     new_dist = 0.0
     for edg in unify:
+      terminal_superedges.discard(edg)
       new_dist += dgraph[edg]
       del dgraph[edg]
     unify = set([ item for sublist in unify for item in sublist ])
     unify.remove(edg1)
     dgraph[tuple(unify)] = new_dist
+    terminal_superedges.add(tuple(unify))
     branch_counts[edg1] = 0
 
   while len(dgraph) > 1:
-    terminal_superedges = [ edg for edg in dgraph.keys() if (edg[0] in terminal_nodes or edg[1] in terminal_nodes) ]
     min_edge = min(terminal_superedges, key=dgraph.get)
     e1, e2 = min_edge
 
@@ -337,6 +340,7 @@ def _remove_ticks(skeleton, threshold):
     G.remove_edges_from(path)
 
     del dgraph[min_edge]
+    terminal_superedges.remove(min_edge)
     branch_counts[e1] -= 1
     branch_counts[e2] -= 1
 
