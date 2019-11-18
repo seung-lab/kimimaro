@@ -28,7 +28,6 @@
 #include <vector>
 #include <stack>
 #include <unordered_map>
-#include <set>
 
 #ifndef SKELETONTRICKS_HPP
 #define SKELETONTRICKS_HPP
@@ -179,7 +178,6 @@ std::vector<T> stack2vec(std::stack<T> stk) {
   return vec;
 }
 
-
 // Ne = size of edges / 2
 // Nv = number of vertices (max of edge values)
 template <typename T>
@@ -291,13 +289,6 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
 
   return elist;
 }
-
-// struct pair_hash {
-//   template <class T1, class T2>
-//   std::size_t operator() (const std::pair<T1, T2> &pair) const {
-//     return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
-//   }
-// };
 
 std::unordered_map<uint64_t, float> _create_distance_graph(
   float* vertices, size_t Nv, 
