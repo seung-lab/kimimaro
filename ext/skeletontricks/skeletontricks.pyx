@@ -796,6 +796,6 @@ def unique(cnp.ndarray[INTEGER, ndim=3] labels, return_counts=False):
       cts.append(counts[i])
 
   if return_counts:
-    return segids, cts
+    return np.array(segids), np.array(cts)
   else:
-    return segids
+    return np.array(segids)
