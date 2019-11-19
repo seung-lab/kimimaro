@@ -28,6 +28,7 @@
 #include <vector>
 #include <stack>
 #include <unordered_map>
+#include <string>
 
 #ifndef SKELETONTRICKS_HPP
 #define SKELETONTRICKS_HPP
@@ -342,7 +343,7 @@ std::unordered_map<uint64_t, float> _create_distance_graph(
     parent = parents.top();
 
     if (visited[node]) {
-      throw "Loop detected.";
+      throw std::runtime_error(std::string("Cycle detected. Node: ") + std::to_string(node));
     }
     visited[node] = true;
 
