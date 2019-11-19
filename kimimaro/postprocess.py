@@ -452,10 +452,13 @@ def _remove_loops(skeleton):
 
   while True: # Loop until all cycles are removed
     edges = edges.astype(np.int32)
-    edges_cycle = kimimaro.skeletontricks.find_cycle(edges)
+    cycle_path = kimimaro.skeletontricks.find_cycle(edges)
+    # cycle_path = kimimaro.skeletontricks.find_cycle_cython(edges)
 
-    if len(edges_cycle) == 0:
+    if len(cycle_path) == 0:
       break
+
+    edges_cycle = path2edge(cycle_path)
 
     edges_cycle = np.array(edges_cycle, dtype=np.uint32)
     edges_cycle = np.sort(edges_cycle, axis=1)
@@ -501,7 +504,6 @@ def _remove_loops(skeleton):
     # Loop with an entrance and an exit
     elif branch_cycle.shape[0] == 2:
       path = nx.shortest_path(G, branch_cycle[0], branch_cycle[1])
-
       edge_path = path2edge(path)
       edge_path = np.sort(edge_path, axis=1)
 
@@ -569,9 +571,8 @@ def path2edge(path):
   Returns: sequence separated into edges
   """
   edges = np.zeros([len(path) - 1, 2], dtype=np.uint32)
-  for i in range(len(path)-1):
-    edges[i,0] = path[i]
-    edges[i,1] = path[i+1]
+  edges[:,0] = path[0:-1]
+  edges[:,1] = path[1:]
   return edges
 
 def remove_row(array, rows2remove): 

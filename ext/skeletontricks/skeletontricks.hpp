@@ -29,6 +29,7 @@
 #include <stack>
 #include <unordered_map>
 #include <string>
+#include <set>
 
 #ifndef SKELETONTRICKS_HPP
 #define SKELETONTRICKS_HPP
@@ -189,7 +190,7 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
 
   size_t Nv = max(edges, Ne * 2) + 1; // +1 to ensure zero is counted
 
-  std::vector< std::vector<T> > index(Nv);
+  std::vector< std::set<T> > index(Nv);
   index.reserve(Nv);
 
   // NB: consolidate handles the trivial loops (e1 == e2)
@@ -198,8 +199,8 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
     T e1 = edges[i];
     T e2 = edges[i+1];
 
-    index[e1].push_back(e2);
-    index[e2].push_back(e1);
+    index[e1].insert(e2);
+    index[e2].insert(e1);
   }
 
   T root = edges[0];
@@ -218,6 +219,8 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
   
   std::vector<bool> visited(Nv, false);
 
+  bool cycle_detected = false;
+
   while (!stack.empty()) {
     node = stack.top();
     parent = parents.top();
@@ -227,13 +230,14 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
     parents.pop();
     depth_stack.pop();
 
-    while (path.size() && path.size() > depth) {
+    while (path.size() > depth) {
       path.pop();
     }
 
     path.push(node);
 
     if (visited[node]) {
+      cycle_detected = true;
       break;
     }
     visited[node] = true;
@@ -249,16 +253,18 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
     }
   }
 
-  if (path.size() <= 1) {
+  if (!cycle_detected || path.size() <= 1) {
     return std::vector<T>(0);
   }
 
   // cast stack to vector w/ zero copy
   std::vector<T> vec_path = stack2vec<T>(path);
 
-  // find start of loop
+  // Find start of loop. Since a cycle was detected,
+  // the last node found started the cycle. We need
+  // to trim the path leading up to that connection.
   size_t i;
-  for (i = 0; i < vec_path.size(); i++) {
+  for (i = 0; i < vec_path.size() - 1; i++) {
     if (vec_path[i] == node) {
       break;
     }
@@ -268,27 +274,7 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
     return std::vector<T>(0);
   }
 
-  const size_t new_len = vec_path.size() - i;
-
-  std::vector<T> elist((new_len - 1) * 2);
-  elist.reserve((new_len - 1) * 2);
-  for (size_t j = 0; j < new_len - 1; j++) {
-    T e1 = vec_path[i + j];
-    T e2 = vec_path[i + j + 1];
-
-    if (e1 > e2) {
-      elist[2*j] = e1;
-      elist[2*j + 1] = e2;      
-    }
-    else {
-      elist[2*j] = e2;
-      elist[2*j + 1] = e1;      
-    }
-  }
-
-  std::reverse(elist.begin(), elist.end());
-
-  return elist;
+  return std::vector<T>(vec_path.begin() + i, vec_path.end());
 }
 
 // Had trouble returning an unordered_map< pair<int,int>, float>

@@ -83,7 +83,9 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
   Returns: list of edges in a cycle (empty list if no cycle is found)
   """
   if edges.size == 0:
-    return np.zeros((0,0), dtype=np.uint32)
+    return np.zeros((0,), dtype=np.uint32)
+
+  edges = np.ascontiguousarray(edges)
 
   cdef cnp.ndarray[int32_t, ndim=1] elist = np.array(
     _find_cycle[int32_t](
@@ -91,7 +93,7 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
     ),
     dtype=np.int32
   )
-  return elist.reshape(elist.size // 2, 2, order='C')
+  return elist
 
 def create_distance_graph(skeleton):
   """
@@ -799,3 +801,75 @@ def unique(cnp.ndarray[INTEGER, ndim=3] labels, return_counts=False):
     return np.array(segids), np.array(cts)
   else:
     return np.array(segids)
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)  # turn off negative index wrapping for entire function
+@cython.nonecheck(False)
+def find_cycle_cython(cnp.ndarray[int32_t, ndim=2] edges):
+  """
+  Given a graph of edges that are a single connected component,
+  find a cycle via depth first search.
+
+  Returns: list of edges in a cycle (empty list if no cycle is found)
+  """
+  index = defaultdict(set)
+  visited = defaultdict(int)
+
+  if edges.size == 0:
+    return np.array([], dtype=np.int32)
+
+  for e1, e2 in edges:
+    index[e1].add(e2)
+    index[e2].add(e1)
+
+  cdef int root = edges[0,0]
+  cdef int node = -1
+  cdef int child = -1
+  cdef int parent = -1
+  cdef int depth = -1
+  cdef int i = 0
+
+  cdef list stack = [root]
+  cdef list parents = [-1]
+  cdef list depth_stack = [0]
+  cdef list path = []
+
+  while stack:
+    node = stack.pop()
+    parent = parents.pop()
+    depth = depth_stack.pop()
+
+    for i in range(len(path) - depth):
+      path.pop()
+
+    path.append(node)
+
+    if visited[node] == 1:
+      break
+
+    visited[node] = 1
+
+    for child in index[node]:
+      if child != parent:
+        stack.append(child)
+        parents.append(node)
+        depth_stack.append(depth + 1)
+
+  if len(path) <= 1:
+    return np.array([], dtype=np.int32)
+  
+  for i in range(len(path) - 1):
+    if path[i] == node:
+      break
+
+  path = path[i:]
+
+  if len(path) < 3:
+    return np.array([], dtype=np.int32)
+
+  return np.array(path, dtype=np.int32)
+
+
+
+
