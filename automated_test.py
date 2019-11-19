@@ -324,7 +324,7 @@ def test_find_cycle():
   ], dtype=np.int32)
 
   cycle = kimimaro.skeletontricks.find_cycle(edges)
-  print(cycle)
+  
   assert np.all(cycle == np.array([
     [2, 3],
     [3, 4],
@@ -333,6 +333,31 @@ def test_find_cycle():
     [11, 12],
     [2, 12],
   ]))
+
+  # two loops
+  edges = np.array([
+    [0, 1], [0, 20], [20, 21], [21, 22], [22, 23], [23, 21],
+    [1, 2],
+    [2, 3],
+    [3, 4],
+    [4, 5],
+    [5, 6],
+    [6, 7], [7, 10], [10, 11], [11, 6]
+  ], dtype=np.int32)
+
+  cycle = kimimaro.skeletontricks.find_cycle(edges)
+  
+  assert np.all(cycle == np.array([
+    [21, 22],
+    [22, 23],
+    [21, 23],
+  ])) or np.all(cycle == np.array([
+    [6, 7],
+    [7, 10],
+    [10, 11],
+    [6, 11],
+  ]))
+
 
 def test_join_close_components_simple():
   skel = Skeleton([ 
