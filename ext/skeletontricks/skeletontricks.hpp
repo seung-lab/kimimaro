@@ -333,11 +333,18 @@ std::unordered_map<uint64_t, float> _create_distance_graph(
 
   uint64_t key = 0;
 
+  std::vector<bool> visited(Nv, false);
+
   while (!stack.empty()) {
     node = stack.top();
     dist = dist_stack.top();
     root = root_stack.top();
     parent = parents.top();
+
+    if (visited[node]) {
+      throw "Loop detected.";
+    }
+    visited[node] = true;
 
     stack.pop();
     dist_stack.pop();
