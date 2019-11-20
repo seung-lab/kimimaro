@@ -36,6 +36,9 @@ import array
 import sys
 
 from libcpp.vector cimport vector
+from libcpp.unordered_map cimport unordered_map
+from libcpp.utility cimport pair as cpp_pair
+
 cimport numpy as cnp
 import numpy as np
 
@@ -63,6 +66,86 @@ cdef extern from "skeletontricks.hpp" namespace "skeletontricks":
     int* path, int path_size,
     float scale, float constant
   )
+
+  cdef vector[T] _find_cycle[T](T* edges, size_t Ne)
+  
+  cdef unordered_map[ uint64_t, float ] _create_distance_graph(
+    float* vertices, size_t Nv, 
+    uint32_t* edges, size_t Ne, uint32_t start_node,
+    vector[int32_t] critical_points_vec
+  )
+
+def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
+  """
+  Given a graph of edges that are a single connected component,
+  find a cycle via depth first search.
+
+  Returns: list of edges in a cycle (empty list if no cycle is found)
+  """
+  if edges.size == 0:
+    return np.zeros((0,), dtype=np.uint32)
+
+  edges = np.ascontiguousarray(edges)
+
+  cdef cnp.ndarray[int32_t, ndim=1] elist = np.array(
+    _find_cycle[int32_t](
+      <int32_t*>&edges[0,0], <size_t>(edges.size // 2)
+    ),
+    dtype=np.int32
+  )
+  return elist
+
+def create_distance_graph(skeleton):
+  """
+  Creates the distance "supergraph" from a single connected component 
+  skeleton as described in _remove_ticks.
+
+  Returns: a distance "supergraph" describing the physical distance
+    between the critical points in the skeleton's structure.
+
+  Example skeleton with output:
+
+      60nm   60nm   60nm     
+    1------2------3------4
+      30nm |  70nm \
+           5        ----6
+
+  { 
+    (1,2): 60,  
+    (2,3): 60,
+    (2,5): 30,
+    (3,4): 60,
+    (3,6): 70,
+  }
+  """
+  cdef cnp.ndarray[float, ndim=2] vertices = skeleton.vertices
+  cdef cnp.ndarray[uint32_t, ndim=2] edges = skeleton.edges
+
+  unique_nodes, unique_counts = np.unique(edges, return_counts=True)
+  terminal_nodes = unique_nodes[ unique_counts == 1 ]
+  branch_nodes = set(unique_nodes[ unique_counts >= 3 ])
+  
+  critical_points = set(terminal_nodes)
+  critical_points.update(branch_nodes)
+
+  res = _create_distance_graph(
+    <float*>&vertices[0,0], vertices.shape[0],
+    <uint32_t*>&edges[0,0], edges.shape[0], terminal_nodes[0],
+    list(critical_points)
+  )
+  cdef dict supergraph = res
+
+  cdef dict real_supergraph = {}
+  cdef uint64_t key = 0
+  cdef int32_t e1, e2
+
+  for key in supergraph.keys():
+    e2 = <int32_t>(key & 0xffffffff)
+    e1 = <int32_t>(key >> 32)
+    real_supergraph[ (e1, e2) ] = supergraph[key]
+
+  return real_supergraph
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
@@ -715,14 +798,15 @@ def unique(cnp.ndarray[INTEGER, ndim=3] labels, return_counts=False):
       cts.append(counts[i])
 
   if return_counts:
-    return segids, cts
+    return np.array(segids), np.array(cts)
   else:
-    return segids
+    return np.array(segids)
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
-def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
+def find_cycle_cython(cnp.ndarray[int32_t, ndim=2] edges):
   """
   Given a graph of edges that are a single connected component,
   find a cycle via depth first search.
@@ -733,7 +817,7 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
   visited = defaultdict(int)
 
   if edges.size == 0:
-    return []
+    return np.array([], dtype=np.int32)
 
   for e1, e2 in edges:
     index[e1].add(e2)
@@ -773,7 +857,7 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
         depth_stack.append(depth + 1)
 
   if len(path) <= 1:
-    return []
+    return np.array([], dtype=np.int32)
   
   for i in range(len(path) - 1):
     if path[i] == node:
@@ -782,12 +866,10 @@ def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
   path = path[i:]
 
   if len(path) < 3:
-    return []
+    return np.array([], dtype=np.int32)
 
-  cdef list elist = []
-  for i in range(len(path) - 1):
-    elist.append(
-      (path[i], path[i+1])
-    )
+  return np.array(path, dtype=np.int32)
 
-  return elist
+
+
+

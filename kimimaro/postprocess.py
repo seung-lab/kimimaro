@@ -62,6 +62,12 @@ def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
   Returns: Skeleton
   """
   label = skeleton.id
+
+  # necessary for removing trivial loops etc
+  # remove_loops and remove_ticks assume a 
+  # clean representation
+  skeleton = skeleton.consolidate() 
+
   skeleton = remove_dust(skeleton, dust_threshold) 
   skeleton = remove_loops(skeleton)
   skeleton = connect_pieces(skeleton)
@@ -216,7 +222,7 @@ def connect_pieces(skeleton):
         break
 
   skeleton.edges = edges
-  return skeleton.consolidate(remove_disconnected_vertices=False)
+  return skeleton
 
 def remove_ticks(skeleton, threshold):
   """
@@ -289,7 +295,7 @@ def _remove_ticks(skeleton, threshold):
   if skeleton.empty():
     return skeleton
 
-  dgraph = _create_distance_graph(skeleton)
+  dgraph = kimimaro.skeletontricks.create_distance_graph(skeleton)
   vertices = skeleton.vertices
   edges = skeleton.edges
 
@@ -305,19 +311,22 @@ def _remove_ticks(skeleton, threshold):
   G = nx.Graph()
   G.add_edges_from(edges)
 
+  terminal_superedges = set([ edg for edg in dgraph.keys() if (edg[0] in terminal_nodes or edg[1] in terminal_nodes) ])
+
   def fuse_edge(edg1):
     unify = [ edg for edg in dgraph.keys() if edg1 in edg ]
     new_dist = 0.0
     for edg in unify:
+      terminal_superedges.discard(edg)
       new_dist += dgraph[edg]
       del dgraph[edg]
     unify = set([ item for sublist in unify for item in sublist ])
     unify.remove(edg1)
     dgraph[tuple(unify)] = new_dist
+    terminal_superedges.add(tuple(unify))
     branch_counts[edg1] = 0
 
   while len(dgraph) > 1:
-    terminal_superedges = [ edg for edg in dgraph.keys() if (edg[0] in terminal_nodes or edg[1] in terminal_nodes) ]
     min_edge = min(terminal_superedges, key=dgraph.get)
     e1, e2 = min_edge
 
@@ -331,6 +340,7 @@ def _remove_ticks(skeleton, threshold):
     G.remove_edges_from(path)
 
     del dgraph[min_edge]
+    terminal_superedges.remove(min_edge)
     branch_counts[e1] -= 1
     branch_counts[e2] -= 1
 
@@ -427,25 +437,17 @@ def remove_loops(skeleton):
 
 def _remove_loops(skeleton):
   nodes = skeleton.vertices
-  G = nx.Graph()
-
-  # Double bookeeping to prevent having to 
-  # (expensively) call:
-  #
-  # edges = np.array(list(G.edges), dtype=np.int32)
-  #
-  # which effectively doubled the running time. The
-  # iterator of that function is just slow.
-
-  G.add_edges_from(skeleton.edges)
   edges = np.copy(skeleton.edges).astype(np.int32)
 
   while True: # Loop until all cycles are removed
     edges = edges.astype(np.int32)
-    edges_cycle = kimimaro.skeletontricks.find_cycle(edges)
+    cycle_path = kimimaro.skeletontricks.find_cycle(edges)
+    # cycle_path = kimimaro.skeletontricks.find_cycle_cython(edges)
 
-    if len(edges_cycle) == 0:
+    if len(cycle_path) == 0:
       break
+
+    edges_cycle = path2edge(cycle_path)
 
     edges_cycle = np.array(edges_cycle, dtype=np.uint32)
     edges_cycle = np.sort(edges_cycle, axis=1)
@@ -460,6 +462,18 @@ def _remove_loops(skeleton):
     branch_cycle = nodes_cycle[np.isin(nodes_cycle,branch_nodes)]
     branch_cycle = branch_cycle.astype(np.int32)
 
+    # Summary:
+    # 0 external branches: isolated loop, just remove it
+    # 1 external branch  : remove the loop but draw a line
+    #   from the branch point to the farthest node in the loop.
+    # 2 external branches: remove the shortest path between
+    #   the two entry/exit points. 
+    # 3+ external branches: collapse the cycle into its centroid
+    #   if the radius of the centroid is less than the EDT radius
+    #   of the pixel located at the centroid. Otherwise, arbitrarily
+    #   cut an edge from the cycle to break it. This radius rule prevents
+    #   issues where we collapse to a point outside of the neurite.
+
     # Loop with a tail
     if branch_cycle.shape[0] == 1:
       branch_cycle_point = nodes[branch_cycle, :]
@@ -468,16 +482,20 @@ def _remove_loops(skeleton):
       dist = np.sum((cycle_points - branch_cycle_point) ** 2, 1)
       end_node = nodes_cycle[np.argmax(dist)]
 
-      G.remove_edges_from(edges_cycle)
-      G.add_edge(branch_cycle[0], end_node)
-
       edges = remove_row(edges, edges_cycle)        
       new_edge = np.array([[branch_cycle[0], end_node]], dtype=np.int32) 
       edges = np.concatenate((edges, new_edge), 0)
 
     # Loop with an entrance and an exit
     elif branch_cycle.shape[0] == 2:
-      path = nx.shortest_path(G, branch_cycle[0], branch_cycle[1])
+
+      # compute the shortest path between the two branch points
+      path = np.array(cycle_path[1:])
+      pos = np.where(np.isin(path, branch_cycle))[0]
+      if (pos[1] - pos[0]) < len(path) / 2:
+        path = path[pos[0]:pos[1]+1]
+      else:
+        path = np.concatenate((path[pos[1]:], path[:pos[0]+1]), 0)
 
       edge_path = path2edge(path)
       edge_path = np.sort(edge_path, axis=1)
@@ -489,12 +507,10 @@ def _remove_loops(skeleton):
       row_valid = row_valid.astype(np.bool)
       edge_path = edges_cycle[row_valid,:]
 
-      G.remove_edges_from(edge_path)
       edges = remove_row(edges, edge_path)
 
     # Totally isolated loop
     elif branch_cycle.shape[0] == 0:
-      G.remove_edges_from(edges_cycle)
       edges = remove_row(edges, edges_cycle)
 
     # Loops with many ways in and out
@@ -517,11 +533,9 @@ def _remove_loops(skeleton):
       # by just making a tiny snip if the distance
       # is greater than the radius of the connected node.
       if dist > skeleton.radii[ intersect_node ]:
-        G.remove_edges_from(edges_cycle[:1,:])
         edges = remove_row(edges, edges_cycle[:1,:])
         continue
 
-      G.remove_edges_from(edges_cycle)
       edges = remove_row(edges, edges_cycle)      
 
       new_edges = np.zeros((branch_cycle.shape[0], 2))
@@ -532,7 +546,6 @@ def _remove_loops(skeleton):
         idx = np.where(branch_cycle == intersect_node)
         new_edges = np.delete(new_edges, idx, 0)
 
-      G.add_edges_from(new_edges)
       edges = np.concatenate((edges,new_edges), 0)
 
   skeleton.vertices = nodes
@@ -546,9 +559,8 @@ def path2edge(path):
   Returns: sequence separated into edges
   """
   edges = np.zeros([len(path) - 1, 2], dtype=np.uint32)
-  for i in range(len(path)-1):
-    edges[i,0] = path[i]
-    edges[i,1] = path[i+1]
+  edges[:,0] = path[0:-1]
+  edges[:,1] = path[1:]
   return edges
 
 def remove_row(array, rows2remove): 

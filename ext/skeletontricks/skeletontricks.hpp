@@ -26,6 +26,10 @@
 #include <cstdint>
 #include <queue>
 #include <vector>
+#include <stack>
+#include <unordered_map>
+#include <string>
+#include <set>
 
 #ifndef SKELETONTRICKS_HPP
 #define SKELETONTRICKS_HPP
@@ -126,6 +130,246 @@ int _roll_invalidation_cube(
 
   return invalidated;
 }
+
+template <typename T>
+inline size_t max(T* edges, const size_t size) {
+  if (size == 0) {
+    return 0;
+  }
+
+  size_t mx = edges[0];
+  for (size_t i = 0; i < size; i++) {
+    if (static_cast<size_t>(edges[i]) > mx) {
+      mx = static_cast<size_t>(edges[i]);
+    }
+  }
+
+  return mx;
+}
+
+template <typename T>
+void printvec(std::vector<T> vec) {
+  for (T v : vec) {
+    printf("%d, ", v);
+  }
+  printf("\n");
+}
+
+template <typename T>
+void printstack(std::stack<T> stack) {
+  while (!stack.empty()) {
+    printf("%d, ", stack.top());
+    stack.pop();
+  }
+
+  printf("\n");
+}
+
+template <typename T>
+std::vector<T> stack2vec(std::stack<T> stk) {
+  std::vector<T> vec;
+  vec.reserve(stk.size());
+
+  while (!stk.empty()) {
+    vec.push_back(stk.top());
+    stk.pop();
+  }
+
+  std::reverse(vec.begin(), vec.end());
+
+  return vec;
+}
+
+// Ne = size of edges / 2
+// Nv = number of vertices (max of edge values)
+template <typename T>
+std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
+  if (Ne == 0) {
+    return std::vector<T>(0);
+  }
+
+  size_t Nv = max(edges, Ne * 2) + 1; // +1 to ensure zero is counted
+
+  std::vector< std::set<T> > index(Nv);
+  index.reserve(Nv);
+
+  // NB: consolidate handles the trivial loops (e1 == e2)
+  //     and deduplication of edges
+  for (size_t i = 0; i < 2 * Ne; i += 2) {
+    T e1 = edges[i];
+    T e2 = edges[i+1];
+
+    index[e1].insert(e2);
+    index[e2].insert(e1);
+  }
+
+  T root = edges[0];
+  T node = -1;
+  T parent = -1;
+  uint32_t depth = -1;
+
+  std::stack<T> stack;
+  std::stack<T> parents;
+  std::stack<uint32_t> depth_stack;
+  std::stack<T> path;
+
+  stack.push(root);
+  parents.push(-1);
+  depth_stack.push(0);
+  
+  std::vector<bool> visited(Nv, false);
+
+  while (!stack.empty()) {
+    node = stack.top();
+    parent = parents.top();
+    depth = depth_stack.top();
+
+    stack.pop();
+    parents.pop();
+    depth_stack.pop();
+
+    while (path.size() > depth) {
+      path.pop();
+    }
+
+    path.push(node);
+
+    if (visited[node]) {
+      break;
+    }
+    visited[node] = true;
+
+    for (T child : index[node]) {
+      if (child == parent) {
+        continue;
+      }
+
+      stack.push(child);
+      parents.push(node);
+      depth_stack.push(depth + 1);
+    }
+  }
+
+  if (path.size() <= 1) {
+    return std::vector<T>(0);
+  }
+
+  // cast stack to vector w/ zero copy
+  std::vector<T> vec_path = stack2vec<T>(path);
+
+  // Find start of loop. Since a cycle was detected,
+  // the last node found started the cycle. We need
+  // to trim the path leading up to that connection.
+  size_t i;
+  for (i = 0; i < vec_path.size() - 1; i++) {
+    if (vec_path[i] == node) {
+      break;
+    }
+  }
+
+  if (vec_path.size() - i < 3) {
+    return std::vector<T>(0);
+  }
+
+  return std::vector<T>(vec_path.begin() + i, vec_path.end());
+}
+
+// Had trouble returning an unordered_map< pair<int,int>, float>
+// to python, so I decided to just pack two uint32s into a uint64
+// and unpack them on the other side.
+std::unordered_map<uint64_t, float> _create_distance_graph(
+  float* vertices, size_t Nv, 
+  uint32_t* edges, size_t Ne, uint32_t start_node,
+  std::vector<int32_t> critical_points_vec
+) {
+
+  std::vector< std::vector<uint32_t> > tree(Nv);
+  tree.reserve(Nv);
+
+  std::vector<bool> critical_points(Nv, false);
+  for (uint32_t edge : critical_points_vec) {
+    critical_points[edge] = true;
+  }
+
+  for (size_t i = 0; i < Ne; i++) {
+    uint32_t e1 = edges[2*i];
+    uint32_t e2 = edges[2*i + 1];
+
+    tree[e1].push_back(e2);
+    tree[e2].push_back(e1);
+  }
+
+  std::unordered_map<uint64_t, float> distgraph;
+
+  std::stack<uint32_t> stack;
+  std::stack<int32_t> parents;
+  std::stack<float> dist_stack;
+  std::stack<uint32_t> root_stack;
+
+  stack.push(start_node);
+  parents.push(-1);
+  dist_stack.push(0.0);
+  root_stack.push(start_node);
+
+  uint32_t node, root;
+  int32_t parent;
+  float dist;
+
+  uint64_t key = 0;
+
+  std::vector<bool> visited(Nv, false);
+
+  while (!stack.empty()) {
+    node = stack.top();
+    dist = dist_stack.top();
+    root = root_stack.top();
+    parent = parents.top();
+
+    if (visited[node]) {
+      throw std::runtime_error(std::string("Cycle detected. Node: ") + std::to_string(node));
+    }
+    visited[node] = true;
+
+    stack.pop();
+    dist_stack.pop();
+    root_stack.pop();
+    parents.pop();
+
+    if (critical_points[node] && node != root) {
+      key = (root < node)
+        ? static_cast<uint64_t>(root) | (static_cast<uint64_t>(node) << 32)
+        : static_cast<uint64_t>(node) | (static_cast<uint64_t>(root) << 32);
+
+      distgraph[key] = dist;
+      dist = 0.0;
+      root = node;
+    }
+
+    for (int32_t child : tree[node]) {
+      if (static_cast<int32_t>(child) == parent) {
+        continue;
+      }
+
+      float dx = vertices[3*node + 0] - vertices[3*child + 0];
+      float dy = vertices[3*node + 1] - vertices[3*child + 1];
+      float dz = vertices[3*node + 2] - vertices[3*child + 2];
+
+      dx *= dx;
+      dy *= dy;
+      dz *= dz;
+
+      stack.push(child);
+      parents.push(static_cast<int32_t>(node));
+      dist_stack.push(
+        dist + sqrt(dx + dy + dz)
+      );
+      root_stack.push(root);
+    }
+  }
+
+  return distgraph;
+}
+
 
 };
 
