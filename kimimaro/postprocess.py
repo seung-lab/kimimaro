@@ -442,6 +442,7 @@ def _remove_loops(skeleton):
   while True: # Loop until all cycles are removed
     edges = edges.astype(np.int32)
     cycle_path = kimimaro.skeletontricks.find_cycle(edges)
+    # cycle_path = kimimaro.skeletontricks.find_cycle_cython(edges)
 
     if len(cycle_path) == 0:
       break
@@ -562,13 +563,40 @@ def path2edge(path):
   edges[:,1] = path[1:]
   return edges
 
-def remove_row(edges, rows2remove): 
-  edges = np.sort(edges, axis=1)  
+def remove_row(array, rows2remove): 
+  array = np.sort(array, axis=1)  
   rows2remove = np.sort(rows2remove, axis=1)  
 
-  return np.delete(edges, 
-    np.where(
-      np.isin(edges[:,0], rows2remove[:,0]) * np.isin(edges[:,1], rows2remove[:,1])
-    ),
-    axis=0
-  )
+  for i in range(rows2remove.shape[0]):  
+    idx = find_row(array,rows2remove[i,:])  
+    if np.sum(idx == -1) == 0: 
+      array = np.delete(array, idx, axis=0) 
+  
+  return array.astype(np.int32)
+
+
+def find_row(array, row): 
+  """ 
+  array: array to search for  
+  row: row to find  
+   Returns: row indices 
+  """ 
+  row = np.array(row) 
+  if array.shape[1] != row.size: 
+    raise ValueError("Dimensions do not match!")  
+    
+  NDIM = array.shape[1] 
+  valid = np.zeros(array.shape, dtype=np.bool) 
+  for i in range(NDIM):  
+    valid[:,i] = array[:,i] == row[i] 
+  
+  row_loc = np.zeros([ array.shape[0], 1 ])  
+  if NDIM == 2:  
+    row_loc = valid[:,0] * valid[:,1] 
+  elif NDIM == 3: 
+    row_loc = valid[:,0] * valid[:,1] * valid[:,2]  
+  
+  idx = np.where(row_loc==1)[0]  
+  if len(idx) == 0: 
+    idx = -1  
+  return idx 
