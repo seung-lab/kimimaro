@@ -219,8 +219,6 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
   
   std::vector<bool> visited(Nv, false);
 
-  bool cycle_detected = false;
-
   while (!stack.empty()) {
     node = stack.top();
     parent = parents.top();
@@ -237,7 +235,6 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
     path.push(node);
 
     if (visited[node]) {
-      cycle_detected = true;
       break;
     }
     visited[node] = true;
@@ -253,7 +250,7 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
     }
   }
 
-  if (!cycle_detected || path.size() <= 1) {
+  if (path.size() <= 1) {
     return std::vector<T>(0);
   }
 
