@@ -437,17 +437,6 @@ def remove_loops(skeleton):
 
 def _remove_loops(skeleton):
   nodes = skeleton.vertices
-  G = nx.Graph()
-
-  # Double bookeeping to prevent having to 
-  # (expensively) call:
-  #
-  # edges = np.array(list(G.edges), dtype=np.int32)
-  #
-  # which effectively doubled the running time. The
-  # iterator of that function is just slow.
-
-  G.add_edges_from(skeleton.edges)
   edges = np.copy(skeleton.edges).astype(np.int32)
 
   while True: # Loop until all cycles are removed
@@ -478,7 +467,6 @@ def _remove_loops(skeleton):
     #   from the branch point to the farthest node in the loop.
     # 2 external branches: remove the shortest path between
     #   the two entry/exit points. 
-    #   (does this make sense?? wouldn't we keep the shortest path??)
     # 3+ external branches: collapse the cycle into its centroid
     #   if the radius of the centroid is less than the EDT radius
     #   of the pixel located at the centroid. Otherwise, arbitrarily
@@ -493,16 +481,21 @@ def _remove_loops(skeleton):
       dist = np.sum((cycle_points - branch_cycle_point) ** 2, 1)
       end_node = nodes_cycle[np.argmax(dist)]
 
-      G.remove_edges_from(edges_cycle)
-      G.add_edge(branch_cycle[0], end_node)
-
       edges = remove_row(edges, edges_cycle)        
       new_edge = np.array([[branch_cycle[0], end_node]], dtype=np.int32) 
       edges = np.concatenate((edges, new_edge), 0)
 
     # Loop with an entrance and an exit
     elif branch_cycle.shape[0] == 2:
-      path = nx.shortest_path(G, branch_cycle[0], branch_cycle[1])
+
+      # compute the shortest path between the two branch points
+      path = np.array(cycle_path[1:])
+      pos = np.where(np.isin(path, branch_cycle))[0]
+      if (pos[1] - pos[0]) < len(path) / 2:
+        path = path[pos[0]:pos[1]+1]
+      else:
+        path = np.concatenate((path[pos[1]:], path[:pos[0]+1]), 0)
+
       edge_path = path2edge(path)
       edge_path = np.sort(edge_path, axis=1)
 
@@ -513,12 +506,10 @@ def _remove_loops(skeleton):
       row_valid = row_valid.astype(np.bool)
       edge_path = edges_cycle[row_valid,:]
 
-      G.remove_edges_from(edge_path)
       edges = remove_row(edges, edge_path)
 
     # Totally isolated loop
     elif branch_cycle.shape[0] == 0:
-      G.remove_edges_from(edges_cycle)
       edges = remove_row(edges, edges_cycle)
 
     # Loops with many ways in and out
@@ -541,11 +532,9 @@ def _remove_loops(skeleton):
       # by just making a tiny snip if the distance
       # is greater than the radius of the connected node.
       if dist > skeleton.radii[ intersect_node ]:
-        G.remove_edges_from(edges_cycle[:1,:])
         edges = remove_row(edges, edges_cycle[:1,:])
         continue
 
-      G.remove_edges_from(edges_cycle)
       edges = remove_row(edges, edges_cycle)      
 
       new_edges = np.zeros((branch_cycle.shape[0], 2))
@@ -556,7 +545,6 @@ def _remove_loops(skeleton):
         idx = np.where(branch_cycle == intersect_node)
         new_edges = np.delete(new_edges, idx, 0)
 
-      G.add_edges_from(new_edges)
       edges = np.concatenate((edges,new_edges), 0)
 
   skeleton.vertices = nodes
