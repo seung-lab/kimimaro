@@ -15,5 +15,5 @@ You should have received a copy of the GNU General Public License
 along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from .intake import skeletonize, DimensionError
+from .intake import skeletonize, DimensionError, synapses_to_targets
 from .postprocess import postprocess, join_close_components
