@@ -425,23 +425,23 @@ void _binary_fill_holes(
 
     visited[loc] = 1;
 
-    if (x > 0) {
-      stack.push( (x-1) + sxv * y + sxyv * z );
+    if (x > 0 && !visited[loc-1]) {
+      stack.push( loc - 1 );
     }
-    if (x < sxv - 1) {
-      stack.push( (x+1) + sxv * y + sxyv * z );
+    if (x < sxv - 1 && !visited[loc+1]) {
+      stack.push( loc + 1 );
     }
-    if (y > 0) {
-      stack.push( x + sxv * (y-1) + sxyv * z );
+    if (y > 0 && !visited[loc-sxv]) {
+      stack.push( loc - sxv );
     }
-    if (y < sxv - 1) {
-      stack.push( x + sxv * (y+1) + sxyv * z );
+    if (y < sxv - 1 && !visited[loc+sxv]) {
+      stack.push( loc + sxv );
     }
-    if (z > 0) {
-      stack.push( x + sxv * y + sxyv * (z-1) );
+    if (z > 0 && !visited[loc-sxyv]) {
+      stack.push( loc - sxyv );
     }
-    if (z < szv - 1) {
-      stack.push( x + sxv * y + sxyv * (z+1) );
+    if (z < szv - 1 && !visited[loc+sxyv]) {
+      stack.push( loc + sxyv );
     }
   }
 
