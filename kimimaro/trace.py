@@ -102,8 +102,7 @@ def trace(
   # placing it at the approximate center of the soma
   if dbf_max > soma_detection_threshold:
     del DBF
-    labels = ndimage.binary_fill_holes(labels)
-    labels = np.asfortranarray(labels)
+    labels = kimimaro.skeletontricks.binary_fill_holes(labels, in_place=True)
     DBF = edt.edt(
       labels, anisotropy=anisotropy, order='F',
       black_border=np.all(labels)
