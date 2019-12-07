@@ -434,7 +434,7 @@ void _binary_fill_holes(
     if (y > 0 && !visited[loc-sxv]) {
       stack.push( loc - sxv );
     }
-    if (y < sxv - 1 && !visited[loc+sxv]) {
+    if (y < syv - 1 && !visited[loc+sxv]) {
       stack.push( loc + sxv );
     }
     if (z > 0 && !visited[loc-sxyv]) {
