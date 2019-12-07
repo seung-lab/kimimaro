@@ -487,6 +487,8 @@ def synapses_to_targets(labels, synapses, progress=False):
 
   for label, centroids in tqdm(synapses.items(), disable=(not progress), desc='Converting Synapses to Targets'):
     point_cloud = np.vstack((labels == label).nonzero()).T # [ [x,y,z], ... ]
+    if len(point_cloud) == 0:
+      continue
     distances = scipy.spatial.distance.cdist(point_cloud, centroids)
     minima = np.argmin(distances, axis=0)
     targets.extend([ point_cloud[idx] for idx in minima ])
