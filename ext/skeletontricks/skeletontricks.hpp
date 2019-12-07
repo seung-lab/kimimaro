@@ -370,6 +370,86 @@ std::unordered_map<uint64_t, float> _create_distance_graph(
   return distgraph;
 }
 
+void _binary_fill_holes(
+  uint8_t* labels, 
+  const size_t sx, const size_t sy, const size_t sz
+) {
+
+  const size_t sxy = sx * sy;
+  const size_t voxels = sx * sy * sz;
+
+  if (voxels == 0) {
+    return;
+  }
+
+  const size_t sxv = sx + 2;
+  const size_t syv = sy + 2;
+  const size_t szv = sz + 2;
+  const size_t sxyv = sxv * syv;
+
+  uint8_t* visited = new uint8_t[sxyv * szv](); 
+
+  // paint labels into visited offset by +<1,1,1>
+  // and mark all foreground as 2 so we can
+  for (size_t z = 0; z < sz; z++) {
+    for (size_t y = 0; y < sy; y++) {
+      for (size_t x = 0; x < sx; x++) {
+        size_t i = x + sx * y + sxy * z;
+        visited[(x+1) + sxv * (y+1) + sxyv * (z+1)] = static_cast<uint8_t>(labels[i] > 0) << 1;
+      }
+    }
+  }
+
+  std::stack<size_t> stack;
+  stack.push(0);
+
+  while (!stack.empty()) {
+    size_t loc = stack.top();
+    stack.pop();
+
+    if (visited[loc]) {
+      continue;
+    }
+
+    size_t z = loc / sxyv;
+    size_t y = (loc - (z * sxyv)) / sxv;
+    size_t x = loc - sxv * (y + z * syv);
+
+    visited[loc] = 1;
+
+    if (x > 0) {
+      stack.push( (x-1) + sxv * y + sxyv * z );
+    }
+    if (x < sxv - 1) {
+      stack.push( (x+1) + sxv * y + sxyv * z );
+    }
+    if (y > 0) {
+      stack.push( x + sxv * (y-1) + sxyv * z );
+    }
+    if (y < sxv - 1) {
+      stack.push( x + sxv * (y+1) + sxyv * z );
+    }
+    if (z > 0) {
+      stack.push( x + sxv * y + sxyv * (z-1) );
+    }
+    if (z < szv - 1) {
+      stack.push( x + sxv * y + sxyv * (z+1) );
+    }
+  }
+
+  for (size_t z = 0; z < sz; z++) {
+    for (size_t y = 0; y < sy; y++) {
+      for (size_t x = 0; x < sx; x++) {
+        labels[ x + sx * y + sxy * z ] = static_cast<uint8_t>(
+          visited[ (x+1) + sxv * (y+1) + sxyv * (z+1) ] != 1
+        );
+      }
+    }
+  }
+
+  delete[] visited;
+}
+
 
 };
 

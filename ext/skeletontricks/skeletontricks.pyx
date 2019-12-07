@@ -75,6 +75,11 @@ cdef extern from "skeletontricks.hpp" namespace "skeletontricks":
     vector[int32_t] critical_points_vec
   )
 
+  cdef void _binary_fill_holes(
+    uint8_t* labels, 
+    size_t sx, size_t sy, size_t sz
+  )
+
 def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
   """
   Given a graph of edges that are a single connected component,
@@ -870,6 +875,9 @@ def find_cycle_cython(cnp.ndarray[int32_t, ndim=2] edges):
 
   return np.array(path, dtype=np.int32)
 
-
-
+def binary_fill_holes(cnp.ndarray[uint8_t, cast=True, ndim=3] labels, in_place=False):
+  if not in_place:
+    labels = np.copy(labels, order='F')
+  _binary_fill_holes(<uint8_t*>&labels[0,0,0], labels.shape[0], labels.shape[1], labels.shape[2])
+  return labels
 
