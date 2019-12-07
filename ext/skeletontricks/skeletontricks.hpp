@@ -31,6 +31,8 @@
 #include <string>
 #include <set>
 
+#include "libdivide.h"
+
 #ifndef SKELETONTRICKS_HPP
 #define SKELETONTRICKS_HPP
 
@@ -400,6 +402,9 @@ void _binary_fill_holes(
     }
   }
 
+  const libdivide::divider<size_t> fast_sxv(sxv); 
+  const libdivide::divider<size_t> fast_sxyv(sxyv); 
+
   std::stack<size_t> stack;
   stack.push(0);
 
@@ -411,8 +416,8 @@ void _binary_fill_holes(
       continue;
     }
 
-    size_t z = loc / sxyv;
-    size_t y = (loc - (z * sxyv)) / sxv;
+    size_t z = loc / fast_sxyv;
+    size_t y = (loc - (z * sxyv)) / fast_sxv;
     size_t x = loc - sxv * (y + z * syv);
 
     visited[loc] = 1;
