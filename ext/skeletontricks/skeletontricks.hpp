@@ -392,7 +392,10 @@ void _binary_fill_holes(
   uint8_t* visited = new uint8_t[sxyv * szv](); 
 
   // paint labels into visited offset by +<1,1,1>
-  // and mark all foreground as 2 so we can
+  // and mark all foreground as 2 so we can mark
+  // visited as 1 without overwriting foreground
+  // as we want foreground to be 2 and voids to 
+  // be 0
   for (size_t z = 0; z < sz; z++) {
     for (size_t y = 0; y < sy; y++) {
       for (size_t x = 0; x < sx; x++) {
