@@ -31,6 +31,8 @@
 #include <string>
 #include <set>
 
+#include "libdivide.h"
+
 #ifndef SKELETONTRICKS_HPP
 #define SKELETONTRICKS_HPP
 
@@ -403,6 +405,9 @@ void _binary_fill_holes(
     }
   }
 
+  const libdivide::divider<size_t> fast_sxv(sxv); 
+  const libdivide::divider<size_t> fast_sxyv(sxyv); 
+
   std::stack<size_t> stack;
   stack.push(0);
 
@@ -414,16 +419,9 @@ void _binary_fill_holes(
       continue;
     }
 
-    // This looks slow but it 
-    // takes advantage of the fact that
-    // the DIV instruction computes the 
-    // remainder and the quotient at the same
-    // time.
-    size_t z = loc / sxyv;
-    size_t zr = loc % sxyv;
-    size_t y = (loc - zr) / sxv;
-    size_t yr = (loc - zr) % sxv;
-    size_t x = loc - yr;
+    size_t z = loc / fast_sxyv;
+    size_t y = (loc - (z * sxyv)) / fast_sxv;
+    size_t x = loc - sxv * (y + z * syv);
 
     visited[loc] = 1;
 
