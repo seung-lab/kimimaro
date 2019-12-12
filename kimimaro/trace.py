@@ -25,6 +25,7 @@ from math import log
 
 import dijkstra3d
 import edt
+import fill_voids
 import numpy as np
 from scipy import ndimage
 from PIL import Image
@@ -102,7 +103,7 @@ def trace(
   # placing it at the approximate center of the soma
   if dbf_max > soma_detection_threshold:
     del DBF
-    labels = kimimaro.skeletontricks.binary_fill_holes(labels, in_place=True)
+    labels = fill_voids.fill(labels, in_place=True)
     DBF = edt.edt(
       labels, anisotropy=anisotropy, order='F',
       black_border=np.all(labels)
