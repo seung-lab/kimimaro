@@ -472,9 +472,11 @@ def synapses_to_targets(labels, synapses, progress=False):
   of that voxel to a list of targets.
 
   labels: a 3d array containing labels
-  synapses: { label: [ centroid, centroid, ... ] }
+  synapses: { label: [ (centroid, swc_label), (centroid, swc_label), ... ] }
     where centroid is an (x,y,z) float triple in voxel coordinate space
       where the origin is the same as for labels
+    where swc_label is the label to be added to the vertex attributes for
+      the resulting target.
     where label is a presynaptic OR a postsynaptic label
       (submit two items to cover both)
 
@@ -483,15 +485,22 @@ def synapses_to_targets(labels, synapses, progress=False):
   while labels.ndim > 3:
     labels = labels[...,0]
 
-  targets = []
+  targets = {}
 
-  for label, centroids in tqdm(synapses.items(), disable=(not progress), desc='Converting Synapses to Targets'):
+  for label, pairs in tqdm(synapses.items(), disable=(not progress), desc='Converting Synapses to Targets'):
     point_cloud = np.vstack((labels == label).nonzero()).T # [ [x,y,z], ... ]
     if len(point_cloud) == 0:
       continue
-    distances = scipy.spatial.distance.cdist(point_cloud, centroids)
-    minima = np.argmin(distances, axis=0)
-    targets.extend([ point_cloud[idx] for idx in minima ])
+
+    swc_labels = defaultdict(list) 
+    for centroid, swc_label in pairs:
+      swc_labels[swc_label].append(centroid)
+
+    for swc_label, centroids in swc_labels.items():
+      distances = scipy.spatial.distance.cdist(point_cloud, centroids)
+      minima = np.unique(np.argmin(distances, axis=0))
+      tmp_targets = [ tuple(point_cloud[idx]) for idx in minima ]
+      targets.update({ target: swc_label for target in tmp_targets })
 
   return targets
 
