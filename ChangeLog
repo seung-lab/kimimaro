@@ -1,6 +1,30 @@
 CHANGES
 =======
 
+1.2.0
+-----
+
+* docs: show how to use synapses\_to\_targets
+* feat: facility for converting synapse centroids into targets (#37)
+* refactor+perf: use new fill-voids package
+
+1.1.0
+-----
+
+* perf: implemented flood fill based binary\_fill\_holes (#38)
+
+1.0.4
+-----
+
+* perf: increase postprocess speed (#35)
+* perf: more judicious use of consolidate in postprocess
+
+1.0.3
+-----
+
+* docs: update ChangeLog
+* fix: preserve skeleton id during postprocessing
+
 1.0.2
 -----
 

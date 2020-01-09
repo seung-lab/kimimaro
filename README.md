@@ -340,6 +340,11 @@ Some of the TEASAR modifications used in this package were first demonstrated by
 
 Alex Bae developed the precursor skeletonization package and several modifications to TEASAR that we use in this package. Alex also developed the postprocessing approach used for stitching skeletons using 50% overlap. Will Silversmith adapted these techniques for mass production, refined several basic algorithms for handling thousands of labels at once, and rewrote them into the Kimimaro package. Will added trickle DAF, zero weighted previously explored paths, and fixing borders to the algorithm. Forrest Collman added parameter flexibility and helped tune DAF computation performance. Sven Dorkenwald and Forrest both provided helpful discussions and feedback.
 
+## Papers Using Kimimaro
+
+1. A.M. Wilson, R. Schalek, A. Suissa-Peleg, T.R. Jones, S. Knowles-Barley, H. Pfister, J.M. Lichtman. "Developmental Rewiring between Cerebellar Climbing Fibers and Purkinje Cells Begins with Positive Feedback Synapse Addition". Cell Reports. Vol. 29, Iss. 9, November 2019. Pgs. 2849-2861.e6 doi: 10.1016/j.celrep.2019.10.081  ([link](https://www.cell.com/cell-reports/fulltext/S2211-1247(19)31403-2))
+2. S. Dorkenwald, N.L. Turner, T. Macrina, K. Lee, R. Lu, J. Wu, A.L. Bodor, A.A. Bleckert, D. Brittain, N. Kemnitz, W.M. Silversmith, D. Ih, J. Zung, A. Zlateski, I. Tartavull, S. Yu, S. Popovych, W. Wong, M. Castro, C. S. Jordan, A.M. Wilson, E. Froudarakis, J. Buchanan, M. Takeno, R. Torres, G. Mahalingam, F. Collman, C. Schneider-Mizell, D.J. Bumbarger, Y. Li, L. Becker, S. Suckow, J. Reimer, A.S. Tolias, N. Maçarico da Costa, R. C. Reid, H.S. Seung. "Binary and analog variation of synapses between cortical pyramidal neurons". bioRXiv. December 2019. doi: 10.1101/2019.12.29.890319 ([link](https://www.biorxiv.org/content/10.1101/2019.12.29.890319v1.full))  
+
 ## References 
 
 1. M. Sato, I. Bitter, M.A. Bender, A.E. Kaufman, and M. Nakajima. "TEASAR: Tree-structure Extraction Algorithm for Accurate and Robust Skeletons". Proc. 8th Pacific Conf. on Computer Graphics and Applications. Oct. 2000. doi: 10.1109/PCCGA.2000.883951 ([link](https://ieeexplore.ieee.org/abstract/document/883951/))
