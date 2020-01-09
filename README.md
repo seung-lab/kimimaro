@@ -87,6 +87,13 @@ skel = kimimaro.postprocess(
 # Fuse all remaining components into a single skeleton.
 skel = kimimaro.join_close_components([skel1, skel2], radius=1500) # 1500 units threshold
 skel = kimimaro.join_close_components([skel1, skel2], radius=None) # no threshold
+
+# Given synapse centroids (in voxels) and the SWC integer label you'd 
+# like to assign (e.g. for pre-synaptic and post-synaptic) this finds the 
+# nearest voxel to the centroid for that label.
+# Input: { label: [ ((x,y,z), swc_label), ... ] }
+# Returns: { (x,y,z): swc_label, ... }
+extra_targets = kimimaro.synapses_to_targets(labels, synapses)
 ```
 
 ### Tweaking `kimimaro.skeletonize` Parameters

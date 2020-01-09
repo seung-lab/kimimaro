@@ -480,7 +480,7 @@ def synapses_to_targets(labels, synapses, progress=False):
     where label is a presynaptic OR a postsynaptic label
       (submit two items to cover both)
 
-  Returns: [ (x,y,z), ... ] targets for skeletonization
+  Returns: { (x,y,z): swc_label, ... } targets for skeletonization
   """
   while labels.ndim > 3:
     labels = labels[...,0]
