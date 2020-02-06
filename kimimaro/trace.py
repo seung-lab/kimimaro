@@ -150,7 +150,7 @@ def trace(
 
   paths = compute_paths(
     root, labels, DBF, DAF, 
-    parents, scale, const, anisotropy, 
+    parents, scale, const, pdrf_scale, pdrf_exponent, anisotropy, 
     soma_mode, soma_radius, fix_branching,
     manual_targets_before, manual_targets_after, 
     max_paths
@@ -167,7 +167,7 @@ def trace(
 
 def compute_paths(
     root, labels, DBF, DAF, 
-    parents, scale, const, anisotropy, 
+    parents, scale, const, pdrf_scale, pdrf_exponent, anisotropy, 
     soma_mode, soma_radius, fix_branching,
     manual_targets_before, manual_targets_after,
     max_paths
@@ -193,6 +193,8 @@ def compute_paths(
   if len(manual_targets_before) + len(manual_targets_after) >= max_paths:
     return []
 
+  heuristic = 'line' if soma_mode else None
+
   while (valid_labels > 0 or manual_targets_before or manual_targets_after) \
     and len(paths) < max_paths:
 
@@ -203,8 +205,12 @@ def compute_paths(
     else:
       target = kimimaro.skeletontricks.find_target(labels, DAF)
 
+    heuristic_norm = -1
+    if soma_mode:
+      heuristic_norm = compute_heuristic_norm(root, target, pdrf_scale, pdrf_exponent)
+
     if fix_branching:
-      path = dijkstra3d.dijkstra(parents, root, target)
+      path = dijkstra3d.dijkstra(parents, root, target, heuristic=heuristic, heuristic_args={ 'norm': heuristic_norm })
     else:
       path = dijkstra3d.path_from_parents(parents, target)
     
@@ -308,21 +314,55 @@ def compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF):
 
   return np.asfortranarray(PDRF)
 
-def xy_path_projection(paths, labels, N=0):
-  """Used for debugging paths."""
-  if type(paths) != list:
-    paths = [ paths ]
+def compute_heuristic_norm(root, target, k, p):
+  """
+  The PDRF is a weirdly shaped function for a simple
+  A* search. If we don't compensate for the high
+  dynamic range, A* won't really add much. What we do is 
+  instead of using the field minimum, we use something 
+  approximating the average weight dijkstra will need
+  to traverse to get to the target. 
 
-  projection = np.zeros( (labels.shape[0], labels.shape[1] ), dtype=np.uint8)
-  outline = labels.any(axis=-1).astype(np.uint8) * 77
-  outline = outline.reshape( (labels.shape[0], labels.shape[1] ) )
-  projection += outline
-  for path in paths:
-    for coord in path:
-      projection[coord[0], coord[1]] = 255
+  This is computed as k * sum((x/N)^p) from 1 to N
 
-  projection = Image.fromarray(projection.T, 'L')
-  N = str(N).zfill(3)
-  mkdir('./saved_images/projections')
-  projection.save('./saved_images/projections/{}.png'.format(N), 'PNG')
+  Instead of summing over the PDRF in some direction,
+  we take N as the distance between the root and target
+  and use an analytic form to compute the sum.
+  """
+  N = np.linalg.norm(np.array(root) - np.array(target))
 
+  evenfn = lambda n: n * (n + 1) * (2 * n + 1)
+  oddfn = lambda n: (n * n) * (n + 1) * (n + 1)
+
+  powersumfn = {
+    0: (lambda n: n),
+    1: (lambda n: n * (n + 1) / 2),
+    2: (lambda n: evenfn(n) / 6),
+    3: (lambda n: oddfn(n) / 4),
+    4: (lambda n: evenfn(n) * (3 * n * n + 3 * n - 1) / 30),
+    5: (lambda n: oddfn(n) * (2 * n * n * 2 * n - 1) / 12),
+    6: (lambda n: evenfn(n) * (3 * n ** 4 + 6 * n ** 3 - 3 * n + 1) / 42),
+    7: (lambda n: oddfn(n) * ((3 * n ** 4) + (6 * n ** 3) - (n ** 2) - (4 * n) + 2) / 24),
+    8: (
+      lambda n: evenfn(n) * ((5 * n ** 6) + (15 * n ** 5) \
+        + (5 * n ** 4) - (15 * n ** 3) - n * n + 9 * n - 3) / 90
+    ),
+    9: (
+      lambda n: oddfn(n) * (n * n + n - 1) \
+        * (2 * n ** 4 + 4 * n ** 3 - n * n - 3 * n + 3) / 20
+    ),
+    # 10: (lambda n: ...)
+    # 11: (lambda n: ...)
+    # 12: (lambda n: ...)
+    # 13: (lambda n: ...)
+    # 14: (lambda n: ...)
+    # 15: (lambda n: ...)
+    16: (
+      lambda n: evenfn(n) * ((15 * n ** 14) + (105 * n ** 13) \
+        + (175 * n ** 12) - (315 * n ** 11) - (805 * n ** 10) + (1365 * n ** 9) \
+        + (2775 * n ** 8) - (4845 * n ** 7) - (6275 * n ** 6) + (11835 * n ** 5) \
+        + (7485 * n ** 4) - (17145 * n ** 3) - (1519 * n * n) + (10851 * n) - 3617) / 510
+    ),
+  }
+
+  return powersumfn[p](N) / (N ** p) * k
