@@ -209,6 +209,7 @@ def compute_paths(
     heuristic_norm = -1
     if soma_mode:
       heuristic_norm = compute_heuristic_norm(root, target, pdrf_scale, pdrf_exponent)
+      heuristic_norm /= 100 # empirically found on pinky40subvol
 
     if fix_branching:
       path = dijkstra3d.dijkstra(parents, root, target, heuristic=heuristic, heuristic_args={ 'norm': heuristic_norm })
