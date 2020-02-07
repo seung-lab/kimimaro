@@ -331,7 +331,7 @@ def compute_heuristic_norm(root, target, k, p):
   we take N as the distance between the root and target
   and use an analytic form to compute the sum.
   """
-  N = np.linalg.norm(np.array(root) - np.array(target))
+  N = np.max(np.abs(np.array(root) - np.array(target))) # chessboard distance
 
   evenfn = lambda n: n * (n + 1) * (2 * n + 1)
   oddfn = lambda n: (n * n) * (n + 1) * (n + 1)
