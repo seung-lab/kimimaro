@@ -204,7 +204,7 @@ def compute_paths(
       target = kimimaro.skeletontricks.find_target(labels, DAF)
 
     if fix_branching:
-      path = dijkstra3d.dijkstra(parents, root, target)
+      path = dijkstra3d.dijkstra(parents, root, target, bidirectional=soma_mode)
     else:
       path = dijkstra3d.path_from_parents(parents, target)
     
