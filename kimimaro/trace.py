@@ -102,12 +102,13 @@ def trace(
   # For somata: specially handle the root by 
   # placing it at the approximate center of the soma
   if dbf_max > soma_detection_threshold:
-    del DBF
-    labels = fill_voids.fill(labels, in_place=True)
-    DBF = edt.edt(
-      labels, anisotropy=anisotropy, order='F',
-      black_border=np.all(labels)
-    )
+    labels, num_voxels_filled = fill_voids.fill(labels, in_place=True, return_fill_count=True)
+    if num_voxels_filled > 0:
+      del DBF
+      DBF = edt.edt(
+        labels, anisotropy=anisotropy, order='F',
+        black_border=np.all(labels)
+      )
     dbf_max = np.max(DBF) 
     soma_mode = dbf_max > soma_acceptance_threshold
 
