@@ -114,13 +114,14 @@ def trace(
 
   soma_radius = 0.0
 
-  if root is None:
-    if soma_mode:
-      root = find_soma_root(DBF, dbf_max)    
-      soma_radius = dbf_max * soma_invalidation_scale + soma_invalidation_const
-    else:
-      root = find_root(labels, anisotropy)
-      
+  if soma_mode:
+    if root is not None:
+      manual_targets_before.insert(0, root)
+    root = find_soma_root(DBF, dbf_max)    
+    soma_radius = dbf_max * soma_invalidation_scale + soma_invalidation_const
+  elif root is None:
+    root = find_root(labels, anisotropy)
+  
   if root is None:
     return PrecomputedSkeleton()
  
