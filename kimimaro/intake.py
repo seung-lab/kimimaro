@@ -78,6 +78,7 @@ def skeletonize(
       soma_invalidation_scale: the 'scale' factor used in the one time soma root invalidation (default .5)
       soma_invalidation_const: the 'const' factor used in the one time soma root invalidation (default 0)
                              (units in chosen physical units (i.e. nm))
+      max_paths: max paths to trace on a single object. Moves onto the next object after this point.
     }
     dust_threshold: don't bother skeletonizing connected components smaller than
       this many voxels.
