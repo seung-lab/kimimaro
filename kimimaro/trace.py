@@ -28,7 +28,6 @@ import edt
 import fill_voids
 import numpy as np
 from scipy import ndimage
-from PIL import Image
 
 import kimimaro.skeletontricks
 
