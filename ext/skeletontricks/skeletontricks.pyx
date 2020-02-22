@@ -61,7 +61,7 @@ ctypedef fused INTEGER:
 cdef extern from "skeletontricks.hpp" namespace "skeletontricks":
   cdef size_t _roll_invalidation_cube(
     uint8_t* labels, float* DBF,
-    size_t sx, size_t sy, size_t sz,
+    int64_t sx, int64_t sy, int64_t sz,
     float wx, float wy, float wz,
     size_t* path, size_t path_size,
     float scale, float constant
@@ -727,7 +727,7 @@ def roll_invalidation_cube(
   in a cube around each vertex. In contrast to `roll_invalidation_ball`,
   this function runs in time linear in the number of image pixels.
   """
-  cdef size_t sx, sy, sz 
+  cdef int64_t sx, sy, sz 
   sx = labels.shape[0]
   sy = labels.shape[1]
   sz = labels.shape[2]
@@ -745,7 +745,7 @@ def roll_invalidation_cube(
 
   cdef size_t[:] pathview = path
 
-  cdef int invalidated = _roll_invalidation_cube(
+  cdef size_t invalidated = _roll_invalidation_cube(
     <uint8_t*>&labels[0,0,0], <float*>&DBF[0,0,0],
     sx, sy, sz, 
     wx, wy, wz,

@@ -38,7 +38,7 @@ namespace skeletontricks {
 
 size_t _roll_invalidation_cube(
   uint8_t* labels, float* DBF,
-  const size_t sx, const size_t sy, const size_t sz,
+  const int64_t sx, const int64_t sy, const int64_t sz,
   const float wx, const float wy, const float wz,
   size_t* path, const size_t path_size,
   const float scale, const float constant) {
@@ -50,15 +50,15 @@ size_t _roll_invalidation_cube(
   const size_t sxy = sx * sy;
   const size_t voxels = sxy * sz;
 
-  size_t minx, maxx, miny, maxy, minz, maxz;
-  size_t x, y, z;
+  int64_t minx, maxx, miny, maxy, minz, maxz;
+  int64_t x, y, z;
 
-  size_t global_minx = sx;
-  size_t global_maxx = 0;
-  size_t global_miny = sy;
-  size_t global_maxy = 0;
-  size_t global_minz = sz;
-  size_t global_maxz = 0;
+  int64_t global_minx = sx;
+  int64_t global_maxx = 0;
+  int64_t global_miny = sy;
+  int64_t global_maxy = 0;
+  int64_t global_minz = sz;
+  int64_t global_maxz = 0;
 
   int16_t* topology = new int16_t[voxels]();
   
@@ -68,8 +68,6 @@ size_t _roll_invalidation_cube(
 
   size_t loc;
   float radius;
-
-  const size_t ZERO = 0;
 
   // First pass: compute toplology
   for (size_t i = 0; i < path_size; i++) {
@@ -87,12 +85,12 @@ size_t _roll_invalidation_cube(
       x = loc - sx * (y + z * sy);
     }
 
-    minx = std::max(ZERO,  static_cast<size_t>(x - (radius / wx)));
-    maxx = std::min(sx-1,  static_cast<size_t>(0.5 + (x + (radius / wx))));
-    miny = std::max(ZERO,  static_cast<size_t>(y - (radius / wy)));
-    maxy = std::min(sy-1,  static_cast<size_t>(0.5 + (y + (radius / wy))));
-    minz = std::max(ZERO,  static_cast<size_t>(z - (radius / wz)));
-    maxz = std::min(sz-1,  static_cast<size_t>(0.5 + (z + (radius / wz))));
+    minx = std::max(0L,    static_cast<int64_t>(x - (radius / wx)));
+    maxx = std::min(sx-1, static_cast<int64_t>(0.5 + (x + (radius / wx))));
+    miny = std::max(0L,    static_cast<int64_t>(y - (radius / wy)));
+    maxy = std::min(sy-1, static_cast<int64_t>(0.5 + (y + (radius / wy))));
+    minz = std::max(0L,    static_cast<int64_t>(z - (radius / wz)));
+    maxz = std::min(sz-1, static_cast<int64_t>(0.5 + (z + (radius / wz))));
 
     global_minx = std::min(global_minx, minx);
     global_maxx = std::max(global_maxx, maxx);
@@ -109,10 +107,8 @@ size_t _roll_invalidation_cube(
     }
   }
 
-  printf("%lu %lu %lu %lu %lu %lu\n", global_minx, global_maxx, global_miny, global_maxy, global_minz, global_maxz);
-
   // Second pass: invalidate labels
-  long int coloring;
+  int coloring;
   size_t invalidated = 0;
   size_t yzoffset;
   for (z = global_minz; z <= global_maxz; z++) {

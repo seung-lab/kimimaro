@@ -16668,15 +16668,15 @@ static PyObject *__pyx_pw_14skeletontricks_29roll_invalidation_cube(PyObject *__
 }
 
 static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_labels, PyArrayObject *__pyx_v_DBF, PyObject *__pyx_v_path, float __pyx_v_scale, float __pyx_v_const, PyObject *__pyx_v_anisotropy, PyObject *__pyx_v_invalid_vertices) {
-  size_t __pyx_v_sx;
-  size_t __pyx_v_sy;
-  size_t __pyx_v_sz;
+  int64_t __pyx_v_sx;
+  int64_t __pyx_v_sy;
+  int64_t __pyx_v_sz;
   size_t __pyx_v_sxy;
   float __pyx_v_wx;
   float __pyx_v_wy;
   float __pyx_v_wz;
   __Pyx_memviewslice __pyx_v_pathview = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_v_invalidated;
+  size_t __pyx_v_invalidated;
   PyObject *__pyx_7genexpr__pyx_v_coord = NULL;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_DBF;
   __Pyx_Buffer __pyx_pybuffer_DBF;
@@ -16730,7 +16730,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
 
   /* "skeletontricks.pyx":731
  *   """
- *   cdef size_t sx, sy, sz
+ *   cdef int64_t sx, sy, sz
  *   sx = labels.shape[0]             # <<<<<<<<<<<<<<
  *   sy = labels.shape[1]
  *   sz = labels.shape[2]
@@ -16738,7 +16738,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
   __pyx_v_sx = (__pyx_v_labels->dimensions[0]);
 
   /* "skeletontricks.pyx":732
- *   cdef size_t sx, sy, sz
+ *   cdef int64_t sx, sy, sz
  *   sx = labels.shape[0]
  *   sy = labels.shape[1]             # <<<<<<<<<<<<<<
  *   sz = labels.shape[2]
@@ -16907,7 +16907,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
  */
         __pyx_t_1 = __Pyx_GetItemInt(__pyx_7genexpr__pyx_v_coord, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 741, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_4 = __Pyx_PyInt_FromSize_t(__pyx_v_sx); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 741, __pyx_L7_error)
+        __pyx_t_4 = __Pyx_PyInt_From_int64_t(__pyx_v_sx); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 741, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_13 = __Pyx_GetItemInt(__pyx_7genexpr__pyx_v_coord, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 741, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_13);
@@ -16993,7 +16993,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
  * 
  *   cdef size_t[:] pathview = path             # <<<<<<<<<<<<<<
  * 
- *   cdef int invalidated = _roll_invalidation_cube(
+ *   cdef size_t invalidated = _roll_invalidation_cube(
  */
   __pyx_t_15 = __Pyx_PyObject_to_MemoryviewSlice_ds_size_t(__pyx_v_path, PyBUF_WRITABLE); if (unlikely(!__pyx_t_15.memview)) __PYX_ERR(0, 746, __pyx_L1_error)
   __pyx_v_pathview = __pyx_t_15;
@@ -17002,7 +17002,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
 
   /* "skeletontricks.pyx":749
  * 
- *   cdef int invalidated = _roll_invalidation_cube(
+ *   cdef size_t invalidated = _roll_invalidation_cube(
  *     <uint8_t*>&labels[0,0,0], <float*>&DBF[0,0,0],             # <<<<<<<<<<<<<<
  *     sx, sy, sz,
  *     wx, wy, wz,
@@ -17030,7 +17030,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
   /* "skeletontricks.pyx":748
  *   cdef size_t[:] pathview = path
  * 
- *   cdef int invalidated = _roll_invalidation_cube(             # <<<<<<<<<<<<<<
+ *   cdef size_t invalidated = _roll_invalidation_cube(             # <<<<<<<<<<<<<<
  *     <uint8_t*>&labels[0,0,0], <float*>&DBF[0,0,0],
  *     sx, sy, sz,
  */
@@ -17044,7 +17044,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
  * @cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_13 = __Pyx_PyInt_From_int(__pyx_v_invalidated); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 756, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyInt_FromSize_t(__pyx_v_invalidated); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 756, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 756, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
