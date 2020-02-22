@@ -2613,7 +2613,7 @@ static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_flo
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_nn_uint32_t(PyObject *, int writable_flag);
 
 /* ObjectToMemviewSlice.proto */
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_int(PyObject *, int writable_flag);
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_size_t(PyObject *, int writable_flag);
 
 /* CheckBinaryVersion.proto */
 static int __Pyx_check_binary_version(void);
@@ -2808,7 +2808,7 @@ static __Pyx_TypeInfo __Pyx_TypeInfo_nn_uint8_t = { "uint8_t", NULL, sizeof(uint
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn_uint16_t = { "uint16_t", NULL, sizeof(uint16_t), { 0 }, 0, IS_UNSIGNED(uint16_t) ? 'U' : 'I', IS_UNSIGNED(uint16_t), 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn_uint64_t = { "uint64_t", NULL, sizeof(uint64_t), { 0 }, 0, IS_UNSIGNED(uint64_t) ? 'U' : 'I', IS_UNSIGNED(uint64_t), 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_unsigned_char = { "unsigned char", NULL, sizeof(unsigned char), { 0 }, 0, IS_UNSIGNED(unsigned char) ? 'U' : 'I', IS_UNSIGNED(unsigned char), 0 };
-static __Pyx_TypeInfo __Pyx_TypeInfo_int = { "int", NULL, sizeof(int), { 0 }, 0, IS_UNSIGNED(int) ? 'U' : 'I', IS_UNSIGNED(int), 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_size_t = { "size_t", NULL, sizeof(size_t), { 0 }, 0, IS_UNSIGNED(size_t) ? 'U' : 'I', IS_UNSIGNED(size_t), 0 };
 #define __Pyx_MODULE_NAME "skeletontricks"
 extern int __pyx_module_is_main_skeletontricks;
 int __pyx_module_is_main_skeletontricks = 0;
@@ -2940,6 +2940,7 @@ static const char __pyx_k_result[] = "result";
 static const char __pyx_k_segids[] = "segids";
 static const char __pyx_k_struct[] = "struct";
 static const char __pyx_k_uint32[] = "uint32";
+static const char __pyx_k_uint64[] = "uint64";
 static const char __pyx_k_unique[] = "unique";
 static const char __pyx_k_unpack[] = "unpack";
 static const char __pyx_k_update[] = "update";
@@ -3288,6 +3289,7 @@ static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_uint16_t;
 static PyObject *__pyx_n_s_uint32;
 static PyObject *__pyx_n_s_uint32_t;
+static PyObject *__pyx_n_s_uint64;
 static PyObject *__pyx_n_s_uint64_t;
 static PyObject *__pyx_n_s_uint8_t;
 static PyObject *__pyx_kp_s_unable_to_allocate_array_data;
@@ -16666,15 +16668,15 @@ static PyObject *__pyx_pw_14skeletontricks_29roll_invalidation_cube(PyObject *__
 }
 
 static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_labels, PyArrayObject *__pyx_v_DBF, PyObject *__pyx_v_path, float __pyx_v_scale, float __pyx_v_const, PyObject *__pyx_v_anisotropy, PyObject *__pyx_v_invalid_vertices) {
-  int __pyx_v_sx;
-  int __pyx_v_sy;
-  int __pyx_v_sz;
-  int __pyx_v_sxy;
+  int64_t __pyx_v_sx;
+  int64_t __pyx_v_sy;
+  int64_t __pyx_v_sz;
+  size_t __pyx_v_sxy;
   float __pyx_v_wx;
   float __pyx_v_wy;
   float __pyx_v_wz;
   __Pyx_memviewslice __pyx_v_pathview = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_v_invalidated;
+  size_t __pyx_v_invalidated;
   PyObject *__pyx_7genexpr__pyx_v_coord = NULL;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_DBF;
   __Pyx_Buffer __pyx_pybuffer_DBF;
@@ -16704,7 +16706,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
   Py_ssize_t __pyx_t_20;
   Py_ssize_t __pyx_t_21;
   Py_ssize_t __pyx_t_22;
-  int __pyx_t_23;
+  size_t __pyx_t_23;
   __Pyx_RefNannySetupContext("roll_invalidation_cube", 0);
   __Pyx_INCREF(__pyx_v_path);
   __pyx_pybuffer_labels.pybuffer.buf = NULL;
@@ -16728,7 +16730,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
 
   /* "skeletontricks.pyx":731
  *   """
- *   cdef int sx, sy, sz
+ *   cdef int64_t sx, sy, sz
  *   sx = labels.shape[0]             # <<<<<<<<<<<<<<
  *   sy = labels.shape[1]
  *   sz = labels.shape[2]
@@ -16736,7 +16738,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
   __pyx_v_sx = (__pyx_v_labels->dimensions[0]);
 
   /* "skeletontricks.pyx":732
- *   cdef int sx, sy, sz
+ *   cdef int64_t sx, sy, sz
  *   sx = labels.shape[0]
  *   sy = labels.shape[1]             # <<<<<<<<<<<<<<
  *   sz = labels.shape[2]
@@ -16749,14 +16751,14 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
  *   sy = labels.shape[1]
  *   sz = labels.shape[2]             # <<<<<<<<<<<<<<
  * 
- *   cdef int sxy = sx * sy
+ *   cdef size_t sxy = sx * sy
  */
   __pyx_v_sz = (__pyx_v_labels->dimensions[2]);
 
   /* "skeletontricks.pyx":735
  *   sz = labels.shape[2]
  * 
- *   cdef int sxy = sx * sy             # <<<<<<<<<<<<<<
+ *   cdef size_t sxy = sx * sy             # <<<<<<<<<<<<<<
  * 
  *   cdef float wx, wy, wz
  */
@@ -16846,7 +16848,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
  *     coord[0] + sx * coord[1] + sxy * coord[2]
  *     for coord in path if tuple(coord) not in invalid_vertices             # <<<<<<<<<<<<<<
  *   ]
- *   path = np.array(path, dtype=np.int32)
+ *   path = np.array(path, dtype=np.uint64)
  */
     if (likely(PyList_CheckExact(__pyx_v_path)) || PyTuple_CheckExact(__pyx_v_path)) {
       __pyx_t_2 = __pyx_v_path; __Pyx_INCREF(__pyx_t_2); __pyx_t_9 = 0;
@@ -16905,7 +16907,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
  */
         __pyx_t_1 = __Pyx_GetItemInt(__pyx_7genexpr__pyx_v_coord, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 741, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_sx); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 741, __pyx_L7_error)
+        __pyx_t_4 = __Pyx_PyInt_From_int64_t(__pyx_v_sx); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 741, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_13 = __Pyx_GetItemInt(__pyx_7genexpr__pyx_v_coord, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 741, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_13);
@@ -16917,7 +16919,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
         __Pyx_GOTREF(__pyx_t_13);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-        __pyx_t_14 = __Pyx_PyInt_From_int(__pyx_v_sxy); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 741, __pyx_L7_error)
+        __pyx_t_14 = __Pyx_PyInt_FromSize_t(__pyx_v_sxy); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 741, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_14);
         __pyx_t_1 = __Pyx_GetItemInt(__pyx_7genexpr__pyx_v_coord, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 741, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_1);
@@ -16937,7 +16939,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
  *     coord[0] + sx * coord[1] + sxy * coord[2]
  *     for coord in path if tuple(coord) not in invalid_vertices             # <<<<<<<<<<<<<<
  *   ]
- *   path = np.array(path, dtype=np.int32)
+ *   path = np.array(path, dtype=np.uint64)
  */
       }
     }
@@ -16955,9 +16957,9 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
   /* "skeletontricks.pyx":744
  *     for coord in path if tuple(coord) not in invalid_vertices
  *   ]
- *   path = np.array(path, dtype=np.int32)             # <<<<<<<<<<<<<<
+ *   path = np.array(path, dtype=np.uint64)             # <<<<<<<<<<<<<<
  * 
- *   cdef int[:] pathview = path
+ *   cdef size_t[:] pathview = path
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 744, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -16973,7 +16975,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 744, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 744, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_uint64); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 744, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_13) < 0) __PYX_ERR(0, 744, __pyx_L1_error)
@@ -16987,20 +16989,20 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
   __pyx_t_13 = 0;
 
   /* "skeletontricks.pyx":746
- *   path = np.array(path, dtype=np.int32)
+ *   path = np.array(path, dtype=np.uint64)
  * 
- *   cdef int[:] pathview = path             # <<<<<<<<<<<<<<
+ *   cdef size_t[:] pathview = path             # <<<<<<<<<<<<<<
  * 
- *   cdef int invalidated = _roll_invalidation_cube(
+ *   cdef size_t invalidated = _roll_invalidation_cube(
  */
-  __pyx_t_15 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_v_path, PyBUF_WRITABLE); if (unlikely(!__pyx_t_15.memview)) __PYX_ERR(0, 746, __pyx_L1_error)
+  __pyx_t_15 = __Pyx_PyObject_to_MemoryviewSlice_ds_size_t(__pyx_v_path, PyBUF_WRITABLE); if (unlikely(!__pyx_t_15.memview)) __PYX_ERR(0, 746, __pyx_L1_error)
   __pyx_v_pathview = __pyx_t_15;
   __pyx_t_15.memview = NULL;
   __pyx_t_15.data = NULL;
 
   /* "skeletontricks.pyx":749
  * 
- *   cdef int invalidated = _roll_invalidation_cube(
+ *   cdef size_t invalidated = _roll_invalidation_cube(
  *     <uint8_t*>&labels[0,0,0], <float*>&DBF[0,0,0],             # <<<<<<<<<<<<<<
  *     sx, sy, sz,
  *     wx, wy, wz,
@@ -17015,24 +17017,24 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
   /* "skeletontricks.pyx":752
  *     sx, sy, sz,
  *     wx, wy, wz,
- *     <int*>&pathview[0], path.size,             # <<<<<<<<<<<<<<
+ *     <size_t*>&pathview[0], path.size,             # <<<<<<<<<<<<<<
  *     scale, const
  *   )
  */
   __pyx_t_22 = 0;
   __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_path, __pyx_n_s_size); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 752, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
-  __pyx_t_23 = __Pyx_PyInt_As_int(__pyx_t_13); if (unlikely((__pyx_t_23 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 752, __pyx_L1_error)
+  __pyx_t_23 = __Pyx_PyInt_As_size_t(__pyx_t_13); if (unlikely((__pyx_t_23 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 752, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
 
   /* "skeletontricks.pyx":748
- *   cdef int[:] pathview = path
+ *   cdef size_t[:] pathview = path
  * 
- *   cdef int invalidated = _roll_invalidation_cube(             # <<<<<<<<<<<<<<
+ *   cdef size_t invalidated = _roll_invalidation_cube(             # <<<<<<<<<<<<<<
  *     <uint8_t*>&labels[0,0,0], <float*>&DBF[0,0,0],
  *     sx, sy, sz,
  */
-  __pyx_v_invalidated = skeletontricks::_roll_invalidation_cube(((uint8_t *)(&(*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_17, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_18, __pyx_pybuffernd_labels.diminfo[2].strides)))), ((float *)(&(*__Pyx_BufPtrStrided3d(float *, __pyx_pybuffernd_DBF.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_DBF.diminfo[0].strides, __pyx_t_20, __pyx_pybuffernd_DBF.diminfo[1].strides, __pyx_t_21, __pyx_pybuffernd_DBF.diminfo[2].strides)))), __pyx_v_sx, __pyx_v_sy, __pyx_v_sz, __pyx_v_wx, __pyx_v_wy, __pyx_v_wz, ((int *)(&(*((int *) ( /* dim=0 */ (__pyx_v_pathview.data + __pyx_t_22 * __pyx_v_pathview.strides[0]) ))))), __pyx_t_23, __pyx_v_scale, __pyx_v_const);
+  __pyx_v_invalidated = skeletontricks::_roll_invalidation_cube(((uint8_t *)(&(*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_17, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_18, __pyx_pybuffernd_labels.diminfo[2].strides)))), ((float *)(&(*__Pyx_BufPtrStrided3d(float *, __pyx_pybuffernd_DBF.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_DBF.diminfo[0].strides, __pyx_t_20, __pyx_pybuffernd_DBF.diminfo[1].strides, __pyx_t_21, __pyx_pybuffernd_DBF.diminfo[2].strides)))), __pyx_v_sx, __pyx_v_sy, __pyx_v_sz, __pyx_v_wx, __pyx_v_wy, __pyx_v_wz, ((size_t *)(&(*((size_t *) ( /* dim=0 */ (__pyx_v_pathview.data + __pyx_t_22 * __pyx_v_pathview.strides[0]) ))))), __pyx_t_23, __pyx_v_scale, __pyx_v_const);
 
   /* "skeletontricks.pyx":756
  *   )
@@ -17042,7 +17044,7 @@ static PyObject *__pyx_pf_14skeletontricks_28roll_invalidation_cube(CYTHON_UNUSE
  * @cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_13 = __Pyx_PyInt_From_int(__pyx_v_invalidated); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 756, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyInt_FromSize_t(__pyx_v_invalidated); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 756, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 756, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -42145,6 +42147,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_uint16_t, __pyx_k_uint16_t, sizeof(__pyx_k_uint16_t), 0, 0, 1, 1},
   {&__pyx_n_s_uint32, __pyx_k_uint32, sizeof(__pyx_k_uint32), 0, 0, 1, 1},
   {&__pyx_n_s_uint32_t, __pyx_k_uint32_t, sizeof(__pyx_k_uint32_t), 0, 0, 1, 1},
+  {&__pyx_n_s_uint64, __pyx_k_uint64, sizeof(__pyx_k_uint64), 0, 0, 1, 1},
   {&__pyx_n_s_uint64_t, __pyx_k_uint64_t, sizeof(__pyx_k_uint64_t), 0, 0, 1, 1},
   {&__pyx_n_s_uint8_t, __pyx_k_uint8_t, sizeof(__pyx_k_uint8_t), 0, 0, 1, 1},
   {&__pyx_kp_s_unable_to_allocate_array_data, __pyx_k_unable_to_allocate_array_data, sizeof(__pyx_k_unable_to_allocate_array_data), 0, 0, 1, 0},
@@ -52283,7 +52286,7 @@ __pyx_fail:
 }
 
 /* ObjectToMemviewSlice */
-  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_int(PyObject *obj, int writable_flag) {
+  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_size_t(PyObject *obj, int writable_flag) {
     __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
     __Pyx_BufFmt_StackElem stack[1];
     int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
@@ -52294,7 +52297,7 @@ __pyx_fail:
     }
     retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
                                                  PyBUF_RECORDS_RO | writable_flag, 1,
-                                                 &__Pyx_TypeInfo_int, stack,
+                                                 &__Pyx_TypeInfo_size_t, stack,
                                                  &result, obj);
     if (unlikely(retcode == -1))
         goto __pyx_fail;
