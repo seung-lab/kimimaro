@@ -1,11 +1,10 @@
 """
 Certain operations have to be fast for the skeletonization
-procedure. The ones that didn't fit elsewhere (e.g. dijkstra
-and the euclidean distance transform) have a home here.
+procedure. The ones that didn't fit elsewhere have a home here.
 
 Author: William Silversmith
 Affiliation: Seung Lab, Princeton Neuroscience Institute
-Date: August 2018
+Date: August 2018 - Februrary 2020
 
 *****************************************************************
 This file is part of Kimimaro.
@@ -158,8 +157,8 @@ def inf2zero(cnp.ndarray[float, cast=True, ndim=3] field):
 
   Returns: field
   """
-  cdef int sx, sy, sz 
-  cdef int  x,  y,  z
+  cdef size_t sx, sy, sz 
+  cdef size_t  x,  y,  z
 
   sx = field.shape[0]
   sy = field.shape[1]
@@ -184,8 +183,8 @@ def zero2inf(cnp.ndarray[float, cast=True, ndim=3] field):
 
   Returns: field
   """
-  cdef int sx, sy, sz 
-  cdef int  x,  y,  z
+  cdef size_t sx, sy, sz 
+  cdef size_t  x,  y,  z
 
   sx = field.shape[0]
   sy = field.shape[1]
@@ -235,8 +234,8 @@ def finite_max(cnp.ndarray[float, cast=True, ndim=3] field):
   Given a field of floats that may include infinities, find the 
   largest finite value.
   """
-  cdef int sx, sy, sz 
-  cdef int  x,  y,  z
+  cdef size_t sx, sy, sz 
+  cdef size_t  x,  y,  z
 
   sx = field.shape[0]
   sy = field.shape[1]
@@ -261,8 +260,8 @@ def finite_min(cnp.ndarray[float, cast=True, ndim=3] field):
   Given a field of floats that may include infinities, find the 
   minimum finite value.
   """
-  cdef int sx, sy, sz 
-  cdef int  x,  y,  z
+  cdef size_t sx, sy, sz 
+  cdef size_t  x,  y,  z
 
   sx = field.shape[0]
   sy = field.shape[1]
@@ -286,8 +285,8 @@ def first_label(cnp.ndarray[uint8_t, cast=True, ndim=3] labels):
 
   Scan through labels to find the first non-zero value and return it.
   """
-  cdef int sx, sy, sz 
-  cdef int  x,  y,  z
+  cdef size_t sx, sy, sz 
+  cdef size_t  x,  y,  z
 
   sx = labels.shape[0]
   sy = labels.shape[1]
@@ -317,14 +316,14 @@ def find_target(
 
   Returns: (x, y, z)
   """
-  cdef int x,y,z
-  cdef int sx, sy, sz
+  cdef size_t x,y,z
+  cdef size_t sx, sy, sz
 
   sx = labels.shape[0]
   sy = labels.shape[1]
   sz = labels.shape[2]
 
-  cdef int mx, my, mz
+  cdef int64_t mx, my, mz
 
   mx = -1
   my = -1
@@ -368,7 +367,7 @@ def roll_invalidation_ball(
 
   Returns: modified labels
   """
-  cdef int sx, sy, sz 
+  cdef int64_t sx, sy, sz 
   sx = labels.shape[0]
   sy = labels.shape[1]
   sz = labels.shape[2]
@@ -377,12 +376,12 @@ def roll_invalidation_ball(
   (wx, wy, wz) = anisotropy
     
   cdef float radius, dist
-  cdef int minx, maxx, miny, maxy, minz, maxz
+  cdef int64_t minx, maxx, miny, maxy, minz, maxz
 
-  cdef int x,y,z
-  cdef int x0, y0, z0
+  cdef int64_t x,y,z
+  cdef int64_t x0, y0, z0
 
-  cdef int invalidated = 0
+  cdef size_t invalidated = 0
 
   for coord in path:
     if tuple(coord) in invalid_vertices:
@@ -391,12 +390,12 @@ def roll_invalidation_ball(
     (x0, y0, z0) = coord
     radius = DBF[x0,y0,z0] * scale + const # physical units (e.g. nm)
 
-    minx = max(0,  <int>(0.5 + (x0 - (radius / wx))))
-    maxx = min(sx, <int>(0.5 + (x0 + (radius / wx))))
-    miny = max(0,  <int>(0.5 + (y0 - (radius / wy))))
-    maxy = min(sy, <int>(0.5 + (y0 + (radius / wy))))
-    minz = max(0,  <int>(0.5 + (z0 - (radius / wz))))
-    maxz = min(sz, <int>(0.5 + (z0 + (radius / wz))))
+    minx = max(0,  <int64_t>(0.5 + (x0 - (radius / wx))))
+    maxx = min(sx, <int64_t>(0.5 + (x0 + (radius / wx))))
+    miny = max(0,  <int64_t>(0.5 + (y0 - (radius / wy))))
+    maxy = min(sy, <int64_t>(0.5 + (y0 + (radius / wy))))
+    minz = max(0,  <int64_t>(0.5 + (z0 - (radius / wz))))
+    maxz = min(sz, <int64_t>(0.5 + (z0 + (radius / wz))))
 
     radius *= radius 
 
@@ -433,12 +432,12 @@ def get_mapping(
   Returns: { $CC_LABEL: $ORIGINAL_LABEL }
   """
 
-  cdef int sx,sy,sz 
+  cdef size_t sx, sy, sz 
   sx = orig_labels.shape[0]
   sy = orig_labels.shape[1]
   sz = orig_labels.shape[2]
 
-  cdef int x,y,z 
+  cdef size_t x,y,z 
 
   remap = {}
 

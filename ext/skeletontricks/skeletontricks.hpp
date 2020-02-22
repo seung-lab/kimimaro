@@ -17,7 +17,7 @@
  * 
  * Author: William Silversmith
  * Affiliation: Seung Lab, Princeton University
- * Date: September 2018
+ * Date: September 2018 - February 2020
  */
 
 #include <algorithm>
