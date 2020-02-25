@@ -499,19 +499,10 @@ def engage_avocado_protection(
     (pit, fruit) = kimimaro.skeletontricks.find_avocado_fruit(
       cc_labels, coord[0], coord[1], coord[2]
     )
-    # if pit == fruit, not an avocado
     if pit != fruit:
       binimg = (cc_labels == fruit) + (cc_labels == pit)
-      binimg = fill_voids.fill(binimg, in_place=True)
-      # Given we know it's an avocado, if fill doesn't work
-      # there's a small hole in the fruit and we need to close 
-      # it.
-      while not binimg[coord]:
-        binimg = scipy.ndimage.morphology.binary_closing(binimg)
-        binimg = fill_voids.fill(binimg, in_place=True)
-    else:
-      binimg = fill_voids.fill(binimg, in_place=True)
 
+    binimg = fill_voids.fill(binimg, in_place=True)
     segids = fastremap.unique(cc_labels * binimg)
     remap.update({ k: label for k in segids })
 
