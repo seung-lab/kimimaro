@@ -868,3 +868,93 @@ def find_cycle_cython(cnp.ndarray[int32_t, ndim=2] edges):
     return np.array([], dtype=np.int32)
 
   return np.array(path, dtype=np.int32)
+
+def is_avocado(
+  cnp.ndarray[INTEGER, ndim=1] labels, 
+  size_t sx, size_t sy, size_t sz,
+  size_t cx, size_t cy, size_t cz,
+  INTEGER background = 0
+):
+  """
+  Tests to see if the current coordinate is inside 
+  the nucleus of a somata that has been assigned
+  to a seperate label.
+  """
+  cdef size_t sxy = sx * sy
+  cdef size_t voxels = sx * sy * sz 
+
+  if cx >= sx or cy >= sy or cz >= sz:
+    raise ValueError(
+      "<{},{},{}> must be be contained within shape <{},{},{}>".format(
+        cx,cy,cz,sx,sy,sz
+    ))
+
+  cdef size_t x, y, z 
+
+  cdef INTEGER label = labels[cx + sx * (cy + sy * cz)]
+  cdef INTEGER background = 0
+
+  cdef list changes = [ label ] * 6
+
+  for x in range(cx, sx):
+    if labels[x,cy,cz] != label and labels[x,cy,cz] != background:
+      changes[0] = labels[x,cy,cz]
+      break
+  else:
+    changes[0] = None
+
+  for x in range(cx, 0, -1):
+    if labels[x,cy,cz] != label and labels[x,cy,cz] != background:
+      changes[1] = labels[x,cy,cz]
+      break
+  else:
+    changes[1] = None
+
+  for y in range(cy, sy):
+    if labels[cx,y,cz] != label and labels[cx,y,cz] != background:
+      changes[2] = labels[cx,y,cz]
+      break
+  else:
+    changes[2] = None
+
+  for y in range(cy, 0, -1):
+    if labels[cx,y,cz] != label and labels[cx,y,cz] != background:
+      changes[3] = labels[cx,y,cz]
+      break
+  else:
+    changes[3] = None
+
+  for z in range(cz, sz):
+    if labels[cx,cy,z] != label and labels[cx,cy,z] != background:
+      changes[4] = labels[cx,cy,z]
+      break
+  else:
+    changes[4] = None
+
+  for z in range(cz, 0, -1):
+    if labels[cx,cy,z] != label and labels[cx,cy,z] != background:
+      changes[5] = labels[cx,cy,z]
+      break
+  else:
+    changes[5] = None
+
+  changes = [ _ for _ in changes if _ is not None ]
+
+  if len(changes) == 0:
+    return False
+  elif len(changes) > 3: # if more than 3, allow one non-match
+    allowed_differences = 1
+  else: # allow no non-matches (we're in a corner)
+    allowed_differences = 0
+
+  cur = changes[0]
+  differences = 0
+  for change in changes:
+    if cur != change:
+      differences += 1
+
+  return differences <= allowed_differences
+
+  
+
+
