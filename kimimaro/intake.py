@@ -54,7 +54,7 @@ def skeletonize(
     progress=False, fix_branching=True, in_place=False, 
     fix_borders=True, parallel=1, parallel_chunk_size=100,
     extra_targets_before=[], extra_targets_after=[],
-    fill_holes=False
+    fill_holes=False, avocado_protection=False
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -158,10 +158,13 @@ def skeletonize(
     order='F',
     parallel=parallel,
   )
-  # slows things down, but saves memory
-  # max_all_dbf = np.max(all_dbf)
-  # if max_all_dbf < np.finfo(np.float16).max:
-  #   all_dbf = all_dbf.astype(np.float16)
+ 
+  if avocado_protection:
+    cc_labels, all_dbf = engage_avocado_protection(
+      cc_labels, all_dbf, 
+      anisotropy, soma_detection_threshold, 
+      parallel
+    )
 
   cc_segids, pxct = kimimaro.skeletontricks.unique(cc_labels, return_counts=True)
   cc_segids = [ sid for sid, ct in zip(cc_segids, pxct) if ct > dust_threshold and sid != 0 ]
@@ -475,28 +478,51 @@ def merge(skeletons):
 
   return merged_skels
 
-def avocado_protection(labels, all_dbf, soma_detection_threshold):
-  candidate_labels = fastremap.unique(labels * (all_dbf > soma_detection_threshold))
+def engage_avocado_protection(
+  cc_labels, all_dbf, anisotropy, 
+  soma_detection_threshold, parallel
+):
+  candidate_labels = fastremap.unique(cc_labels * (all_dbf > soma_detection_threshold))
+
+  if len(candidate_labels) == 0:
+    return cc_labels, all_dbf
 
   remap = {}
-
   for label in candidate_labels:
-    binimg = (labels == label)
+    binimg = (cc_labels == label)
     coord = np.unravel_index(
       np.argmax( binimg * all_dbf, axis=None ), 
-      labels.shape
+      cc_labels.shape
     )
     (pit, fruit) = kimimaro.skeletontricks.find_avocado_fruit(
-      labels, coord[0], coord[1], coord[2]
+      cc_labels, coord[0], coord[1], coord[2]
     )
+    # if pit == fruit, not an avocado
     if pit != fruit:
-      binimg = (labels == fruit)
-    binimg = fill_voids.fill(binimg, in_place=True)
-    segids = fastremap.unique(labels * binimg)
+      binimg = (cc_labels == fruit)
+      binimg = fill_voids.fill(binimg, in_place=True)
+      # Given we know it's an avocado, if fill doesn't work
+      # there's a small hole in the fruit and we need to close 
+      # it.
+      while not binimg[coord]:
+        binimg = scipy.ndimage.morphology.binary_closing(binimg)
+        binimg = fill_voids.fill(binimg, in_place=True)
+    else:
+      binimg = fill_voids.fill(binimg, in_place=True)
+
+    segids = fastremap.unique(cc_labels * binimg)
     remap.update({ k: label for k in segids })
 
-  fastremap.remap(labels, remap, preserve_missing_keys=True, in_place=True)
-  return labels
+  fastremap.remap(cc_labels, remap, preserve_missing_keys=True, in_place=True)
+
+  all_dbf = edt.edt(cc_labels, 
+    anisotropy=anisotropy,
+    black_border=False,
+    order='F',
+    parallel=parallel,
+  )
+
+  return cc_labels, all_dbf
 
 def synapses_to_targets(labels, synapses, progress=False):
   """
