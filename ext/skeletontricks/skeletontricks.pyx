@@ -940,9 +940,7 @@ def is_avocado(
 
   changes = [ _ for _ in changes if _ is not None ]
 
-  if len(changes) == 0:
-    return False
-  elif len(changes) > 3: # if more than 3, allow one non-match
+  if len(changes) > 3: # if more than 3, allow one non-match
     allowed_differences = 1
   else: # allow no non-matches (we're in a corner)
     allowed_differences = 0
@@ -953,7 +951,7 @@ def is_avocado(
     if cur != change:
       differences += 1
 
-  return differences <= allowed_differences
+  return differences > allowed_differences
 
   
 
