@@ -486,6 +486,8 @@ def engage_avocado_protection(
 ):
   candidate_labels = fastremap.unique(cc_labels * (all_dbf > soma_detection_threshold))
 
+  # todo: we need to work in the soma acceptance threshold?
+
   if len(candidate_labels) == 0:
     return cc_labels, all_dbf
 
