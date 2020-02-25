@@ -870,8 +870,7 @@ def find_cycle_cython(cnp.ndarray[int32_t, ndim=2] edges):
   return np.array(path, dtype=np.int32)
 
 def is_avocado(
-  cnp.ndarray[INTEGER, ndim=1] labels, 
-  size_t sx, size_t sy, size_t sz,
+  cnp.ndarray[INTEGER, ndim=3] labels, 
   size_t cx, size_t cy, size_t cz,
   INTEGER background = 0
 ):
@@ -880,7 +879,8 @@ def is_avocado(
   the nucleus of a somata that has been assigned
   to a seperate label.
   """
-  cdef size_t sxy = sx * sy
+  cdef size_t sx, sy, sz
+  sx, sy, sz = labels.shape[:3]
   cdef size_t voxels = sx * sy * sz 
 
   if cx >= sx or cy >= sy or cz >= sz:
@@ -891,7 +891,7 @@ def is_avocado(
 
   cdef size_t x, y, z 
 
-  cdef INTEGER label = labels[cx + sx * (cy + sy * cz)]
+  cdef INTEGER label = labels[cx, cy, cz]
   cdef INTEGER background = 0
 
   cdef list changes = [ label ] * 6
