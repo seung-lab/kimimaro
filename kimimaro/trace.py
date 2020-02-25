@@ -161,7 +161,7 @@ def trace(
     [ PrecomputedSkeleton.from_path(path) for path in paths ]
   ).consolidate()
 
-  verts = skel.vertices.flatten()
+  verts = skel.vertices.flatten().astype(np.uint32)
   skel.radii = DBF[verts[::3], verts[1::3], verts[2::3]]
 
   return skel
