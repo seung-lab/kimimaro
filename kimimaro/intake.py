@@ -54,7 +54,7 @@ def skeletonize(
     progress=False, fix_branching=True, in_place=False, 
     fix_borders=True, parallel=1, parallel_chunk_size=100,
     extra_targets_before=[], extra_targets_after=[],
-    fill_holes=False, avocado_protection=False
+    fill_holes=False, fix_avocados=False
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -116,6 +116,8 @@ def skeletonize(
     fix_borders: ensure that segments touching the border place a 
       skeleton endpoint in a predictable place to make merging 
       adjacent chunks easier.
+    fix_avocados: If nuclei are segmented seperately from somata
+      then we can try to detect and fix this issue.
     parallel: number of subprocesses to use.
       <= 0: Use multiprocessing.count_cpu() 
          1: Only use the main process.
@@ -159,7 +161,7 @@ def skeletonize(
     parallel=parallel,
   )
  
-  if avocado_protection:
+  if fix_avocados:
     cc_labels, all_dbf = engage_avocado_protection(
       cc_labels, all_dbf, 
       anisotropy, soma_detection_threshold, 
