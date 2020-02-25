@@ -475,6 +475,29 @@ def merge(skeletons):
 
   return merged_skels
 
+def avocado_protection(labels, all_dbf, soma_detection_threshold):
+  candidate_labels = fastremap.unique(labels * (all_dbf > soma_detection_threshold))
+
+  remap = {}
+
+  for label in candidate_labels:
+    binimg = (labels == label)
+    coord = np.unravel_index(
+      np.argmax( binimg * all_dbf, axis=None ), 
+      labels.shape
+    )
+    (pit, fruit) = kimimaro.skeletontricks.find_avocado_fruit(
+      labels, coord[0], coord[1], coord[2]
+    )
+    if pit != fruit:
+      binimg = (labels == fruit)
+    binimg = fill_voids.fill(binimg, in_place=True)
+    segids = fastremap.unique(labels * binimg)
+    remap.update({ k: label for k in segids })
+
+  fastremap.remap(labels, remap, preserve_missing_keys=True, in_place=True)
+  return labels
+
 def synapses_to_targets(labels, synapses, progress=False):
   """
   Turn the output of synapse detection and assignment, usually 

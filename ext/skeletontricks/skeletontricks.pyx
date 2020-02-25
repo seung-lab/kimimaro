@@ -869,7 +869,7 @@ def find_cycle_cython(cnp.ndarray[int32_t, ndim=2] edges):
 
   return np.array(path, dtype=np.int32)
 
-def is_avocado(
+def find_avocado_fruit(
   cnp.ndarray[INTEGER, ndim=3] labels, 
   size_t cx, size_t cy, size_t cz,
   INTEGER background = 0
@@ -878,6 +878,8 @@ def is_avocado(
   Tests to see if the current coordinate is inside 
   the nucleus of a somata that has been assigned
   to a seperate label.
+
+  Returns: (pit, fruit)
   """
   cdef size_t sx, sy, sz
   sx, sy, sz = labels.shape[:3]
@@ -945,13 +947,16 @@ def is_avocado(
   else: # allow no non-matches (we're in a corner)
     allowed_differences = 0
 
-  cur = changes[0]
-  differences = 0
-  for change in changes:
-    if cur != change:
-      differences += 1
+  uniq, cts = np.unique(changes, return_counts=True)
+  candidate_fruit_index = np.argmax(cts)
+  differences = len(changes) - cts[candidate_fruit_index]
 
-  return differences > allowed_differences
+  # it's not an avocado if there's lots of
+  # labels surrounding the candidate "pit"
+  if differences > allowed_differences:
+    return (label, label)
+  
+  return (label, uniq[candidate_fruit_index])
 
   
 
