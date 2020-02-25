@@ -491,7 +491,7 @@ def engage_avocado_protection(
     )
     # if pit == fruit, not an avocado
     if pit != fruit:
-      binimg = (cc_labels == fruit)
+      binimg = (cc_labels == fruit) + (cc_labels == pit)
       binimg = fill_voids.fill(binimg, in_place=True)
       # Given we know it's an avocado, if fill doesn't work
       # there's a small hole in the fruit and we need to close 
