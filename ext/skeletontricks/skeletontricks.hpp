@@ -85,11 +85,13 @@ size_t _roll_invalidation_cube(
       x = loc - sx * (y + z * sy);
     }
 
-    minx = std::max(0L,    static_cast<int64_t>(x - (radius / wx)));
+    const int64_t ZERO = 0;
+
+    minx = std::max(ZERO,    static_cast<int64_t>(x - (radius / wx)));
     maxx = std::min(sx-1, static_cast<int64_t>(0.5 + (x + (radius / wx))));
-    miny = std::max(0L,    static_cast<int64_t>(y - (radius / wy)));
+    miny = std::max(ZERO,    static_cast<int64_t>(y - (radius / wy)));
     maxy = std::min(sy-1, static_cast<int64_t>(0.5 + (y + (radius / wy))));
-    minz = std::max(0L,    static_cast<int64_t>(z - (radius / wz)));
+    minz = std::max(ZERO,    static_cast<int64_t>(z - (radius / wz)));
     maxz = std::min(sz-1, static_cast<int64_t>(0.5 + (z + (radius / wz))));
 
     global_minx = std::min(global_minx, minx);
