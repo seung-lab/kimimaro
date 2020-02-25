@@ -892,10 +892,7 @@ def find_avocado_fruit(
     ))
 
   cdef size_t x, y, z 
-
   cdef INTEGER label = labels[cx, cy, cz]
-  cdef INTEGER background = 0
-
   cdef list changes = [ label ] * 6
 
   for x in range(cx, sx):
