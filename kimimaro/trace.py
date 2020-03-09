@@ -205,7 +205,11 @@ def compute_paths(
       target = kimimaro.skeletontricks.find_target(labels, DAF)
 
     if fix_branching:
-      path = dijkstra3d.dijkstra(parents, root, target, bidirectional=soma_mode)
+      # faster to trace from target to root than root to target
+      # because that way local exploration finds any zero weighted path
+      # and finishes vs exploring from the neighborhood of the entire zero
+      # weighted path
+      path = dijkstra3d.dijkstra(parents, target, root, bidirectional=soma_mode)
     else:
       path = dijkstra3d.path_from_parents(parents, target)
     
