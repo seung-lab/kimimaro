@@ -193,7 +193,7 @@ Additionally, data quality issues can be challenging as well. If one is skeleton
 
 In our problem domain of skeletonizing neurons from anisotropic voxel labels, our chosen algorithm should produce tree structures, handle fine or coarse detail extraction depending on the circumstances, handle voxel anisotropy, and be reasonably efficient in CPU and memory usage. TEASAR fufills these criteria. Notably, TEASAR doesn't guarantee the centeredness of the skeleton within the shape, but it makes an effort. The basic TEASAR algorithm is known to cut corners around turns and branch too early. A 2001 paper by members of the original TEASAR team describes a method for reducing the early branching issue on page 204, section 4.2.2. [2]
 
-## TEASAR Derived Algorthm
+## TEASAR Derived Algorithm
 
 We implemented TEASAR but made several deviations from the published algorithm in order to improve path centeredness, increase performance, handle bulging cell somas, and enable efficient chunked evaluation of large images. We opted not to implement the gradient vector field step from [2] as our implementation is already quite fast. The paper claims a reduction of 70-85% in input voxels, so it might be worth investigating.  
 
