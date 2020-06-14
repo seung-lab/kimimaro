@@ -15,13 +15,13 @@ def test_binary_image():
 
   assert len(skels) == 1
 
-
-def test_square():
+@pytest.mark.parametrize('fill_holes', (True, False))
+def test_square(fill_holes):
   labels = np.ones( (1000, 1000), dtype=np.uint8)
   labels[-1,0] = 0
   labels[0,-1] = 0
   
-  skels = kimimaro.skeletonize(labels, fix_borders=False)
+  skels = kimimaro.skeletonize(labels, fix_borders=False, fill_holes=fill_holes)
 
   assert len(skels) == 1
 
@@ -34,7 +34,7 @@ def test_square():
   labels[0,0] = 0
   labels[-1,-1] = 0
 
-  skels = kimimaro.skeletonize(labels, fix_borders=False)
+  skels = kimimaro.skeletonize(labels, fix_borders=False, fill_holes=fill_holes)
 
   assert len(skels) == 1
 
