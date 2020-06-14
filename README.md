@@ -61,6 +61,7 @@ skels = kimimaro.skeletonize(
   anisotropy=(16,16,40), # default True
   fix_branching=True, # default True
   fix_borders=True, # default True
+  fill_holes=False, # default False
   progress=True, # default False, show progress bar
   parallel=1, # <= 0 all cpu, 1 single process, 2+ multiprocess
   parallel_chunk_size=100, # how many skeletons to process before updating progress bar
@@ -151,6 +152,10 @@ This feature makes it easier to connect the skeletons of adjacent image volumes 
 #### `fix_branching`  
 
 You'll probably never want to disable this, but base TEASAR is infamous for forking the skeleton at branch points way too early. This option makes it preferential to fork at a more reasonable place at a significant performance penalty. 
+
+#### `fill_holes`
+
+If your segmentation contains artifacts that cause holes to appear in labels, you can preprocess the entire image to eliminate background holes and holes caused by entirely contained inclusions. This option adds a moderate amount of additional processing time at the beginning (perhaps ~30%).
 
 #### `progress`
 
