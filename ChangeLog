@@ -1,7 +1,14 @@
 CHANGES
 =======
 
-1.4.0
+1.4.2
+-----
+
+* chore: loosen networkx requirement (#49)
+* Update README.md
+* docs: update memory usage diagram for version 1.4.0
+
+1.4.1
 -----
 
 * perf: switch source and target for dijkstra
