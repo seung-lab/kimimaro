@@ -54,6 +54,7 @@ def skeletonize(
     progress=False, fix_branching=True, in_place=False, 
     fix_borders=True, parallel=1, parallel_chunk_size=100,
     extra_targets_before=[], extra_targets_after=[],
+    fill_holes=False
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -82,6 +83,13 @@ def skeletonize(
     }
     dust_threshold: don't bother skeletonizing connected components smaller than
       this many voxels.
+    fill_holes: preemptively run a void filling algorithm on all connected
+      components and delete labels that get filled in. This can improve the
+      quality of the reconstruction if holes in the shapes are artifacts introduced
+      by the segmentation pipeline. This option incurs moderate overhead.
+
+      WARNING: THIS WILL REMOVE INPUT LABELS THAT ARE DEEMED TO BE HOLES.
+
     cc_safety_factor: Value between 0 and 1 that scales the size of the 
       disjoint set maps in connected_components. 1 is guaranteed to work,
       but is probably excessive and corresponds to every pixel being a different
@@ -137,6 +145,9 @@ def skeletonize(
 
   cc_labels, remapping = compute_cc_labels(all_labels, cc_safety_factor)
   del all_labels
+
+  if fill_holes:
+    cc_labels = fill_all_holes(cc_labels, progress)
 
   extra_targets_before = points_to_labels(extra_targets_before, cc_labels)
   extra_targets_after = points_to_labels(extra_targets_after, cc_labels)
@@ -504,6 +515,57 @@ def synapses_to_targets(labels, synapses, progress=False):
       targets.update({ target: swc_label for target in tmp_targets })
 
   return targets
+
+def fill_all_holes(cc_labels, progress=False, return_fill_count=False):
+  """
+  Fills the holes in each connected component and removes components that
+  get filled in. The idea is that holes (entirely contained labels or background) 
+  are artifacts in cell segmentations. A common example is a nucleus segmented 
+  separately from the rest of the cell or errors in a manual segmentation leaving
+  a void in a dendrite.
+
+  cc_labels: an image containing connected components with labels smaller than
+    the number of voxels in the image.
+  progress: Display a progress bar or not.
+  return_fill_count: if specified, return a tuple (filled_image, N) where N is
+    the number of voxels that were filled in.
+
+  Returns: filled_in_labels
+  """
+  import fill_voids
+
+  labels = fastremap.unique(cc_labels)
+  labels_set = set(labels)
+  labels_set.discard(0)
+
+  all_slices = find_objects(cc_labels)
+  pixels_filled = 0
+
+  for label in tqdm(labels, disable=(not progress), desc="Filling Holes"):
+    if label not in labels_set:
+      continue
+
+    slices = all_slices[label - 1]
+    if slices is None:
+      continue
+
+    binary_image = (cc_labels[slices] == label)
+    binary_image, N = fill_voids.fill(
+      binary_image, in_place=True, 
+      return_fill_count=True
+    )
+    pixels_filled += N
+    if N == 0:
+      continue 
+
+    sub_labels = set(fastremap.unique(cc_labels[slices] * binary_image))
+    sub_labels.remove(label)
+    labels_set -= sub_labels
+    cc_labels[slices] = cc_labels[slices] * ~binary_image + label * binary_image
+
+  if return_fill_count:
+    return cc_labels, pixels_filled
+  return cc_labels
 
 def print_quotes(parallel):
   if parallel == -1:

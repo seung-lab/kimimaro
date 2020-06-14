@@ -15,13 +15,13 @@ def test_binary_image():
 
   assert len(skels) == 1
 
-
-def test_square():
+@pytest.mark.parametrize('fill_holes', (True, False))
+def test_square(fill_holes):
   labels = np.ones( (1000, 1000), dtype=np.uint8)
   labels[-1,0] = 0
   labels[0,-1] = 0
   
-  skels = kimimaro.skeletonize(labels, fix_borders=False)
+  skels = kimimaro.skeletonize(labels, fix_borders=False, fill_holes=fill_holes)
 
   assert len(skels) == 1
 
@@ -34,7 +34,7 @@ def test_square():
   labels[0,0] = 0
   labels[-1,-1] = 0
 
-  skels = kimimaro.skeletonize(labels, fix_borders=False)
+  skels = kimimaro.skeletonize(labels, fix_borders=False, fill_holes=fill_holes)
 
   assert len(skels) == 1
 
@@ -236,7 +236,8 @@ def test_dimensions():
   except kimimaro.DimensionError:
     pass
 
-def test_joinability():
+@pytest.mark.parametrize('axis', ('x','y'))
+def test_joinability(axis):
   def skeletionize(labels, fix_borders):
     return kimimaro.skeletonize(
       labels,
@@ -257,34 +258,38 @@ def test_joinability():
       parallel=1,
     )
 
-  def testlabels(labels):
-    skels1 = skeletionize(labels[:,:,:10], True)
-    skels1 = skels1[1]
+  labels = np.zeros((256, 256, 20), dtype=np.uint8)
 
-    skels2 = skeletionize(labels[:,:,9:], True)
-    skels2 = skels2[1]
-    skels2.vertices[:,2] += 9
-
-    skels = skels1.merge(skels2)
-    assert len(skels.components()) == 1
-
-    skels1 = skeletionize(labels[:,:,:10], False)
-    skels1 = skels1[1]
-
-    skels2 = skeletionize(labels[:,:,9:], False)
-    skels2 = skels2[1]
-    skels2.vertices[:,2] += 9
-
-    skels = skels1.merge(skels2)
-    assert len(skels.components()) == 2
+  if axis == 'x':
+    lslice = np.s_[ 32:160, :, : ]
+  elif axis == 'y':
+    lslice = np.s_[ :, 32:160, : ]
 
   labels = np.zeros((256, 256, 20), dtype=np.uint8)
-  labels[ :, 32:160, : ] = 1
-  testlabels(labels)
+  labels[lslice] = 1
 
-  labels = np.zeros((256, 256, 20), dtype=np.uint8)
-  labels[ 32:160, :, : ] = 1
-  testlabels(labels)
+  skels1 = skeletionize(labels[:,:,:10], True)
+  skels1 = skels1[1]
+
+  skels2 = skeletionize(labels[:,:,9:], True)
+  skels2 = skels2[1]
+  skels2.vertices[:,2] += 9
+
+  skels_fb = skels1.merge(skels2)
+  assert len(skels_fb.components()) == 1
+
+  skels1 = skeletionize(labels[:,:,:10], False)
+  skels1 = skels1[1]
+
+  skels2 = skeletionize(labels[:,:,9:], False)
+  skels2 = skels2[1]
+  skels2.vertices[:,2] += 9
+
+  skels = skels1.merge(skels2)
+  # Ususally this results in 2 connected components,
+  # but random variation in how fp is handled can 
+  # result in a merge near the tails.
+  assert not Skeleton.equivalent(skels, skels_fb)
 
 def test_unique():
   for i in range(5):
@@ -384,3 +389,23 @@ def test_join_close_components_complex():
   assert len(res.components()) == 1
 
   assert np.all(res.edges == [[0,1], [0,3], [1,2], [3,4], [4,5], [5,6], [6,7]])
+
+def test_fill_all_holes():
+  labels = np.zeros((64, 32, 32), dtype=np.uint32)
+
+  labels[0:32,:,:] = 1
+  labels[32:64,:,:] = 8
+
+  noise = np.random.randint(low=1, high=8, size=(30, 30, 30))
+  labels[1:31,1:31,1:31] = noise
+
+  noise = np.random.randint(low=8, high=11, size=(30, 30, 30))
+  labels[33:63,1:31,1:31] = noise
+
+  noise_labels = np.unique(labels)
+  assert set(noise_labels) == set([1,2,3,4,5,6,7,8,9,10])
+
+  result = kimimaro.intake.fill_all_holes(labels)
+
+  filled_labels = np.unique(result)
+  assert set(filled_labels) == set([1,8])
