@@ -236,7 +236,8 @@ def test_dimensions():
   except kimimaro.DimensionError:
     pass
 
-def test_joinability():
+@pytest.mark.parametrize('axis', ('x','y'))
+def test_joinability(axis):
   def skeletionize(labels, fix_borders):
     return kimimaro.skeletonize(
       labels,
@@ -257,34 +258,38 @@ def test_joinability():
       parallel=1,
     )
 
-  def testlabels(labels):
-    skels1 = skeletionize(labels[:,:,:10], True)
-    skels1 = skels1[1]
+  labels = np.zeros((256, 256, 20), dtype=np.uint8)
 
-    skels2 = skeletionize(labels[:,:,9:], True)
-    skels2 = skels2[1]
-    skels2.vertices[:,2] += 9
-
-    skels = skels1.merge(skels2)
-    assert len(skels.components()) == 1
-
-    skels1 = skeletionize(labels[:,:,:10], False)
-    skels1 = skels1[1]
-
-    skels2 = skeletionize(labels[:,:,9:], False)
-    skels2 = skels2[1]
-    skels2.vertices[:,2] += 9
-
-    skels = skels1.merge(skels2)
-    assert len(skels.components()) == 2
+  if axis == 'x':
+    lslice = np.s_[ 32:160, :, : ]
+  elif axis == 'y':
+    lslice = np.s_[ :, 32:160, : ]
 
   labels = np.zeros((256, 256, 20), dtype=np.uint8)
-  labels[ :, 32:160, : ] = 1
-  testlabels(labels)
+  labels[lslice] = 1
 
-  labels = np.zeros((256, 256, 20), dtype=np.uint8)
-  labels[ 32:160, :, : ] = 1
-  testlabels(labels)
+  skels1 = skeletionize(labels[:,:,:10], True)
+  skels1 = skels1[1]
+
+  skels2 = skeletionize(labels[:,:,9:], True)
+  skels2 = skels2[1]
+  skels2.vertices[:,2] += 9
+
+  skels_fb = skels1.merge(skels2)
+  assert len(skels_fb.components()) == 1
+
+  skels1 = skeletionize(labels[:,:,:10], False)
+  skels1 = skels1[1]
+
+  skels2 = skeletionize(labels[:,:,9:], False)
+  skels2 = skels2[1]
+  skels2.vertices[:,2] += 9
+
+  skels = skels1.merge(skels2)
+  # Ususally this results in 2 connected components,
+  # but random variation in how fp is handled can 
+  # result in a merge near the tails.
+  assert not Skeleton.equivalent(skels, skels_fb)
 
 def test_unique():
   for i in range(5):
