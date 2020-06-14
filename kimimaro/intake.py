@@ -87,6 +87,9 @@ def skeletonize(
       components and delete labels that get filled in. This can improve the
       quality of the reconstruction if holes in the shapes are artifacts introduced
       by the segmentation pipeline. This option incurs moderate overhead.
+
+      WARNING: THIS WILL REMOVE INPUT LABELS THAT ARE DEEMED TO BE HOLES.
+
     cc_safety_factor: Value between 0 and 1 that scales the size of the 
       disjoint set maps in connected_components. 1 is guaranteed to work,
       but is probably excessive and corresponds to every pixel being a different
@@ -516,7 +519,7 @@ def synapses_to_targets(labels, synapses, progress=False):
 def fill_all_holes(cc_labels, progress=False, return_fill_count=False):
   """
   Fills the holes in each connected component and removes components that
-  get filled in. The idea is that holes (or even entirely contained labels) 
+  get filled in. The idea is that holes (entirely contained labels or background) 
   are artifacts in cell segmentations. A common example is a nucleus segmented 
   separately from the rest of the cell or errors in a manual segmentation leaving
   a void in a dendrite.
