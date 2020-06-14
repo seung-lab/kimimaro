@@ -519,7 +519,7 @@ def fill_all_holes(cc_labels, progress=False, return_fill_count=False):
   get filled in. The idea is that holes (or even entirely contained labels) 
   are artifacts in cell segmentations. A common example is a nucleus segmented 
   separately from the rest of the cell or errors in a manual segmentation leaving
-  a void in a denrite.
+  a void in a dendrite.
 
   cc_labels: an image containing connected components with labels smaller than
     the number of voxels in the image.
@@ -528,7 +528,6 @@ def fill_all_holes(cc_labels, progress=False, return_fill_count=False):
     the number of voxels that were filled in.
 
   Returns: filled_in_labels
-
   """
   import fill_voids
 
