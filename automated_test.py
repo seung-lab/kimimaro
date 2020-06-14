@@ -384,3 +384,23 @@ def test_join_close_components_complex():
   assert len(res.components()) == 1
 
   assert np.all(res.edges == [[0,1], [0,3], [1,2], [3,4], [4,5], [5,6], [6,7]])
+
+def test_fill_all_holes():
+  labels = np.zeros((64, 32, 32), dtype=np.uint32)
+
+  labels[0:32,:,:] = 1
+  labels[32:64,:,:] = 8
+
+  noise = np.random.randint(low=1, high=8, size=(30, 30, 30))
+  labels[1:31,1:31,1:31] = noise
+
+  noise = np.random.randint(low=8, high=11, size=(30, 30, 30))
+  labels[33:63,1:31,1:31] = noise
+
+  noise_labels = np.unique(labels)
+  assert set(noise_labels) == set([1,2,3,4,5,6,7,8,9,10])
+
+  result = kimimaro.intake.fill_all_holes(labels)
+
+  filled_labels = np.unique(result)
+  assert set(filled_labels) == set([1,8])
