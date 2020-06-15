@@ -4,6 +4,7 @@ import edt
 import numpy as np
 from cloudvolume import *
 
+import kimimaro.intake
 import kimimaro.skeletontricks
 
 def test_binary_image():
@@ -409,3 +410,36 @@ def test_fill_all_holes():
 
   filled_labels = np.unique(result)
   assert set(filled_labels) == set([1,8])
+
+def test_fix_avocados():
+  labels = np.zeros((256, 256, 256), dtype=np.uint32)
+
+  # fake clipped avocado
+  labels[:50, :40, :30] = 1 
+  labels[:25, :20, :25] = 2
+
+  # double avocado
+  labels[50:100, 40:100, 30:80] = 3
+  labels[60:90, 50:90, 40:70] = 4
+  labels[60:70, 51:89, 41:69] = 5
+
+  fn = lambda lbls: edt.edt(lbls)
+  dt = fn(labels)
+
+  labels, dbf = kimimaro.intake.engage_avocado_protection(
+    labels, dt, 
+    soma_detection_threshold=1, 
+    edtfn=fn, 
+    progress=True
+  )
+
+  uniq = set(np.unique(labels))
+  assert uniq == set([0, 1, 2]) # 0,2,5 renumbered
+  assert np.all(labels[:50, :40, :30] == 1)
+  assert np.all(labels[50:100, 40:100, 30:80] == 2)
+
+
+
+
+
+

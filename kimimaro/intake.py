@@ -562,6 +562,7 @@ def engage_avocado_protection_single_pass(
     
     binimg, N = fill_voids.fill(binimg, in_place=True, return_fill_count=True)
     segids = fastremap.unique(cc_labels * binimg)
+    segids = [ segid for segid in segids if segid != 0 ]
     remap.update({ k: label for k in segids })
 
   cc_labels = fastremap.remap(cc_labels, remap, preserve_missing_labels=True, in_place=True)

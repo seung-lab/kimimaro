@@ -896,48 +896,63 @@ def find_avocado_fruit(
   cdef list changes = [ label ] * 6
 
   for x in range(cx, sx):
-    if labels[x,cy,cz] != label and labels[x,cy,cz] != background:
+    if labels[x,cy,cz] == background:
+      break
+    elif labels[x,cy,cz] != label:
       changes[0] = labels[x,cy,cz]
       break
   else:
     changes[0] = None
 
   for x in range(cx, 0, -1):
-    if labels[x,cy,cz] != label and labels[x,cy,cz] != background:
+    if labels[x,cy,cz] == background:
+      break
+    elif labels[x,cy,cz] != label:
       changes[1] = labels[x,cy,cz]
       break
   else:
     changes[1] = None
 
   for y in range(cy, sy):
-    if labels[cx,y,cz] != label and labels[cx,y,cz] != background:
+    if labels[cx,y,cz] == background:
+      break
+    if labels[cx,y,cz] != label:
       changes[2] = labels[cx,y,cz]
       break
   else:
     changes[2] = None
 
   for y in range(cy, 0, -1):
-    if labels[cx,y,cz] != label and labels[cx,y,cz] != background:
+    if labels[cx,y,cz] == background:
+      break
+    if labels[cx,y,cz] != label:
       changes[3] = labels[cx,y,cz]
       break
   else:
     changes[3] = None
 
   for z in range(cz, sz):
-    if labels[cx,cy,z] != label and labels[cx,cy,z] != background:
+    if labels[cx,cy,z] == background:
+      break
+    if labels[cx,cy,z] != label:
       changes[4] = labels[cx,cy,z]
       break
   else:
     changes[4] = None
 
   for z in range(cz, 0, -1):
-    if labels[cx,cy,z] != label and labels[cx,cy,z] != background:
+    if labels[cx,cy,z] == background:
+      break
+    if labels[cx,cy,z] != label:
       changes[5] = labels[cx,cy,z]
       break
   else:
     changes[5] = None
 
   changes = [ _ for _ in changes if _ is not None ]
+
+  if len(changes) == 0:
+    return (label, label)
 
   if len(changes) > 3: # if more than 3, allow one non-match
     allowed_differences = 1
