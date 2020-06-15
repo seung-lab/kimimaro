@@ -235,7 +235,7 @@ def find_objects(labels):
     return scipy.ndimage.find_objects(labels)
   else:
     all_slices = scipy.ndimage.find_objects(labels.T)
-    return [ slcs[::-1]  for slcs in all_slices ]    
+    return [ slcs[::-1] for slcs in all_slices ]    
 
 def format_labels(labels, in_place):
   if in_place:
@@ -485,34 +485,55 @@ def merge(skeletons):
 
   return merged_skels
 
-def engage_avocado_protection(cc_labels, all_dbf, soma_detection_threshold, edtfn, progress):
-  unchanged = set()
-  max_iterations = max(fastremap.unique(cc_labels))
-
-  # This loop handles nested avocados
-  for _ in tqdm(range(max_iterations), disable=(not progress), desc="Avocado Pass"): # just make sure this loop terminates
-    candidates = set(fastremap.unique(cc_labels * (all_dbf > soma_detection_threshold)))
-    candidates -= unchanged
-    candidates.discard(0)
-
-    cc_labels, unchanged, changes = engage_avocado_protection_single_pass(
-      cc_labels, all_dbf,
-      candidates=candidates,
-      progress=progress,
-    )
-    if len(changes) == 0:
-      break 
-    
-    all_dbf = edtfn(cc_labels)
-  
-  return cc_labels, all_dbf
-
 def argmax(arr):
   if arr.flags['C_CONTIGUOUS']:
     return np.unravel_index(np.argmax(arr), arr.shape, order='C')
   return np.unravel_index(np.argmax(arr.T), arr.shape, order='F')
 
-def engage_avocado_protection_single_pass(cc_labels, all_dbf, candidates=None, progress=False):
+def engage_avocado_protection(
+  cc_labels, all_dbf, 
+  soma_detection_threshold, edtfn, 
+  progress
+):
+  unchanged = set()
+  max_iterations = max(fastremap.unique(cc_labels))
+
+  # This loop handles nested avocados
+  # Unless there are deeply nested double avocados,
+  # this should complete in 2-3 passes. We limit it
+  # to 20 just to make sure this loop terminates no matter what.
+  # Avocados aren't the end of the world.
+  for _ in tqdm(range(20), disable=(not progress), desc="Avocado Pass"): 
+    candidates = set(fastremap.unique(cc_labels * (all_dbf > soma_detection_threshold)))
+    candidates -= unchanged
+    candidates.discard(0)
+
+    cc_labels, unchanged_this_cycle, changes = engage_avocado_protection_single_pass(
+      cc_labels, all_dbf,
+      candidates=candidates,
+      progress=progress,
+    )
+    unchanged |= unchanged_this_cycle
+
+    if len(changes) == 0:
+      break 
+    
+    all_dbf = edtfn(cc_labels)
+
+  # Downstream logic assumes cc_labels is contigiously numbered
+  cc_labels, _ = fastremap.renumber(cc_labels, in_place=True)
+
+  return cc_labels, all_dbf
+
+def engage_avocado_protection_single_pass(
+  cc_labels, all_dbf, 
+  candidates=None, progress=False
+):
+  """
+  For each candidate, check if there's a fruit around the
+  avocado pit roughly from the center (the max EDT).
+  """
+
   if candidates is None:
     candidates = fastremap.unique(cc_labels)
 
@@ -540,16 +561,8 @@ def engage_avocado_protection_single_pass(cc_labels, all_dbf, candidates=None, p
       binimg |= (cc_labels == fruit)
     
     binimg, N = fill_voids.fill(binimg, in_place=True, return_fill_count=True)
-    
-    if N == 0:
-      continue 
-    
     segids = fastremap.unique(cc_labels * binimg)
     remap.update({ k: label for k in segids })
-    
-    if pit == fruit:
-      unchanged.remove(pit)
-      changed.add(pit)
 
   cc_labels = fastremap.remap(cc_labels, remap, preserve_missing_labels=True, in_place=True)
   return cc_labels, unchanged, changed
