@@ -877,7 +877,7 @@ def find_avocado_fruit(
   """
   Tests to see if the current coordinate is inside 
   the nucleus of a somata that has been assigned
-  to a seperate label.
+  to a separate label from the rest of the cell.
 
   Returns: (pit, fruit)
   """

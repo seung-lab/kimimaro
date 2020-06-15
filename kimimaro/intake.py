@@ -35,6 +35,7 @@ import cloudvolume.sharedmemory as shm
 import cc3d # connected components
 import edt # euclidean distance transform
 import fastremap
+import fill_voids
 
 import kimimaro.skeletontricks
 import kimimaro.trace
@@ -154,18 +155,22 @@ def skeletonize(
   extra_targets_before = points_to_labels(extra_targets_before, cc_labels)
   extra_targets_after = points_to_labels(extra_targets_after, cc_labels)
 
-  all_dbf = edt.edt(cc_labels, 
-    anisotropy=anisotropy,
-    black_border=False,
-    order='F',
-    parallel=parallel,
-  )
+  def edtfn(labels):
+    return edt.edt(labels, 
+      anisotropy=anisotropy,
+      black_border=False,
+      order='F',
+      parallel=parallel,
+    )
+
+  all_dbf = edtfn(cc_labels)
  
   if fix_avocados:
     cc_labels, all_dbf = engage_avocado_protection(
       cc_labels, all_dbf, 
-      anisotropy, soma_detection_threshold, 
-      parallel
+      soma_detection_threshold=teasar_params.get('soma_detection_threshold', 0),
+      edtfn=edtfn,
+      progress=progress,
     )
 
   cc_segids, pxct = kimimaro.skeletontricks.unique(cc_labels, return_counts=True)
@@ -480,44 +485,74 @@ def merge(skeletons):
 
   return merged_skels
 
-def engage_avocado_protection(
-  cc_labels, all_dbf, anisotropy, 
-  soma_detection_threshold, parallel
-):
-  candidate_labels = fastremap.unique(cc_labels * (all_dbf > soma_detection_threshold))
+def engage_avocado_protection(cc_labels, all_dbf, soma_detection_threshold, edtfn, progress):
+  unchanged = set()
+  max_iterations = max(fastremap.unique(cc_labels))
 
-  # todo: we need to work in the soma acceptance threshold?
+  # This loop handles nested avocados
+  for _ in tqdm(range(max_iterations), disable=(not progress), desc="Avocado Pass"): # just make sure this loop terminates
+    candidates = set(fastremap.unique(cc_labels * (all_dbf > soma_detection_threshold)))
+    candidates -= unchanged
+    candidates.discard(0)
 
-  if len(candidate_labels) == 0:
-    return cc_labels, all_dbf
+    cc_labels, unchanged, changes = engage_avocado_protection_single_pass(
+      cc_labels, all_dbf,
+      candidates=candidates,
+      progress=progress,
+    )
+    if len(changes) == 0:
+      break 
+    
+    all_dbf = edtfn(cc_labels)
+  
+  return cc_labels, all_dbf
+
+def argmax(arr):
+  if arr.flags['C_CONTIGUOUS']:
+    return np.unravel_index(np.argmax(arr), arr.shape, order='C')
+  return np.unravel_index(np.argmax(arr.T), arr.shape, order='F')
+
+def engage_avocado_protection_single_pass(cc_labels, all_dbf, candidates=None, progress=False):
+  if candidates is None:
+    candidates = fastremap.unique(cc_labels)
+
+  candidates = [ label for label in candidates if label != 0 ]
+
+  unchanged = set()
+  changed = set()
+
+  if len(candidates) == 0:
+    return cc_labels, unchanged, changed
 
   remap = {}
-  for label in candidate_labels:
-    binimg = (cc_labels == label)
-    coord = np.unravel_index(
-      np.argmax( binimg * all_dbf, axis=None ), 
-      cc_labels.shape
-    )
+  for label in tqdm(candidates, disable=(not progress), desc="Fixing Avocados"):
+    binimg = (cc_labels == label) # image of the pit
+    coord = argmax(binimg * all_dbf)
+    
     (pit, fruit) = kimimaro.skeletontricks.find_avocado_fruit(
       cc_labels, coord[0], coord[1], coord[2]
     )
-    if pit != fruit:
-      binimg = (cc_labels == fruit) + (cc_labels == pit)
-
-    binimg = fill_voids.fill(binimg, in_place=True)
+    if pit == fruit:
+      unchanged.add(pit)
+    else:
+      changed.add(pit)
+      changed.add(fruit)
+      binimg |= (cc_labels == fruit)
+    
+    binimg, N = fill_voids.fill(binimg, in_place=True, return_fill_count=True)
+    
+    if N == 0:
+      continue 
+    
     segids = fastremap.unique(cc_labels * binimg)
     remap.update({ k: label for k in segids })
+    
+    if pit == fruit:
+      unchanged.remove(pit)
+      changed.add(pit)
 
-  fastremap.remap(cc_labels, remap, preserve_missing_keys=True, in_place=True)
-
-  all_dbf = edt.edt(cc_labels, 
-    anisotropy=anisotropy,
-    black_border=False,
-    order='F',
-    parallel=parallel,
-  )
-
-  return cc_labels, all_dbf
+  cc_labels = fastremap.remap(cc_labels, remap, preserve_missing_labels=True, in_place=True)
+  return cc_labels, unchanged, changed
 
 def synapses_to_targets(labels, synapses, progress=False):
   """
@@ -576,8 +611,6 @@ def fill_all_holes(cc_labels, progress=False, return_fill_count=False):
 
   Returns: filled_in_labels
   """
-  import fill_voids
-
   labels = fastremap.unique(cc_labels)
   labels_set = set(labels)
   labels_set.discard(0)
