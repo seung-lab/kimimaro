@@ -26534,7 +26534,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  * 
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]             # <<<<<<<<<<<<<<
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  */
   __pyx_t_18 = __pyx_v_cx;
@@ -26553,27 +26553,24 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
   /* "skeletontricks.pyx":896
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]
- *   cdef list changes = [ label ] * 6             # <<<<<<<<<<<<<<
+ *   cdef list changes = [ None ] * 6             # <<<<<<<<<<<<<<
  * 
  *   for x in range(cx, sx):
  */
-  __pyx_t_8 = __Pyx_PyInt_From_int8_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1 * 6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyList_New(1 * 6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 896, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
   { Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < 6; __pyx_temp++) {
-      __Pyx_INCREF(__pyx_t_8);
-      __Pyx_GIVEREF(__pyx_t_8);
-      PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_t_8);
+      __Pyx_INCREF(Py_None);
+      __Pyx_GIVEREF(Py_None);
+      PyList_SET_ITEM(__pyx_t_8, __pyx_temp, Py_None);
     }
   }
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_v_changes = ((PyObject*)__pyx_t_7);
-  __pyx_t_7 = 0;
+  __pyx_v_changes = ((PyObject*)__pyx_t_8);
+  __pyx_t_8 = 0;
 
   /* "skeletontricks.pyx":898
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  *   for x in range(cx, sx):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -26649,7 +26646,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_30 = __pyx_v_x;
       __pyx_t_31 = __pyx_v_cy;
@@ -26662,17 +26659,17 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
         __PYX_ERR(0, 902, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int8_t((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int8_t((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
       /* "skeletontricks.pyx":903
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[0] = None
+ * 
+ *   for x in range(cx, 0, -1):
  */
       goto __pyx_L8_break;
 
@@ -26685,21 +26682,10 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":905
- *       break
- *   else:
- *     changes[0] = None             # <<<<<<<<<<<<<<
- * 
- *   for x in range(cx, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 905, __pyx_L1_error)
-  }
   __pyx_L8_break:;
 
-  /* "skeletontricks.pyx":907
- *     changes[0] = None
+  /* "skeletontricks.pyx":905
+ *       break
  * 
  *   for x in range(cx, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -26708,7 +26694,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
   for (__pyx_t_21 = __pyx_v_cx + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_x = __pyx_t_21;
 
-    /* "skeletontricks.pyx":908
+    /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -26724,12 +26710,12 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_33 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 908, __pyx_L1_error)
+      __PYX_ERR(0, 906, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_33, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":909
+      /* "skeletontricks.pyx":907
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -26738,7 +26724,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":908
+      /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -26747,7 +26733,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
 
-    /* "skeletontricks.pyx":910
+    /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -26763,17 +26749,17 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_36 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 910, __pyx_L1_error)
+      __PYX_ERR(0, 908, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_35, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_36, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":911
+      /* "skeletontricks.pyx":909
  *       break
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_37 = __pyx_v_x;
       __pyx_t_38 = __pyx_v_cy;
@@ -26784,23 +26770,23 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
       if (unlikely(__pyx_t_39 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 911, __pyx_L1_error)
+        __PYX_ERR(0, 909, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int8_t((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int8_t((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":912
+      /* "skeletontricks.pyx":910
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[1] = None
+ * 
+ *   for y in range(cy, sy):
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":910
+      /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -26809,21 +26795,10 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":914
- *       break
- *   else:
- *     changes[1] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, sy):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 914, __pyx_L1_error)
-  }
   __pyx_L11_break:;
 
-  /* "skeletontricks.pyx":916
- *     changes[1] = None
+  /* "skeletontricks.pyx":912
+ *       break
  * 
  *   for y in range(cy, sy):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -26834,7 +26809,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
   for (__pyx_t_41 = __pyx_v_cy; __pyx_t_41 < __pyx_t_40; __pyx_t_41+=1) {
     __pyx_v_y = __pyx_t_41;
 
-    /* "skeletontricks.pyx":917
+    /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -26850,12 +26825,12 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_44 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 917, __pyx_L1_error)
+      __PYX_ERR(0, 913, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_42, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_43, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_44, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":918
+      /* "skeletontricks.pyx":914
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -26864,7 +26839,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":917
+      /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -26873,7 +26848,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
 
-    /* "skeletontricks.pyx":919
+    /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -26889,17 +26864,17 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_47 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 919, __pyx_L1_error)
+      __PYX_ERR(0, 915, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_45, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_46, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_47, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":920
+      /* "skeletontricks.pyx":916
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_48 = __pyx_v_cx;
       __pyx_t_49 = __pyx_v_y;
@@ -26910,23 +26885,23 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
       if (unlikely(__pyx_t_50 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 920, __pyx_L1_error)
+        __PYX_ERR(0, 916, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int8_t((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int8_t((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":921
+      /* "skeletontricks.pyx":917
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[2] = None
+ * 
+ *   for y in range(cy, 0, -1):
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":919
+      /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -26935,21 +26910,10 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":923
- *       break
- *   else:
- *     changes[2] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
-  }
   __pyx_L14_break:;
 
-  /* "skeletontricks.pyx":925
- *     changes[2] = None
+  /* "skeletontricks.pyx":919
+ *       break
  * 
  *   for y in range(cy, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -26958,7 +26922,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
   for (__pyx_t_21 = __pyx_v_cy + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_y = __pyx_t_21;
 
-    /* "skeletontricks.pyx":926
+    /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -26974,12 +26938,12 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_51 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 926, __pyx_L1_error)
+      __PYX_ERR(0, 920, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_41, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_51, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":927
+      /* "skeletontricks.pyx":921
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -26988,7 +26952,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":926
+      /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -26997,7 +26961,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
 
-    /* "skeletontricks.pyx":928
+    /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -27013,17 +26977,17 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_54 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 928, __pyx_L1_error)
+      __PYX_ERR(0, 922, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_52, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_53, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_54, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":929
+      /* "skeletontricks.pyx":923
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_55 = __pyx_v_cx;
       __pyx_t_56 = __pyx_v_y;
@@ -27034,23 +26998,23 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
       if (unlikely(__pyx_t_57 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 929, __pyx_L1_error)
+        __PYX_ERR(0, 923, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int8_t((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int8_t((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":930
+      /* "skeletontricks.pyx":924
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[3] = None
+ * 
+ *   for z in range(cz, sz):
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":928
+      /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -27059,21 +27023,10 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":932
- *       break
- *   else:
- *     changes[3] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, sz):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 932, __pyx_L1_error)
-  }
   __pyx_L18_break:;
 
-  /* "skeletontricks.pyx":934
- *     changes[3] = None
+  /* "skeletontricks.pyx":926
+ *       break
  * 
  *   for z in range(cz, sz):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -27084,7 +27037,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
   for (__pyx_t_59 = __pyx_v_cz; __pyx_t_59 < __pyx_t_58; __pyx_t_59+=1) {
     __pyx_v_z = __pyx_t_59;
 
-    /* "skeletontricks.pyx":935
+    /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -27100,12 +27053,12 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_62 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 935, __pyx_L1_error)
+      __PYX_ERR(0, 927, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_60, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_61, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_62, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":936
+      /* "skeletontricks.pyx":928
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -27114,7 +27067,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":935
+      /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -27123,7 +27076,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
 
-    /* "skeletontricks.pyx":937
+    /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -27139,17 +27092,17 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_65 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 937, __pyx_L1_error)
+      __PYX_ERR(0, 929, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_65, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":938
+      /* "skeletontricks.pyx":930
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_66 = __pyx_v_cx;
       __pyx_t_67 = __pyx_v_cy;
@@ -27160,23 +27113,23 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
       if (unlikely(__pyx_t_68 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 938, __pyx_L1_error)
+        __PYX_ERR(0, 930, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int8_t((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int8_t((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":939
+      /* "skeletontricks.pyx":931
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[4] = None
+ * 
+ *   for z in range(cz, 0, -1):
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":937
+      /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -27185,21 +27138,10 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":941
- *       break
- *   else:
- *     changes[4] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 941, __pyx_L1_error)
-  }
   __pyx_L22_break:;
 
-  /* "skeletontricks.pyx":943
- *     changes[4] = None
+  /* "skeletontricks.pyx":933
+ *       break
  * 
  *   for z in range(cz, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -27208,7 +27150,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
   for (__pyx_t_21 = __pyx_v_cz + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_z = __pyx_t_21;
 
-    /* "skeletontricks.pyx":944
+    /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -27224,12 +27166,12 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_69 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 944, __pyx_L1_error)
+      __PYX_ERR(0, 934, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_58, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_59, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_69, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":945
+      /* "skeletontricks.pyx":935
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -27238,7 +27180,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":944
+      /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -27247,7 +27189,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
 
-    /* "skeletontricks.pyx":946
+    /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -27263,17 +27205,17 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_72 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 946, __pyx_L1_error)
+      __PYX_ERR(0, 936, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_70, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_71, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_72, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":947
+      /* "skeletontricks.pyx":937
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_73 = __pyx_v_cx;
       __pyx_t_74 = __pyx_v_cy;
@@ -27284,23 +27226,23 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
       if (unlikely(__pyx_t_75 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 947, __pyx_L1_error)
+        __PYX_ERR(0, 937, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int8_t((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int8_t((*__Pyx_BufPtrStrided3d(int8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":948
+      /* "skeletontricks.pyx":938
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[5] = None
+ * 
+ *   changes = [ _ for _ in changes if _ is not None ]
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":946
+      /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -27309,36 +27251,25 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":950
- *       break
- *   else:
- *     changes[5] = None             # <<<<<<<<<<<<<<
- * 
- *   changes = [ _ for _ in changes if _ is not None ]
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 950, __pyx_L1_error)
-  }
   __pyx_L26_break:;
 
-  /* "skeletontricks.pyx":952
- *     changes[5] = None
+  /* "skeletontricks.pyx":940
+ *       break
  * 
  *   changes = [ _ for _ in changes if _ is not None ]             # <<<<<<<<<<<<<<
  * 
  *   if len(changes) == 0:
  */
   { /* enter inner scope */
-    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 952, __pyx_L31_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_8); __pyx_t_76 = 0;
+    __pyx_t_8 = PyList_New(0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 940, __pyx_L31_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_7 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_7); __pyx_t_76 = 0;
     for (;;) {
-      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_8)) break;
+      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_7)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 940, __pyx_L31_error)
       #else
-      __pyx_t_17 = PySequence_ITEM(__pyx_t_8, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PySequence_ITEM(__pyx_t_7, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 940, __pyx_L31_error)
       __Pyx_GOTREF(__pyx_t_17);
       #endif
       __Pyx_XDECREF_SET(__pyx_8genexpr1__pyx_v__, __pyx_t_17);
@@ -27346,10 +27277,10 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
       __pyx_t_5 = (__pyx_8genexpr1__pyx_v__ != Py_None);
       __pyx_t_6 = (__pyx_t_5 != 0);
       if (__pyx_t_6) {
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_8genexpr1__pyx_v__))) __PYX_ERR(0, 952, __pyx_L31_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_8, (PyObject*)__pyx_8genexpr1__pyx_v__))) __PYX_ERR(0, 940, __pyx_L31_error)
       }
     }
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF(__pyx_8genexpr1__pyx_v__); __pyx_8genexpr1__pyx_v__ = 0;
     goto __pyx_L35_exit_scope;
     __pyx_L31_error:;
@@ -27357,21 +27288,21 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
     goto __pyx_L1_error;
     __pyx_L35_exit_scope:;
   } /* exit inner scope */
-  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_7));
-  __pyx_t_7 = 0;
+  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_8));
+  __pyx_t_8 = 0;
 
-  /* "skeletontricks.pyx":954
+  /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 954, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 942, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 == 0) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":955
+    /* "skeletontricks.pyx":943
  * 
  *   if len(changes) == 0:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -27379,23 +27310,23 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  *   if len(changes) > 3: # if more than 3, allow one non-match
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_int8_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 955, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyInt_From_int8_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_int8_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_From_int8_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 943, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_8);
-    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_8);
-    __pyx_t_7 = 0;
+    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_8);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_7);
     __pyx_t_8 = 0;
+    __pyx_t_7 = 0;
     __pyx_r = __pyx_t_17;
     __pyx_t_17 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":954
+    /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
@@ -27404,18 +27335,18 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
   }
 
-  /* "skeletontricks.pyx":957
+  /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 957, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 945, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 > 3) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":958
+    /* "skeletontricks.pyx":946
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match
  *     allowed_differences = 1             # <<<<<<<<<<<<<<
@@ -27424,7 +27355,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
     __pyx_v_allowed_differences = 1;
 
-    /* "skeletontricks.pyx":957
+    /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
@@ -27434,7 +27365,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
     goto __pyx_L37;
   }
 
-  /* "skeletontricks.pyx":960
+  /* "skeletontricks.pyx":948
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  *     allowed_differences = 0             # <<<<<<<<<<<<<<
@@ -27446,147 +27377,147 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
   }
   __pyx_L37:;
 
-  /* "skeletontricks.pyx":962
+  /* "skeletontricks.pyx":950
  *     allowed_differences = 0
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)             # <<<<<<<<<<<<<<
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_INCREF(__pyx_v_changes);
   __Pyx_GIVEREF(__pyx_v_changes);
   PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_v_changes);
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
-  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_17, __pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_17, __pyx_t_8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if ((likely(PyTuple_CheckExact(__pyx_t_14))) || (PyList_CheckExact(__pyx_t_14))) {
     PyObject* sequence = __pyx_t_14;
     Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 962, __pyx_L1_error)
+      __PYX_ERR(0, 950, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyTuple_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyTuple_GET_ITEM(sequence, 1); 
     } else {
-      __pyx_t_7 = PyList_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyList_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyList_GET_ITEM(sequence, 1); 
     }
-    __Pyx_INCREF(__pyx_t_7);
+    __Pyx_INCREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_t_17);
     #else
-    __pyx_t_7 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+    __pyx_t_8 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
     #endif
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __pyx_t_77 = Py_TYPE(__pyx_t_8)->tp_iternext;
-    index = 0; __pyx_t_7 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L38_unpacking_failed;
+    __pyx_t_7 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __pyx_t_77 = Py_TYPE(__pyx_t_7)->tp_iternext;
+    index = 0; __pyx_t_8 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_8)) goto __pyx_L38_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_8);
+    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_17);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_8), 2) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_7), 2) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_t_77 = NULL;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     goto __pyx_L39_unpacking_done;
     __pyx_L38_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_77 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 962, __pyx_L1_error)
+    __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_L39_unpacking_done:;
   }
-  __pyx_v_uniq = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_v_uniq = __pyx_t_8;
+  __pyx_t_8 = 0;
   __pyx_v_cts = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":963
+  /* "skeletontricks.pyx":951
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)             # <<<<<<<<<<<<<<
  *   differences = len(changes) - cts[candidate_fruit_index]
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 963, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 963, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 951, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __pyx_t_17 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
-    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_7);
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
+    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_8);
     if (likely(__pyx_t_17)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
       __Pyx_INCREF(__pyx_t_17);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __Pyx_DECREF_SET(__pyx_t_8, function);
     }
   }
-  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_cts);
+  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_cts);
   __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
-  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 963, __pyx_L1_error)
+  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_candidate_fruit_index = __pyx_t_14;
   __pyx_t_14 = 0;
 
-  /* "skeletontricks.pyx":964
+  /* "skeletontricks.pyx":952
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]             # <<<<<<<<<<<<<<
  * 
  *   # it's not an avocado if there's lots of
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 964, __pyx_L1_error)
-  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 952, __pyx_L1_error)
+  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 964, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_7); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 952, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_8); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_differences = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":968
+  /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_8 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 968, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 956, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":969
+    /* "skeletontricks.pyx":957
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -27594,23 +27525,23 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  *   return (label, uniq[candidate_fruit_index])
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_int8_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 969, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = __Pyx_PyInt_From_int8_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_int8_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 957, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = __Pyx_PyInt_From_int8_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_8);
+    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_8);
     __Pyx_GIVEREF(__pyx_t_17);
     PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_17);
-    __pyx_t_7 = 0;
+    __pyx_t_8 = 0;
     __pyx_t_17 = 0;
     __pyx_r = __pyx_t_14;
     __pyx_t_14 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":968
+    /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
@@ -27619,7 +27550,7 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  */
   }
 
-  /* "skeletontricks.pyx":971
+  /* "skeletontricks.pyx":959
  *     return (label, label)
  * 
  *   return (label, uniq[candidate_fruit_index])             # <<<<<<<<<<<<<<
@@ -27627,20 +27558,20 @@ static PyObject *__pyx_pf_14skeletontricks_96find_avocado_fruit(CYTHON_UNUSED Py
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_14 = __Pyx_PyInt_From_int8_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyInt_From_int8_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 971, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_14);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_14);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_17);
-  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_17);
+  PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_17);
   __pyx_t_14 = 0;
   __pyx_t_17 = 0;
-  __pyx_r = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_r = __pyx_t_8;
+  __pyx_t_8 = 0;
   goto __pyx_L0;
 
   /* "skeletontricks.pyx":872
@@ -28114,7 +28045,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  * 
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]             # <<<<<<<<<<<<<<
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  */
   __pyx_t_18 = __pyx_v_cx;
@@ -28133,27 +28064,24 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
   /* "skeletontricks.pyx":896
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]
- *   cdef list changes = [ label ] * 6             # <<<<<<<<<<<<<<
+ *   cdef list changes = [ None ] * 6             # <<<<<<<<<<<<<<
  * 
  *   for x in range(cx, sx):
  */
-  __pyx_t_8 = __Pyx_PyInt_From_int16_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1 * 6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyList_New(1 * 6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 896, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
   { Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < 6; __pyx_temp++) {
-      __Pyx_INCREF(__pyx_t_8);
-      __Pyx_GIVEREF(__pyx_t_8);
-      PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_t_8);
+      __Pyx_INCREF(Py_None);
+      __Pyx_GIVEREF(Py_None);
+      PyList_SET_ITEM(__pyx_t_8, __pyx_temp, Py_None);
     }
   }
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_v_changes = ((PyObject*)__pyx_t_7);
-  __pyx_t_7 = 0;
+  __pyx_v_changes = ((PyObject*)__pyx_t_8);
+  __pyx_t_8 = 0;
 
   /* "skeletontricks.pyx":898
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  *   for x in range(cx, sx):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -28229,7 +28157,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_30 = __pyx_v_x;
       __pyx_t_31 = __pyx_v_cy;
@@ -28242,17 +28170,17 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
         __PYX_ERR(0, 902, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int16_t((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int16_t((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
       /* "skeletontricks.pyx":903
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[0] = None
+ * 
+ *   for x in range(cx, 0, -1):
  */
       goto __pyx_L8_break;
 
@@ -28265,21 +28193,10 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":905
- *       break
- *   else:
- *     changes[0] = None             # <<<<<<<<<<<<<<
- * 
- *   for x in range(cx, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 905, __pyx_L1_error)
-  }
   __pyx_L8_break:;
 
-  /* "skeletontricks.pyx":907
- *     changes[0] = None
+  /* "skeletontricks.pyx":905
+ *       break
  * 
  *   for x in range(cx, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -28288,7 +28205,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
   for (__pyx_t_21 = __pyx_v_cx + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_x = __pyx_t_21;
 
-    /* "skeletontricks.pyx":908
+    /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -28304,12 +28221,12 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_33 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 908, __pyx_L1_error)
+      __PYX_ERR(0, 906, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_33, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":909
+      /* "skeletontricks.pyx":907
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -28318,7 +28235,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":908
+      /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -28327,7 +28244,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
 
-    /* "skeletontricks.pyx":910
+    /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -28343,17 +28260,17 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_36 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 910, __pyx_L1_error)
+      __PYX_ERR(0, 908, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_35, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_36, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":911
+      /* "skeletontricks.pyx":909
  *       break
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_37 = __pyx_v_x;
       __pyx_t_38 = __pyx_v_cy;
@@ -28364,23 +28281,23 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
       if (unlikely(__pyx_t_39 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 911, __pyx_L1_error)
+        __PYX_ERR(0, 909, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int16_t((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int16_t((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":912
+      /* "skeletontricks.pyx":910
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[1] = None
+ * 
+ *   for y in range(cy, sy):
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":910
+      /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -28389,21 +28306,10 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":914
- *       break
- *   else:
- *     changes[1] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, sy):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 914, __pyx_L1_error)
-  }
   __pyx_L11_break:;
 
-  /* "skeletontricks.pyx":916
- *     changes[1] = None
+  /* "skeletontricks.pyx":912
+ *       break
  * 
  *   for y in range(cy, sy):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -28414,7 +28320,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
   for (__pyx_t_41 = __pyx_v_cy; __pyx_t_41 < __pyx_t_40; __pyx_t_41+=1) {
     __pyx_v_y = __pyx_t_41;
 
-    /* "skeletontricks.pyx":917
+    /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -28430,12 +28336,12 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_44 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 917, __pyx_L1_error)
+      __PYX_ERR(0, 913, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_42, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_43, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_44, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":918
+      /* "skeletontricks.pyx":914
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -28444,7 +28350,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":917
+      /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -28453,7 +28359,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
 
-    /* "skeletontricks.pyx":919
+    /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -28469,17 +28375,17 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_47 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 919, __pyx_L1_error)
+      __PYX_ERR(0, 915, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_45, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_46, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_47, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":920
+      /* "skeletontricks.pyx":916
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_48 = __pyx_v_cx;
       __pyx_t_49 = __pyx_v_y;
@@ -28490,23 +28396,23 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
       if (unlikely(__pyx_t_50 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 920, __pyx_L1_error)
+        __PYX_ERR(0, 916, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int16_t((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int16_t((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":921
+      /* "skeletontricks.pyx":917
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[2] = None
+ * 
+ *   for y in range(cy, 0, -1):
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":919
+      /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -28515,21 +28421,10 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":923
- *       break
- *   else:
- *     changes[2] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
-  }
   __pyx_L14_break:;
 
-  /* "skeletontricks.pyx":925
- *     changes[2] = None
+  /* "skeletontricks.pyx":919
+ *       break
  * 
  *   for y in range(cy, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -28538,7 +28433,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
   for (__pyx_t_21 = __pyx_v_cy + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_y = __pyx_t_21;
 
-    /* "skeletontricks.pyx":926
+    /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -28554,12 +28449,12 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_51 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 926, __pyx_L1_error)
+      __PYX_ERR(0, 920, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_41, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_51, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":927
+      /* "skeletontricks.pyx":921
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -28568,7 +28463,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":926
+      /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -28577,7 +28472,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
 
-    /* "skeletontricks.pyx":928
+    /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -28593,17 +28488,17 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_54 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 928, __pyx_L1_error)
+      __PYX_ERR(0, 922, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_52, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_53, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_54, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":929
+      /* "skeletontricks.pyx":923
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_55 = __pyx_v_cx;
       __pyx_t_56 = __pyx_v_y;
@@ -28614,23 +28509,23 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
       if (unlikely(__pyx_t_57 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 929, __pyx_L1_error)
+        __PYX_ERR(0, 923, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int16_t((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int16_t((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":930
+      /* "skeletontricks.pyx":924
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[3] = None
+ * 
+ *   for z in range(cz, sz):
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":928
+      /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -28639,21 +28534,10 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":932
- *       break
- *   else:
- *     changes[3] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, sz):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 932, __pyx_L1_error)
-  }
   __pyx_L18_break:;
 
-  /* "skeletontricks.pyx":934
- *     changes[3] = None
+  /* "skeletontricks.pyx":926
+ *       break
  * 
  *   for z in range(cz, sz):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -28664,7 +28548,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
   for (__pyx_t_59 = __pyx_v_cz; __pyx_t_59 < __pyx_t_58; __pyx_t_59+=1) {
     __pyx_v_z = __pyx_t_59;
 
-    /* "skeletontricks.pyx":935
+    /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -28680,12 +28564,12 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_62 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 935, __pyx_L1_error)
+      __PYX_ERR(0, 927, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_60, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_61, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_62, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":936
+      /* "skeletontricks.pyx":928
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -28694,7 +28578,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":935
+      /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -28703,7 +28587,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
 
-    /* "skeletontricks.pyx":937
+    /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -28719,17 +28603,17 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_65 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 937, __pyx_L1_error)
+      __PYX_ERR(0, 929, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_65, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":938
+      /* "skeletontricks.pyx":930
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_66 = __pyx_v_cx;
       __pyx_t_67 = __pyx_v_cy;
@@ -28740,23 +28624,23 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
       if (unlikely(__pyx_t_68 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 938, __pyx_L1_error)
+        __PYX_ERR(0, 930, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int16_t((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int16_t((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":939
+      /* "skeletontricks.pyx":931
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[4] = None
+ * 
+ *   for z in range(cz, 0, -1):
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":937
+      /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -28765,21 +28649,10 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":941
- *       break
- *   else:
- *     changes[4] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 941, __pyx_L1_error)
-  }
   __pyx_L22_break:;
 
-  /* "skeletontricks.pyx":943
- *     changes[4] = None
+  /* "skeletontricks.pyx":933
+ *       break
  * 
  *   for z in range(cz, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -28788,7 +28661,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
   for (__pyx_t_21 = __pyx_v_cz + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_z = __pyx_t_21;
 
-    /* "skeletontricks.pyx":944
+    /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -28804,12 +28677,12 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_69 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 944, __pyx_L1_error)
+      __PYX_ERR(0, 934, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_58, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_59, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_69, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":945
+      /* "skeletontricks.pyx":935
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -28818,7 +28691,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":944
+      /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -28827,7 +28700,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
 
-    /* "skeletontricks.pyx":946
+    /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -28843,17 +28716,17 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
     if (unlikely(__pyx_t_72 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 946, __pyx_L1_error)
+      __PYX_ERR(0, 936, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_70, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_71, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_72, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":947
+      /* "skeletontricks.pyx":937
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_73 = __pyx_v_cx;
       __pyx_t_74 = __pyx_v_cy;
@@ -28864,23 +28737,23 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
       if (unlikely(__pyx_t_75 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 947, __pyx_L1_error)
+        __PYX_ERR(0, 937, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int16_t((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int16_t((*__Pyx_BufPtrStrided3d(int16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":948
+      /* "skeletontricks.pyx":938
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[5] = None
+ * 
+ *   changes = [ _ for _ in changes if _ is not None ]
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":946
+      /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -28889,36 +28762,25 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":950
- *       break
- *   else:
- *     changes[5] = None             # <<<<<<<<<<<<<<
- * 
- *   changes = [ _ for _ in changes if _ is not None ]
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 950, __pyx_L1_error)
-  }
   __pyx_L26_break:;
 
-  /* "skeletontricks.pyx":952
- *     changes[5] = None
+  /* "skeletontricks.pyx":940
+ *       break
  * 
  *   changes = [ _ for _ in changes if _ is not None ]             # <<<<<<<<<<<<<<
  * 
  *   if len(changes) == 0:
  */
   { /* enter inner scope */
-    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 952, __pyx_L31_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_8); __pyx_t_76 = 0;
+    __pyx_t_8 = PyList_New(0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 940, __pyx_L31_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_7 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_7); __pyx_t_76 = 0;
     for (;;) {
-      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_8)) break;
+      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_7)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 940, __pyx_L31_error)
       #else
-      __pyx_t_17 = PySequence_ITEM(__pyx_t_8, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PySequence_ITEM(__pyx_t_7, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 940, __pyx_L31_error)
       __Pyx_GOTREF(__pyx_t_17);
       #endif
       __Pyx_XDECREF_SET(__pyx_8genexpr2__pyx_v__, __pyx_t_17);
@@ -28926,10 +28788,10 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
       __pyx_t_5 = (__pyx_8genexpr2__pyx_v__ != Py_None);
       __pyx_t_6 = (__pyx_t_5 != 0);
       if (__pyx_t_6) {
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_8genexpr2__pyx_v__))) __PYX_ERR(0, 952, __pyx_L31_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_8, (PyObject*)__pyx_8genexpr2__pyx_v__))) __PYX_ERR(0, 940, __pyx_L31_error)
       }
     }
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF(__pyx_8genexpr2__pyx_v__); __pyx_8genexpr2__pyx_v__ = 0;
     goto __pyx_L35_exit_scope;
     __pyx_L31_error:;
@@ -28937,21 +28799,21 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
     goto __pyx_L1_error;
     __pyx_L35_exit_scope:;
   } /* exit inner scope */
-  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_7));
-  __pyx_t_7 = 0;
+  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_8));
+  __pyx_t_8 = 0;
 
-  /* "skeletontricks.pyx":954
+  /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 954, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 942, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 == 0) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":955
+    /* "skeletontricks.pyx":943
  * 
  *   if len(changes) == 0:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -28959,23 +28821,23 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  *   if len(changes) > 3: # if more than 3, allow one non-match
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_int16_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 955, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyInt_From_int16_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_int16_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_From_int16_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 943, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_8);
-    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_8);
-    __pyx_t_7 = 0;
+    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_8);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_7);
     __pyx_t_8 = 0;
+    __pyx_t_7 = 0;
     __pyx_r = __pyx_t_17;
     __pyx_t_17 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":954
+    /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
@@ -28984,18 +28846,18 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
   }
 
-  /* "skeletontricks.pyx":957
+  /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 957, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 945, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 > 3) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":958
+    /* "skeletontricks.pyx":946
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match
  *     allowed_differences = 1             # <<<<<<<<<<<<<<
@@ -29004,7 +28866,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
     __pyx_v_allowed_differences = 1;
 
-    /* "skeletontricks.pyx":957
+    /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
@@ -29014,7 +28876,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
     goto __pyx_L37;
   }
 
-  /* "skeletontricks.pyx":960
+  /* "skeletontricks.pyx":948
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  *     allowed_differences = 0             # <<<<<<<<<<<<<<
@@ -29026,147 +28888,147 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
   }
   __pyx_L37:;
 
-  /* "skeletontricks.pyx":962
+  /* "skeletontricks.pyx":950
  *     allowed_differences = 0
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)             # <<<<<<<<<<<<<<
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_INCREF(__pyx_v_changes);
   __Pyx_GIVEREF(__pyx_v_changes);
   PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_v_changes);
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
-  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_17, __pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_17, __pyx_t_8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if ((likely(PyTuple_CheckExact(__pyx_t_14))) || (PyList_CheckExact(__pyx_t_14))) {
     PyObject* sequence = __pyx_t_14;
     Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 962, __pyx_L1_error)
+      __PYX_ERR(0, 950, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyTuple_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyTuple_GET_ITEM(sequence, 1); 
     } else {
-      __pyx_t_7 = PyList_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyList_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyList_GET_ITEM(sequence, 1); 
     }
-    __Pyx_INCREF(__pyx_t_7);
+    __Pyx_INCREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_t_17);
     #else
-    __pyx_t_7 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+    __pyx_t_8 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
     #endif
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __pyx_t_77 = Py_TYPE(__pyx_t_8)->tp_iternext;
-    index = 0; __pyx_t_7 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L38_unpacking_failed;
+    __pyx_t_7 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __pyx_t_77 = Py_TYPE(__pyx_t_7)->tp_iternext;
+    index = 0; __pyx_t_8 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_8)) goto __pyx_L38_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_8);
+    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_17);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_8), 2) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_7), 2) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_t_77 = NULL;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     goto __pyx_L39_unpacking_done;
     __pyx_L38_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_77 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 962, __pyx_L1_error)
+    __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_L39_unpacking_done:;
   }
-  __pyx_v_uniq = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_v_uniq = __pyx_t_8;
+  __pyx_t_8 = 0;
   __pyx_v_cts = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":963
+  /* "skeletontricks.pyx":951
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)             # <<<<<<<<<<<<<<
  *   differences = len(changes) - cts[candidate_fruit_index]
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 963, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 963, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 951, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __pyx_t_17 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
-    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_7);
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
+    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_8);
     if (likely(__pyx_t_17)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
       __Pyx_INCREF(__pyx_t_17);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __Pyx_DECREF_SET(__pyx_t_8, function);
     }
   }
-  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_cts);
+  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_cts);
   __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
-  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 963, __pyx_L1_error)
+  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_candidate_fruit_index = __pyx_t_14;
   __pyx_t_14 = 0;
 
-  /* "skeletontricks.pyx":964
+  /* "skeletontricks.pyx":952
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]             # <<<<<<<<<<<<<<
  * 
  *   # it's not an avocado if there's lots of
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 964, __pyx_L1_error)
-  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 952, __pyx_L1_error)
+  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 964, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_7); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 952, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_8); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_differences = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":968
+  /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_8 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 968, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 956, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":969
+    /* "skeletontricks.pyx":957
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -29174,23 +29036,23 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  *   return (label, uniq[candidate_fruit_index])
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_int16_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 969, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = __Pyx_PyInt_From_int16_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_int16_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 957, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = __Pyx_PyInt_From_int16_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_8);
+    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_8);
     __Pyx_GIVEREF(__pyx_t_17);
     PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_17);
-    __pyx_t_7 = 0;
+    __pyx_t_8 = 0;
     __pyx_t_17 = 0;
     __pyx_r = __pyx_t_14;
     __pyx_t_14 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":968
+    /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
@@ -29199,7 +29061,7 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  */
   }
 
-  /* "skeletontricks.pyx":971
+  /* "skeletontricks.pyx":959
  *     return (label, label)
  * 
  *   return (label, uniq[candidate_fruit_index])             # <<<<<<<<<<<<<<
@@ -29207,20 +29069,20 @@ static PyObject *__pyx_pf_14skeletontricks_98find_avocado_fruit(CYTHON_UNUSED Py
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_14 = __Pyx_PyInt_From_int16_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyInt_From_int16_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 971, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_14);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_14);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_17);
-  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_17);
+  PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_17);
   __pyx_t_14 = 0;
   __pyx_t_17 = 0;
-  __pyx_r = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_r = __pyx_t_8;
+  __pyx_t_8 = 0;
   goto __pyx_L0;
 
   /* "skeletontricks.pyx":872
@@ -29694,7 +29556,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  * 
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]             # <<<<<<<<<<<<<<
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  */
   __pyx_t_18 = __pyx_v_cx;
@@ -29713,27 +29575,24 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
   /* "skeletontricks.pyx":896
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]
- *   cdef list changes = [ label ] * 6             # <<<<<<<<<<<<<<
+ *   cdef list changes = [ None ] * 6             # <<<<<<<<<<<<<<
  * 
  *   for x in range(cx, sx):
  */
-  __pyx_t_8 = __Pyx_PyInt_From_int32_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1 * 6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyList_New(1 * 6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 896, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
   { Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < 6; __pyx_temp++) {
-      __Pyx_INCREF(__pyx_t_8);
-      __Pyx_GIVEREF(__pyx_t_8);
-      PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_t_8);
+      __Pyx_INCREF(Py_None);
+      __Pyx_GIVEREF(Py_None);
+      PyList_SET_ITEM(__pyx_t_8, __pyx_temp, Py_None);
     }
   }
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_v_changes = ((PyObject*)__pyx_t_7);
-  __pyx_t_7 = 0;
+  __pyx_v_changes = ((PyObject*)__pyx_t_8);
+  __pyx_t_8 = 0;
 
   /* "skeletontricks.pyx":898
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  *   for x in range(cx, sx):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -29809,7 +29668,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_30 = __pyx_v_x;
       __pyx_t_31 = __pyx_v_cy;
@@ -29822,17 +29681,17 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
         __PYX_ERR(0, 902, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int32_t((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int32_t((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
       /* "skeletontricks.pyx":903
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[0] = None
+ * 
+ *   for x in range(cx, 0, -1):
  */
       goto __pyx_L8_break;
 
@@ -29845,21 +29704,10 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":905
- *       break
- *   else:
- *     changes[0] = None             # <<<<<<<<<<<<<<
- * 
- *   for x in range(cx, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 905, __pyx_L1_error)
-  }
   __pyx_L8_break:;
 
-  /* "skeletontricks.pyx":907
- *     changes[0] = None
+  /* "skeletontricks.pyx":905
+ *       break
  * 
  *   for x in range(cx, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -29868,7 +29716,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cx + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_x = __pyx_t_21;
 
-    /* "skeletontricks.pyx":908
+    /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -29884,12 +29732,12 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_33 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 908, __pyx_L1_error)
+      __PYX_ERR(0, 906, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_33, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":909
+      /* "skeletontricks.pyx":907
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -29898,7 +29746,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":908
+      /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -29907,7 +29755,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":910
+    /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -29923,17 +29771,17 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_36 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 910, __pyx_L1_error)
+      __PYX_ERR(0, 908, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_35, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_36, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":911
+      /* "skeletontricks.pyx":909
  *       break
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_37 = __pyx_v_x;
       __pyx_t_38 = __pyx_v_cy;
@@ -29944,23 +29792,23 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_39 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 911, __pyx_L1_error)
+        __PYX_ERR(0, 909, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int32_t((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int32_t((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":912
+      /* "skeletontricks.pyx":910
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[1] = None
+ * 
+ *   for y in range(cy, sy):
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":910
+      /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -29969,21 +29817,10 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":914
- *       break
- *   else:
- *     changes[1] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, sy):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 914, __pyx_L1_error)
-  }
   __pyx_L11_break:;
 
-  /* "skeletontricks.pyx":916
- *     changes[1] = None
+  /* "skeletontricks.pyx":912
+ *       break
  * 
  *   for y in range(cy, sy):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -29994,7 +29831,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_41 = __pyx_v_cy; __pyx_t_41 < __pyx_t_40; __pyx_t_41+=1) {
     __pyx_v_y = __pyx_t_41;
 
-    /* "skeletontricks.pyx":917
+    /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -30010,12 +29847,12 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_44 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 917, __pyx_L1_error)
+      __PYX_ERR(0, 913, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_42, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_43, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_44, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":918
+      /* "skeletontricks.pyx":914
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -30024,7 +29861,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":917
+      /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -30033,7 +29870,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":919
+    /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -30049,17 +29886,17 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_47 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 919, __pyx_L1_error)
+      __PYX_ERR(0, 915, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_45, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_46, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_47, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":920
+      /* "skeletontricks.pyx":916
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_48 = __pyx_v_cx;
       __pyx_t_49 = __pyx_v_y;
@@ -30070,23 +29907,23 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_50 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 920, __pyx_L1_error)
+        __PYX_ERR(0, 916, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int32_t((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int32_t((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":921
+      /* "skeletontricks.pyx":917
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[2] = None
+ * 
+ *   for y in range(cy, 0, -1):
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":919
+      /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -30095,21 +29932,10 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":923
- *       break
- *   else:
- *     changes[2] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
-  }
   __pyx_L14_break:;
 
-  /* "skeletontricks.pyx":925
- *     changes[2] = None
+  /* "skeletontricks.pyx":919
+ *       break
  * 
  *   for y in range(cy, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -30118,7 +29944,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cy + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_y = __pyx_t_21;
 
-    /* "skeletontricks.pyx":926
+    /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -30134,12 +29960,12 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_51 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 926, __pyx_L1_error)
+      __PYX_ERR(0, 920, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_41, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_51, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":927
+      /* "skeletontricks.pyx":921
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -30148,7 +29974,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":926
+      /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -30157,7 +29983,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":928
+    /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -30173,17 +29999,17 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_54 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 928, __pyx_L1_error)
+      __PYX_ERR(0, 922, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_52, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_53, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_54, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":929
+      /* "skeletontricks.pyx":923
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_55 = __pyx_v_cx;
       __pyx_t_56 = __pyx_v_y;
@@ -30194,23 +30020,23 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_57 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 929, __pyx_L1_error)
+        __PYX_ERR(0, 923, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int32_t((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int32_t((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":930
+      /* "skeletontricks.pyx":924
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[3] = None
+ * 
+ *   for z in range(cz, sz):
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":928
+      /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -30219,21 +30045,10 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":932
- *       break
- *   else:
- *     changes[3] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, sz):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 932, __pyx_L1_error)
-  }
   __pyx_L18_break:;
 
-  /* "skeletontricks.pyx":934
- *     changes[3] = None
+  /* "skeletontricks.pyx":926
+ *       break
  * 
  *   for z in range(cz, sz):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -30244,7 +30059,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_59 = __pyx_v_cz; __pyx_t_59 < __pyx_t_58; __pyx_t_59+=1) {
     __pyx_v_z = __pyx_t_59;
 
-    /* "skeletontricks.pyx":935
+    /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -30260,12 +30075,12 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_62 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 935, __pyx_L1_error)
+      __PYX_ERR(0, 927, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_60, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_61, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_62, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":936
+      /* "skeletontricks.pyx":928
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -30274,7 +30089,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":935
+      /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -30283,7 +30098,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":937
+    /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -30299,17 +30114,17 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_65 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 937, __pyx_L1_error)
+      __PYX_ERR(0, 929, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_65, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":938
+      /* "skeletontricks.pyx":930
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_66 = __pyx_v_cx;
       __pyx_t_67 = __pyx_v_cy;
@@ -30320,23 +30135,23 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_68 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 938, __pyx_L1_error)
+        __PYX_ERR(0, 930, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int32_t((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int32_t((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":939
+      /* "skeletontricks.pyx":931
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[4] = None
+ * 
+ *   for z in range(cz, 0, -1):
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":937
+      /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -30345,21 +30160,10 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":941
- *       break
- *   else:
- *     changes[4] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 941, __pyx_L1_error)
-  }
   __pyx_L22_break:;
 
-  /* "skeletontricks.pyx":943
- *     changes[4] = None
+  /* "skeletontricks.pyx":933
+ *       break
  * 
  *   for z in range(cz, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -30368,7 +30172,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cz + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_z = __pyx_t_21;
 
-    /* "skeletontricks.pyx":944
+    /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -30384,12 +30188,12 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_69 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 944, __pyx_L1_error)
+      __PYX_ERR(0, 934, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_58, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_59, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_69, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":945
+      /* "skeletontricks.pyx":935
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -30398,7 +30202,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":944
+      /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -30407,7 +30211,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":946
+    /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -30423,17 +30227,17 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_72 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 946, __pyx_L1_error)
+      __PYX_ERR(0, 936, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_70, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_71, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_72, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":947
+      /* "skeletontricks.pyx":937
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_73 = __pyx_v_cx;
       __pyx_t_74 = __pyx_v_cy;
@@ -30444,23 +30248,23 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_75 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 947, __pyx_L1_error)
+        __PYX_ERR(0, 937, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int32_t((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int32_t((*__Pyx_BufPtrStrided3d(int32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":948
+      /* "skeletontricks.pyx":938
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[5] = None
+ * 
+ *   changes = [ _ for _ in changes if _ is not None ]
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":946
+      /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -30469,36 +30273,25 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":950
- *       break
- *   else:
- *     changes[5] = None             # <<<<<<<<<<<<<<
- * 
- *   changes = [ _ for _ in changes if _ is not None ]
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 950, __pyx_L1_error)
-  }
   __pyx_L26_break:;
 
-  /* "skeletontricks.pyx":952
- *     changes[5] = None
+  /* "skeletontricks.pyx":940
+ *       break
  * 
  *   changes = [ _ for _ in changes if _ is not None ]             # <<<<<<<<<<<<<<
  * 
  *   if len(changes) == 0:
  */
   { /* enter inner scope */
-    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 952, __pyx_L31_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_8); __pyx_t_76 = 0;
+    __pyx_t_8 = PyList_New(0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 940, __pyx_L31_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_7 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_7); __pyx_t_76 = 0;
     for (;;) {
-      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_8)) break;
+      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_7)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 940, __pyx_L31_error)
       #else
-      __pyx_t_17 = PySequence_ITEM(__pyx_t_8, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PySequence_ITEM(__pyx_t_7, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 940, __pyx_L31_error)
       __Pyx_GOTREF(__pyx_t_17);
       #endif
       __Pyx_XDECREF_SET(__pyx_8genexpr3__pyx_v__, __pyx_t_17);
@@ -30506,10 +30299,10 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
       __pyx_t_5 = (__pyx_8genexpr3__pyx_v__ != Py_None);
       __pyx_t_6 = (__pyx_t_5 != 0);
       if (__pyx_t_6) {
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_8genexpr3__pyx_v__))) __PYX_ERR(0, 952, __pyx_L31_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_8, (PyObject*)__pyx_8genexpr3__pyx_v__))) __PYX_ERR(0, 940, __pyx_L31_error)
       }
     }
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF(__pyx_8genexpr3__pyx_v__); __pyx_8genexpr3__pyx_v__ = 0;
     goto __pyx_L35_exit_scope;
     __pyx_L31_error:;
@@ -30517,21 +30310,21 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L1_error;
     __pyx_L35_exit_scope:;
   } /* exit inner scope */
-  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_7));
-  __pyx_t_7 = 0;
+  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_8));
+  __pyx_t_8 = 0;
 
-  /* "skeletontricks.pyx":954
+  /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 954, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 942, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 == 0) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":955
+    /* "skeletontricks.pyx":943
  * 
  *   if len(changes) == 0:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -30539,23 +30332,23 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  *   if len(changes) > 3: # if more than 3, allow one non-match
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_int32_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 955, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyInt_From_int32_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_int32_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_From_int32_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 943, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_8);
-    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_8);
-    __pyx_t_7 = 0;
+    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_8);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_7);
     __pyx_t_8 = 0;
+    __pyx_t_7 = 0;
     __pyx_r = __pyx_t_17;
     __pyx_t_17 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":954
+    /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
@@ -30564,18 +30357,18 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":957
+  /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 957, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 945, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 > 3) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":958
+    /* "skeletontricks.pyx":946
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match
  *     allowed_differences = 1             # <<<<<<<<<<<<<<
@@ -30584,7 +30377,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
     __pyx_v_allowed_differences = 1;
 
-    /* "skeletontricks.pyx":957
+    /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
@@ -30594,7 +30387,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L37;
   }
 
-  /* "skeletontricks.pyx":960
+  /* "skeletontricks.pyx":948
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  *     allowed_differences = 0             # <<<<<<<<<<<<<<
@@ -30606,147 +30399,147 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
   }
   __pyx_L37:;
 
-  /* "skeletontricks.pyx":962
+  /* "skeletontricks.pyx":950
  *     allowed_differences = 0
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)             # <<<<<<<<<<<<<<
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_INCREF(__pyx_v_changes);
   __Pyx_GIVEREF(__pyx_v_changes);
   PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_v_changes);
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
-  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_17, __pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_17, __pyx_t_8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if ((likely(PyTuple_CheckExact(__pyx_t_14))) || (PyList_CheckExact(__pyx_t_14))) {
     PyObject* sequence = __pyx_t_14;
     Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 962, __pyx_L1_error)
+      __PYX_ERR(0, 950, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyTuple_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyTuple_GET_ITEM(sequence, 1); 
     } else {
-      __pyx_t_7 = PyList_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyList_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyList_GET_ITEM(sequence, 1); 
     }
-    __Pyx_INCREF(__pyx_t_7);
+    __Pyx_INCREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_t_17);
     #else
-    __pyx_t_7 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+    __pyx_t_8 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
     #endif
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __pyx_t_77 = Py_TYPE(__pyx_t_8)->tp_iternext;
-    index = 0; __pyx_t_7 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L38_unpacking_failed;
+    __pyx_t_7 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __pyx_t_77 = Py_TYPE(__pyx_t_7)->tp_iternext;
+    index = 0; __pyx_t_8 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_8)) goto __pyx_L38_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_8);
+    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_17);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_8), 2) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_7), 2) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_t_77 = NULL;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     goto __pyx_L39_unpacking_done;
     __pyx_L38_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_77 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 962, __pyx_L1_error)
+    __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_L39_unpacking_done:;
   }
-  __pyx_v_uniq = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_v_uniq = __pyx_t_8;
+  __pyx_t_8 = 0;
   __pyx_v_cts = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":963
+  /* "skeletontricks.pyx":951
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)             # <<<<<<<<<<<<<<
  *   differences = len(changes) - cts[candidate_fruit_index]
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 963, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 963, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 951, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __pyx_t_17 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
-    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_7);
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
+    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_8);
     if (likely(__pyx_t_17)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
       __Pyx_INCREF(__pyx_t_17);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __Pyx_DECREF_SET(__pyx_t_8, function);
     }
   }
-  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_cts);
+  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_cts);
   __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
-  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 963, __pyx_L1_error)
+  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_candidate_fruit_index = __pyx_t_14;
   __pyx_t_14 = 0;
 
-  /* "skeletontricks.pyx":964
+  /* "skeletontricks.pyx":952
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]             # <<<<<<<<<<<<<<
  * 
  *   # it's not an avocado if there's lots of
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 964, __pyx_L1_error)
-  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 952, __pyx_L1_error)
+  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 964, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_7); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 952, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_8); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_differences = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":968
+  /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_8 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 968, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 956, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":969
+    /* "skeletontricks.pyx":957
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -30754,23 +30547,23 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  *   return (label, uniq[candidate_fruit_index])
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_int32_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 969, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = __Pyx_PyInt_From_int32_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_int32_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 957, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = __Pyx_PyInt_From_int32_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_8);
+    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_8);
     __Pyx_GIVEREF(__pyx_t_17);
     PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_17);
-    __pyx_t_7 = 0;
+    __pyx_t_8 = 0;
     __pyx_t_17 = 0;
     __pyx_r = __pyx_t_14;
     __pyx_t_14 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":968
+    /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
@@ -30779,7 +30572,7 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":971
+  /* "skeletontricks.pyx":959
  *     return (label, label)
  * 
  *   return (label, uniq[candidate_fruit_index])             # <<<<<<<<<<<<<<
@@ -30787,20 +30580,20 @@ static PyObject *__pyx_pf_14skeletontricks_100find_avocado_fruit(CYTHON_UNUSED P
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_14 = __Pyx_PyInt_From_int32_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyInt_From_int32_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 971, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_14);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_14);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_17);
-  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_17);
+  PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_17);
   __pyx_t_14 = 0;
   __pyx_t_17 = 0;
-  __pyx_r = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_r = __pyx_t_8;
+  __pyx_t_8 = 0;
   goto __pyx_L0;
 
   /* "skeletontricks.pyx":872
@@ -31274,7 +31067,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  * 
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]             # <<<<<<<<<<<<<<
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  */
   __pyx_t_18 = __pyx_v_cx;
@@ -31293,27 +31086,24 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
   /* "skeletontricks.pyx":896
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]
- *   cdef list changes = [ label ] * 6             # <<<<<<<<<<<<<<
+ *   cdef list changes = [ None ] * 6             # <<<<<<<<<<<<<<
  * 
  *   for x in range(cx, sx):
  */
-  __pyx_t_8 = __Pyx_PyInt_From_int64_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1 * 6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyList_New(1 * 6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 896, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
   { Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < 6; __pyx_temp++) {
-      __Pyx_INCREF(__pyx_t_8);
-      __Pyx_GIVEREF(__pyx_t_8);
-      PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_t_8);
+      __Pyx_INCREF(Py_None);
+      __Pyx_GIVEREF(Py_None);
+      PyList_SET_ITEM(__pyx_t_8, __pyx_temp, Py_None);
     }
   }
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_v_changes = ((PyObject*)__pyx_t_7);
-  __pyx_t_7 = 0;
+  __pyx_v_changes = ((PyObject*)__pyx_t_8);
+  __pyx_t_8 = 0;
 
   /* "skeletontricks.pyx":898
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  *   for x in range(cx, sx):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -31389,7 +31179,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_30 = __pyx_v_x;
       __pyx_t_31 = __pyx_v_cy;
@@ -31402,17 +31192,17 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
         __PYX_ERR(0, 902, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int64_t((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int64_t((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
       /* "skeletontricks.pyx":903
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[0] = None
+ * 
+ *   for x in range(cx, 0, -1):
  */
       goto __pyx_L8_break;
 
@@ -31425,21 +31215,10 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":905
- *       break
- *   else:
- *     changes[0] = None             # <<<<<<<<<<<<<<
- * 
- *   for x in range(cx, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 905, __pyx_L1_error)
-  }
   __pyx_L8_break:;
 
-  /* "skeletontricks.pyx":907
- *     changes[0] = None
+  /* "skeletontricks.pyx":905
+ *       break
  * 
  *   for x in range(cx, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -31448,7 +31227,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cx + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_x = __pyx_t_21;
 
-    /* "skeletontricks.pyx":908
+    /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -31464,12 +31243,12 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_33 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 908, __pyx_L1_error)
+      __PYX_ERR(0, 906, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_33, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":909
+      /* "skeletontricks.pyx":907
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -31478,7 +31257,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":908
+      /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -31487,7 +31266,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":910
+    /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -31503,17 +31282,17 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_36 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 910, __pyx_L1_error)
+      __PYX_ERR(0, 908, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_35, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_36, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":911
+      /* "skeletontricks.pyx":909
  *       break
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_37 = __pyx_v_x;
       __pyx_t_38 = __pyx_v_cy;
@@ -31524,23 +31303,23 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_39 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 911, __pyx_L1_error)
+        __PYX_ERR(0, 909, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int64_t((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int64_t((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":912
+      /* "skeletontricks.pyx":910
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[1] = None
+ * 
+ *   for y in range(cy, sy):
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":910
+      /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -31549,21 +31328,10 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":914
- *       break
- *   else:
- *     changes[1] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, sy):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 914, __pyx_L1_error)
-  }
   __pyx_L11_break:;
 
-  /* "skeletontricks.pyx":916
- *     changes[1] = None
+  /* "skeletontricks.pyx":912
+ *       break
  * 
  *   for y in range(cy, sy):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -31574,7 +31342,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_41 = __pyx_v_cy; __pyx_t_41 < __pyx_t_40; __pyx_t_41+=1) {
     __pyx_v_y = __pyx_t_41;
 
-    /* "skeletontricks.pyx":917
+    /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -31590,12 +31358,12 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_44 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 917, __pyx_L1_error)
+      __PYX_ERR(0, 913, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_42, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_43, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_44, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":918
+      /* "skeletontricks.pyx":914
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -31604,7 +31372,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":917
+      /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -31613,7 +31381,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":919
+    /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -31629,17 +31397,17 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_47 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 919, __pyx_L1_error)
+      __PYX_ERR(0, 915, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_45, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_46, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_47, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":920
+      /* "skeletontricks.pyx":916
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_48 = __pyx_v_cx;
       __pyx_t_49 = __pyx_v_y;
@@ -31650,23 +31418,23 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_50 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 920, __pyx_L1_error)
+        __PYX_ERR(0, 916, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int64_t((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int64_t((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":921
+      /* "skeletontricks.pyx":917
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[2] = None
+ * 
+ *   for y in range(cy, 0, -1):
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":919
+      /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -31675,21 +31443,10 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":923
- *       break
- *   else:
- *     changes[2] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
-  }
   __pyx_L14_break:;
 
-  /* "skeletontricks.pyx":925
- *     changes[2] = None
+  /* "skeletontricks.pyx":919
+ *       break
  * 
  *   for y in range(cy, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -31698,7 +31455,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cy + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_y = __pyx_t_21;
 
-    /* "skeletontricks.pyx":926
+    /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -31714,12 +31471,12 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_51 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 926, __pyx_L1_error)
+      __PYX_ERR(0, 920, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_41, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_51, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":927
+      /* "skeletontricks.pyx":921
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -31728,7 +31485,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":926
+      /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -31737,7 +31494,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":928
+    /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -31753,17 +31510,17 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_54 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 928, __pyx_L1_error)
+      __PYX_ERR(0, 922, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_52, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_53, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_54, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":929
+      /* "skeletontricks.pyx":923
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_55 = __pyx_v_cx;
       __pyx_t_56 = __pyx_v_y;
@@ -31774,23 +31531,23 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_57 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 929, __pyx_L1_error)
+        __PYX_ERR(0, 923, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int64_t((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int64_t((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":930
+      /* "skeletontricks.pyx":924
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[3] = None
+ * 
+ *   for z in range(cz, sz):
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":928
+      /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -31799,21 +31556,10 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":932
- *       break
- *   else:
- *     changes[3] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, sz):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 932, __pyx_L1_error)
-  }
   __pyx_L18_break:;
 
-  /* "skeletontricks.pyx":934
- *     changes[3] = None
+  /* "skeletontricks.pyx":926
+ *       break
  * 
  *   for z in range(cz, sz):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -31824,7 +31570,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_59 = __pyx_v_cz; __pyx_t_59 < __pyx_t_58; __pyx_t_59+=1) {
     __pyx_v_z = __pyx_t_59;
 
-    /* "skeletontricks.pyx":935
+    /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -31840,12 +31586,12 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_62 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 935, __pyx_L1_error)
+      __PYX_ERR(0, 927, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_60, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_61, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_62, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":936
+      /* "skeletontricks.pyx":928
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -31854,7 +31600,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":935
+      /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -31863,7 +31609,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":937
+    /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -31879,17 +31625,17 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_65 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 937, __pyx_L1_error)
+      __PYX_ERR(0, 929, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_65, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":938
+      /* "skeletontricks.pyx":930
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_66 = __pyx_v_cx;
       __pyx_t_67 = __pyx_v_cy;
@@ -31900,23 +31646,23 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_68 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 938, __pyx_L1_error)
+        __PYX_ERR(0, 930, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int64_t((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int64_t((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":939
+      /* "skeletontricks.pyx":931
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[4] = None
+ * 
+ *   for z in range(cz, 0, -1):
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":937
+      /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -31925,21 +31671,10 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":941
- *       break
- *   else:
- *     changes[4] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 941, __pyx_L1_error)
-  }
   __pyx_L22_break:;
 
-  /* "skeletontricks.pyx":943
- *     changes[4] = None
+  /* "skeletontricks.pyx":933
+ *       break
  * 
  *   for z in range(cz, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -31948,7 +31683,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cz + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_z = __pyx_t_21;
 
-    /* "skeletontricks.pyx":944
+    /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -31964,12 +31699,12 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_69 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 944, __pyx_L1_error)
+      __PYX_ERR(0, 934, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_58, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_59, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_69, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":945
+      /* "skeletontricks.pyx":935
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -31978,7 +31713,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":944
+      /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -31987,7 +31722,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":946
+    /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -32003,17 +31738,17 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_72 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 946, __pyx_L1_error)
+      __PYX_ERR(0, 936, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_70, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_71, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_72, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":947
+      /* "skeletontricks.pyx":937
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_73 = __pyx_v_cx;
       __pyx_t_74 = __pyx_v_cy;
@@ -32024,23 +31759,23 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_75 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 947, __pyx_L1_error)
+        __PYX_ERR(0, 937, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_int64_t((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_int64_t((*__Pyx_BufPtrStrided3d(int64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":948
+      /* "skeletontricks.pyx":938
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[5] = None
+ * 
+ *   changes = [ _ for _ in changes if _ is not None ]
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":946
+      /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -32049,36 +31784,25 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":950
- *       break
- *   else:
- *     changes[5] = None             # <<<<<<<<<<<<<<
- * 
- *   changes = [ _ for _ in changes if _ is not None ]
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 950, __pyx_L1_error)
-  }
   __pyx_L26_break:;
 
-  /* "skeletontricks.pyx":952
- *     changes[5] = None
+  /* "skeletontricks.pyx":940
+ *       break
  * 
  *   changes = [ _ for _ in changes if _ is not None ]             # <<<<<<<<<<<<<<
  * 
  *   if len(changes) == 0:
  */
   { /* enter inner scope */
-    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 952, __pyx_L31_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_8); __pyx_t_76 = 0;
+    __pyx_t_8 = PyList_New(0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 940, __pyx_L31_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_7 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_7); __pyx_t_76 = 0;
     for (;;) {
-      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_8)) break;
+      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_7)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 940, __pyx_L31_error)
       #else
-      __pyx_t_17 = PySequence_ITEM(__pyx_t_8, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PySequence_ITEM(__pyx_t_7, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 940, __pyx_L31_error)
       __Pyx_GOTREF(__pyx_t_17);
       #endif
       __Pyx_XDECREF_SET(__pyx_8genexpr4__pyx_v__, __pyx_t_17);
@@ -32086,10 +31810,10 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
       __pyx_t_5 = (__pyx_8genexpr4__pyx_v__ != Py_None);
       __pyx_t_6 = (__pyx_t_5 != 0);
       if (__pyx_t_6) {
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_8genexpr4__pyx_v__))) __PYX_ERR(0, 952, __pyx_L31_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_8, (PyObject*)__pyx_8genexpr4__pyx_v__))) __PYX_ERR(0, 940, __pyx_L31_error)
       }
     }
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF(__pyx_8genexpr4__pyx_v__); __pyx_8genexpr4__pyx_v__ = 0;
     goto __pyx_L35_exit_scope;
     __pyx_L31_error:;
@@ -32097,21 +31821,21 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L1_error;
     __pyx_L35_exit_scope:;
   } /* exit inner scope */
-  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_7));
-  __pyx_t_7 = 0;
+  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_8));
+  __pyx_t_8 = 0;
 
-  /* "skeletontricks.pyx":954
+  /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 954, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 942, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 == 0) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":955
+    /* "skeletontricks.pyx":943
  * 
  *   if len(changes) == 0:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -32119,23 +31843,23 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  *   if len(changes) > 3: # if more than 3, allow one non-match
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_int64_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 955, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyInt_From_int64_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_int64_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_From_int64_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 943, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_8);
-    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_8);
-    __pyx_t_7 = 0;
+    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_8);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_7);
     __pyx_t_8 = 0;
+    __pyx_t_7 = 0;
     __pyx_r = __pyx_t_17;
     __pyx_t_17 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":954
+    /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
@@ -32144,18 +31868,18 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":957
+  /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 957, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 945, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 > 3) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":958
+    /* "skeletontricks.pyx":946
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match
  *     allowed_differences = 1             # <<<<<<<<<<<<<<
@@ -32164,7 +31888,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
     __pyx_v_allowed_differences = 1;
 
-    /* "skeletontricks.pyx":957
+    /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
@@ -32174,7 +31898,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L37;
   }
 
-  /* "skeletontricks.pyx":960
+  /* "skeletontricks.pyx":948
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  *     allowed_differences = 0             # <<<<<<<<<<<<<<
@@ -32186,147 +31910,147 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
   }
   __pyx_L37:;
 
-  /* "skeletontricks.pyx":962
+  /* "skeletontricks.pyx":950
  *     allowed_differences = 0
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)             # <<<<<<<<<<<<<<
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_INCREF(__pyx_v_changes);
   __Pyx_GIVEREF(__pyx_v_changes);
   PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_v_changes);
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
-  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_17, __pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_17, __pyx_t_8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if ((likely(PyTuple_CheckExact(__pyx_t_14))) || (PyList_CheckExact(__pyx_t_14))) {
     PyObject* sequence = __pyx_t_14;
     Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 962, __pyx_L1_error)
+      __PYX_ERR(0, 950, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyTuple_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyTuple_GET_ITEM(sequence, 1); 
     } else {
-      __pyx_t_7 = PyList_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyList_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyList_GET_ITEM(sequence, 1); 
     }
-    __Pyx_INCREF(__pyx_t_7);
+    __Pyx_INCREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_t_17);
     #else
-    __pyx_t_7 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+    __pyx_t_8 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
     #endif
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __pyx_t_77 = Py_TYPE(__pyx_t_8)->tp_iternext;
-    index = 0; __pyx_t_7 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L38_unpacking_failed;
+    __pyx_t_7 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __pyx_t_77 = Py_TYPE(__pyx_t_7)->tp_iternext;
+    index = 0; __pyx_t_8 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_8)) goto __pyx_L38_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_8);
+    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_17);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_8), 2) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_7), 2) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_t_77 = NULL;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     goto __pyx_L39_unpacking_done;
     __pyx_L38_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_77 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 962, __pyx_L1_error)
+    __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_L39_unpacking_done:;
   }
-  __pyx_v_uniq = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_v_uniq = __pyx_t_8;
+  __pyx_t_8 = 0;
   __pyx_v_cts = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":963
+  /* "skeletontricks.pyx":951
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)             # <<<<<<<<<<<<<<
  *   differences = len(changes) - cts[candidate_fruit_index]
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 963, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 963, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 951, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __pyx_t_17 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
-    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_7);
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
+    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_8);
     if (likely(__pyx_t_17)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
       __Pyx_INCREF(__pyx_t_17);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __Pyx_DECREF_SET(__pyx_t_8, function);
     }
   }
-  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_cts);
+  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_cts);
   __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
-  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 963, __pyx_L1_error)
+  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_candidate_fruit_index = __pyx_t_14;
   __pyx_t_14 = 0;
 
-  /* "skeletontricks.pyx":964
+  /* "skeletontricks.pyx":952
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]             # <<<<<<<<<<<<<<
  * 
  *   # it's not an avocado if there's lots of
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 964, __pyx_L1_error)
-  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 952, __pyx_L1_error)
+  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 964, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_7); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 952, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_8); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_differences = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":968
+  /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_8 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 968, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 956, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":969
+    /* "skeletontricks.pyx":957
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -32334,23 +32058,23 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  *   return (label, uniq[candidate_fruit_index])
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_int64_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 969, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = __Pyx_PyInt_From_int64_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_int64_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 957, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = __Pyx_PyInt_From_int64_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_8);
+    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_8);
     __Pyx_GIVEREF(__pyx_t_17);
     PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_17);
-    __pyx_t_7 = 0;
+    __pyx_t_8 = 0;
     __pyx_t_17 = 0;
     __pyx_r = __pyx_t_14;
     __pyx_t_14 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":968
+    /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
@@ -32359,7 +32083,7 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":971
+  /* "skeletontricks.pyx":959
  *     return (label, label)
  * 
  *   return (label, uniq[candidate_fruit_index])             # <<<<<<<<<<<<<<
@@ -32367,20 +32091,20 @@ static PyObject *__pyx_pf_14skeletontricks_102find_avocado_fruit(CYTHON_UNUSED P
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_14 = __Pyx_PyInt_From_int64_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyInt_From_int64_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 971, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_14);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_14);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_17);
-  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_17);
+  PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_17);
   __pyx_t_14 = 0;
   __pyx_t_17 = 0;
-  __pyx_r = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_r = __pyx_t_8;
+  __pyx_t_8 = 0;
   goto __pyx_L0;
 
   /* "skeletontricks.pyx":872
@@ -32854,7 +32578,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  * 
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]             # <<<<<<<<<<<<<<
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  */
   __pyx_t_18 = __pyx_v_cx;
@@ -32873,27 +32597,24 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
   /* "skeletontricks.pyx":896
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]
- *   cdef list changes = [ label ] * 6             # <<<<<<<<<<<<<<
+ *   cdef list changes = [ None ] * 6             # <<<<<<<<<<<<<<
  * 
  *   for x in range(cx, sx):
  */
-  __pyx_t_8 = __Pyx_PyInt_From_uint8_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1 * 6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyList_New(1 * 6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 896, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
   { Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < 6; __pyx_temp++) {
-      __Pyx_INCREF(__pyx_t_8);
-      __Pyx_GIVEREF(__pyx_t_8);
-      PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_t_8);
+      __Pyx_INCREF(Py_None);
+      __Pyx_GIVEREF(Py_None);
+      PyList_SET_ITEM(__pyx_t_8, __pyx_temp, Py_None);
     }
   }
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_v_changes = ((PyObject*)__pyx_t_7);
-  __pyx_t_7 = 0;
+  __pyx_v_changes = ((PyObject*)__pyx_t_8);
+  __pyx_t_8 = 0;
 
   /* "skeletontricks.pyx":898
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  *   for x in range(cx, sx):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -32969,7 +32690,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_30 = __pyx_v_x;
       __pyx_t_31 = __pyx_v_cy;
@@ -32982,17 +32703,17 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
         __PYX_ERR(0, 902, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint8_t((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint8_t((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
       /* "skeletontricks.pyx":903
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[0] = None
+ * 
+ *   for x in range(cx, 0, -1):
  */
       goto __pyx_L8_break;
 
@@ -33005,21 +32726,10 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":905
- *       break
- *   else:
- *     changes[0] = None             # <<<<<<<<<<<<<<
- * 
- *   for x in range(cx, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 905, __pyx_L1_error)
-  }
   __pyx_L8_break:;
 
-  /* "skeletontricks.pyx":907
- *     changes[0] = None
+  /* "skeletontricks.pyx":905
+ *       break
  * 
  *   for x in range(cx, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -33028,7 +32738,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cx + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_x = __pyx_t_21;
 
-    /* "skeletontricks.pyx":908
+    /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -33044,12 +32754,12 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_33 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 908, __pyx_L1_error)
+      __PYX_ERR(0, 906, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_33, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":909
+      /* "skeletontricks.pyx":907
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -33058,7 +32768,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":908
+      /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -33067,7 +32777,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":910
+    /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -33083,17 +32793,17 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_36 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 910, __pyx_L1_error)
+      __PYX_ERR(0, 908, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_35, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_36, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":911
+      /* "skeletontricks.pyx":909
  *       break
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_37 = __pyx_v_x;
       __pyx_t_38 = __pyx_v_cy;
@@ -33104,23 +32814,23 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_39 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 911, __pyx_L1_error)
+        __PYX_ERR(0, 909, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint8_t((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint8_t((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":912
+      /* "skeletontricks.pyx":910
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[1] = None
+ * 
+ *   for y in range(cy, sy):
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":910
+      /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -33129,21 +32839,10 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":914
- *       break
- *   else:
- *     changes[1] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, sy):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 914, __pyx_L1_error)
-  }
   __pyx_L11_break:;
 
-  /* "skeletontricks.pyx":916
- *     changes[1] = None
+  /* "skeletontricks.pyx":912
+ *       break
  * 
  *   for y in range(cy, sy):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -33154,7 +32853,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_41 = __pyx_v_cy; __pyx_t_41 < __pyx_t_40; __pyx_t_41+=1) {
     __pyx_v_y = __pyx_t_41;
 
-    /* "skeletontricks.pyx":917
+    /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -33170,12 +32869,12 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_44 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 917, __pyx_L1_error)
+      __PYX_ERR(0, 913, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_42, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_43, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_44, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":918
+      /* "skeletontricks.pyx":914
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -33184,7 +32883,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":917
+      /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -33193,7 +32892,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":919
+    /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -33209,17 +32908,17 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_47 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 919, __pyx_L1_error)
+      __PYX_ERR(0, 915, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_45, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_46, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_47, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":920
+      /* "skeletontricks.pyx":916
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_48 = __pyx_v_cx;
       __pyx_t_49 = __pyx_v_y;
@@ -33230,23 +32929,23 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_50 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 920, __pyx_L1_error)
+        __PYX_ERR(0, 916, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint8_t((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint8_t((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":921
+      /* "skeletontricks.pyx":917
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[2] = None
+ * 
+ *   for y in range(cy, 0, -1):
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":919
+      /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -33255,21 +32954,10 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":923
- *       break
- *   else:
- *     changes[2] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
-  }
   __pyx_L14_break:;
 
-  /* "skeletontricks.pyx":925
- *     changes[2] = None
+  /* "skeletontricks.pyx":919
+ *       break
  * 
  *   for y in range(cy, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -33278,7 +32966,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cy + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_y = __pyx_t_21;
 
-    /* "skeletontricks.pyx":926
+    /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -33294,12 +32982,12 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_51 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 926, __pyx_L1_error)
+      __PYX_ERR(0, 920, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_41, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_51, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":927
+      /* "skeletontricks.pyx":921
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -33308,7 +32996,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":926
+      /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -33317,7 +33005,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":928
+    /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -33333,17 +33021,17 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_54 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 928, __pyx_L1_error)
+      __PYX_ERR(0, 922, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_52, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_53, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_54, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":929
+      /* "skeletontricks.pyx":923
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_55 = __pyx_v_cx;
       __pyx_t_56 = __pyx_v_y;
@@ -33354,23 +33042,23 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_57 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 929, __pyx_L1_error)
+        __PYX_ERR(0, 923, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint8_t((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint8_t((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":930
+      /* "skeletontricks.pyx":924
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[3] = None
+ * 
+ *   for z in range(cz, sz):
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":928
+      /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -33379,21 +33067,10 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":932
- *       break
- *   else:
- *     changes[3] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, sz):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 932, __pyx_L1_error)
-  }
   __pyx_L18_break:;
 
-  /* "skeletontricks.pyx":934
- *     changes[3] = None
+  /* "skeletontricks.pyx":926
+ *       break
  * 
  *   for z in range(cz, sz):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -33404,7 +33081,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_59 = __pyx_v_cz; __pyx_t_59 < __pyx_t_58; __pyx_t_59+=1) {
     __pyx_v_z = __pyx_t_59;
 
-    /* "skeletontricks.pyx":935
+    /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -33420,12 +33097,12 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_62 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 935, __pyx_L1_error)
+      __PYX_ERR(0, 927, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_60, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_61, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_62, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":936
+      /* "skeletontricks.pyx":928
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -33434,7 +33111,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":935
+      /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -33443,7 +33120,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":937
+    /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -33459,17 +33136,17 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_65 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 937, __pyx_L1_error)
+      __PYX_ERR(0, 929, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_65, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":938
+      /* "skeletontricks.pyx":930
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_66 = __pyx_v_cx;
       __pyx_t_67 = __pyx_v_cy;
@@ -33480,23 +33157,23 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_68 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 938, __pyx_L1_error)
+        __PYX_ERR(0, 930, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint8_t((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint8_t((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":939
+      /* "skeletontricks.pyx":931
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[4] = None
+ * 
+ *   for z in range(cz, 0, -1):
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":937
+      /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -33505,21 +33182,10 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":941
- *       break
- *   else:
- *     changes[4] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 941, __pyx_L1_error)
-  }
   __pyx_L22_break:;
 
-  /* "skeletontricks.pyx":943
- *     changes[4] = None
+  /* "skeletontricks.pyx":933
+ *       break
  * 
  *   for z in range(cz, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -33528,7 +33194,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cz + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_z = __pyx_t_21;
 
-    /* "skeletontricks.pyx":944
+    /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -33544,12 +33210,12 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_69 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 944, __pyx_L1_error)
+      __PYX_ERR(0, 934, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_58, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_59, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_69, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":945
+      /* "skeletontricks.pyx":935
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -33558,7 +33224,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":944
+      /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -33567,7 +33233,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":946
+    /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -33583,17 +33249,17 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_72 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 946, __pyx_L1_error)
+      __PYX_ERR(0, 936, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_70, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_71, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_72, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":947
+      /* "skeletontricks.pyx":937
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_73 = __pyx_v_cx;
       __pyx_t_74 = __pyx_v_cy;
@@ -33604,23 +33270,23 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_75 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 947, __pyx_L1_error)
+        __PYX_ERR(0, 937, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint8_t((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint8_t((*__Pyx_BufPtrStrided3d(uint8_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":948
+      /* "skeletontricks.pyx":938
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[5] = None
+ * 
+ *   changes = [ _ for _ in changes if _ is not None ]
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":946
+      /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -33629,36 +33295,25 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":950
- *       break
- *   else:
- *     changes[5] = None             # <<<<<<<<<<<<<<
- * 
- *   changes = [ _ for _ in changes if _ is not None ]
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 950, __pyx_L1_error)
-  }
   __pyx_L26_break:;
 
-  /* "skeletontricks.pyx":952
- *     changes[5] = None
+  /* "skeletontricks.pyx":940
+ *       break
  * 
  *   changes = [ _ for _ in changes if _ is not None ]             # <<<<<<<<<<<<<<
  * 
  *   if len(changes) == 0:
  */
   { /* enter inner scope */
-    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 952, __pyx_L31_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_8); __pyx_t_76 = 0;
+    __pyx_t_8 = PyList_New(0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 940, __pyx_L31_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_7 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_7); __pyx_t_76 = 0;
     for (;;) {
-      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_8)) break;
+      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_7)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 940, __pyx_L31_error)
       #else
-      __pyx_t_17 = PySequence_ITEM(__pyx_t_8, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PySequence_ITEM(__pyx_t_7, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 940, __pyx_L31_error)
       __Pyx_GOTREF(__pyx_t_17);
       #endif
       __Pyx_XDECREF_SET(__pyx_8genexpr5__pyx_v__, __pyx_t_17);
@@ -33666,10 +33321,10 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
       __pyx_t_5 = (__pyx_8genexpr5__pyx_v__ != Py_None);
       __pyx_t_6 = (__pyx_t_5 != 0);
       if (__pyx_t_6) {
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_8genexpr5__pyx_v__))) __PYX_ERR(0, 952, __pyx_L31_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_8, (PyObject*)__pyx_8genexpr5__pyx_v__))) __PYX_ERR(0, 940, __pyx_L31_error)
       }
     }
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF(__pyx_8genexpr5__pyx_v__); __pyx_8genexpr5__pyx_v__ = 0;
     goto __pyx_L35_exit_scope;
     __pyx_L31_error:;
@@ -33677,21 +33332,21 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L1_error;
     __pyx_L35_exit_scope:;
   } /* exit inner scope */
-  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_7));
-  __pyx_t_7 = 0;
+  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_8));
+  __pyx_t_8 = 0;
 
-  /* "skeletontricks.pyx":954
+  /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 954, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 942, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 == 0) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":955
+    /* "skeletontricks.pyx":943
  * 
  *   if len(changes) == 0:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -33699,23 +33354,23 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  *   if len(changes) > 3: # if more than 3, allow one non-match
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_uint8_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 955, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyInt_From_uint8_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_uint8_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_From_uint8_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 943, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_8);
-    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_8);
-    __pyx_t_7 = 0;
+    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_8);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_7);
     __pyx_t_8 = 0;
+    __pyx_t_7 = 0;
     __pyx_r = __pyx_t_17;
     __pyx_t_17 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":954
+    /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
@@ -33724,18 +33379,18 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":957
+  /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 957, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 945, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 > 3) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":958
+    /* "skeletontricks.pyx":946
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match
  *     allowed_differences = 1             # <<<<<<<<<<<<<<
@@ -33744,7 +33399,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
     __pyx_v_allowed_differences = 1;
 
-    /* "skeletontricks.pyx":957
+    /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
@@ -33754,7 +33409,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L37;
   }
 
-  /* "skeletontricks.pyx":960
+  /* "skeletontricks.pyx":948
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  *     allowed_differences = 0             # <<<<<<<<<<<<<<
@@ -33766,147 +33421,147 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
   }
   __pyx_L37:;
 
-  /* "skeletontricks.pyx":962
+  /* "skeletontricks.pyx":950
  *     allowed_differences = 0
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)             # <<<<<<<<<<<<<<
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_INCREF(__pyx_v_changes);
   __Pyx_GIVEREF(__pyx_v_changes);
   PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_v_changes);
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
-  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_17, __pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_17, __pyx_t_8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if ((likely(PyTuple_CheckExact(__pyx_t_14))) || (PyList_CheckExact(__pyx_t_14))) {
     PyObject* sequence = __pyx_t_14;
     Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 962, __pyx_L1_error)
+      __PYX_ERR(0, 950, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyTuple_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyTuple_GET_ITEM(sequence, 1); 
     } else {
-      __pyx_t_7 = PyList_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyList_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyList_GET_ITEM(sequence, 1); 
     }
-    __Pyx_INCREF(__pyx_t_7);
+    __Pyx_INCREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_t_17);
     #else
-    __pyx_t_7 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+    __pyx_t_8 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
     #endif
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __pyx_t_77 = Py_TYPE(__pyx_t_8)->tp_iternext;
-    index = 0; __pyx_t_7 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L38_unpacking_failed;
+    __pyx_t_7 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __pyx_t_77 = Py_TYPE(__pyx_t_7)->tp_iternext;
+    index = 0; __pyx_t_8 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_8)) goto __pyx_L38_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_8);
+    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_17);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_8), 2) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_7), 2) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_t_77 = NULL;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     goto __pyx_L39_unpacking_done;
     __pyx_L38_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_77 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 962, __pyx_L1_error)
+    __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_L39_unpacking_done:;
   }
-  __pyx_v_uniq = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_v_uniq = __pyx_t_8;
+  __pyx_t_8 = 0;
   __pyx_v_cts = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":963
+  /* "skeletontricks.pyx":951
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)             # <<<<<<<<<<<<<<
  *   differences = len(changes) - cts[candidate_fruit_index]
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 963, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 963, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 951, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __pyx_t_17 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
-    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_7);
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
+    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_8);
     if (likely(__pyx_t_17)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
       __Pyx_INCREF(__pyx_t_17);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __Pyx_DECREF_SET(__pyx_t_8, function);
     }
   }
-  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_cts);
+  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_cts);
   __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
-  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 963, __pyx_L1_error)
+  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_candidate_fruit_index = __pyx_t_14;
   __pyx_t_14 = 0;
 
-  /* "skeletontricks.pyx":964
+  /* "skeletontricks.pyx":952
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]             # <<<<<<<<<<<<<<
  * 
  *   # it's not an avocado if there's lots of
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 964, __pyx_L1_error)
-  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 952, __pyx_L1_error)
+  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 964, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_7); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 952, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_8); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_differences = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":968
+  /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_8 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 968, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 956, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":969
+    /* "skeletontricks.pyx":957
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -33914,23 +33569,23 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  *   return (label, uniq[candidate_fruit_index])
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_uint8_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 969, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = __Pyx_PyInt_From_uint8_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_uint8_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 957, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = __Pyx_PyInt_From_uint8_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_8);
+    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_8);
     __Pyx_GIVEREF(__pyx_t_17);
     PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_17);
-    __pyx_t_7 = 0;
+    __pyx_t_8 = 0;
     __pyx_t_17 = 0;
     __pyx_r = __pyx_t_14;
     __pyx_t_14 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":968
+    /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
@@ -33939,7 +33594,7 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":971
+  /* "skeletontricks.pyx":959
  *     return (label, label)
  * 
  *   return (label, uniq[candidate_fruit_index])             # <<<<<<<<<<<<<<
@@ -33947,20 +33602,20 @@ static PyObject *__pyx_pf_14skeletontricks_104find_avocado_fruit(CYTHON_UNUSED P
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_14 = __Pyx_PyInt_From_uint8_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyInt_From_uint8_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 971, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_14);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_14);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_17);
-  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_17);
+  PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_17);
   __pyx_t_14 = 0;
   __pyx_t_17 = 0;
-  __pyx_r = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_r = __pyx_t_8;
+  __pyx_t_8 = 0;
   goto __pyx_L0;
 
   /* "skeletontricks.pyx":872
@@ -34434,7 +34089,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  * 
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]             # <<<<<<<<<<<<<<
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  */
   __pyx_t_18 = __pyx_v_cx;
@@ -34453,27 +34108,24 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
   /* "skeletontricks.pyx":896
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]
- *   cdef list changes = [ label ] * 6             # <<<<<<<<<<<<<<
+ *   cdef list changes = [ None ] * 6             # <<<<<<<<<<<<<<
  * 
  *   for x in range(cx, sx):
  */
-  __pyx_t_8 = __Pyx_PyInt_From_uint16_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1 * 6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyList_New(1 * 6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 896, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
   { Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < 6; __pyx_temp++) {
-      __Pyx_INCREF(__pyx_t_8);
-      __Pyx_GIVEREF(__pyx_t_8);
-      PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_t_8);
+      __Pyx_INCREF(Py_None);
+      __Pyx_GIVEREF(Py_None);
+      PyList_SET_ITEM(__pyx_t_8, __pyx_temp, Py_None);
     }
   }
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_v_changes = ((PyObject*)__pyx_t_7);
-  __pyx_t_7 = 0;
+  __pyx_v_changes = ((PyObject*)__pyx_t_8);
+  __pyx_t_8 = 0;
 
   /* "skeletontricks.pyx":898
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  *   for x in range(cx, sx):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -34549,7 +34201,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_30 = __pyx_v_x;
       __pyx_t_31 = __pyx_v_cy;
@@ -34562,17 +34214,17 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
         __PYX_ERR(0, 902, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint16_t((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint16_t((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
       /* "skeletontricks.pyx":903
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[0] = None
+ * 
+ *   for x in range(cx, 0, -1):
  */
       goto __pyx_L8_break;
 
@@ -34585,21 +34237,10 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":905
- *       break
- *   else:
- *     changes[0] = None             # <<<<<<<<<<<<<<
- * 
- *   for x in range(cx, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 905, __pyx_L1_error)
-  }
   __pyx_L8_break:;
 
-  /* "skeletontricks.pyx":907
- *     changes[0] = None
+  /* "skeletontricks.pyx":905
+ *       break
  * 
  *   for x in range(cx, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -34608,7 +34249,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cx + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_x = __pyx_t_21;
 
-    /* "skeletontricks.pyx":908
+    /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -34624,12 +34265,12 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_33 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 908, __pyx_L1_error)
+      __PYX_ERR(0, 906, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_33, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":909
+      /* "skeletontricks.pyx":907
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -34638,7 +34279,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":908
+      /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -34647,7 +34288,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":910
+    /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -34663,17 +34304,17 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_36 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 910, __pyx_L1_error)
+      __PYX_ERR(0, 908, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_35, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_36, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":911
+      /* "skeletontricks.pyx":909
  *       break
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_37 = __pyx_v_x;
       __pyx_t_38 = __pyx_v_cy;
@@ -34684,23 +34325,23 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_39 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 911, __pyx_L1_error)
+        __PYX_ERR(0, 909, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint16_t((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint16_t((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":912
+      /* "skeletontricks.pyx":910
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[1] = None
+ * 
+ *   for y in range(cy, sy):
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":910
+      /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -34709,21 +34350,10 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":914
- *       break
- *   else:
- *     changes[1] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, sy):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 914, __pyx_L1_error)
-  }
   __pyx_L11_break:;
 
-  /* "skeletontricks.pyx":916
- *     changes[1] = None
+  /* "skeletontricks.pyx":912
+ *       break
  * 
  *   for y in range(cy, sy):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -34734,7 +34364,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_41 = __pyx_v_cy; __pyx_t_41 < __pyx_t_40; __pyx_t_41+=1) {
     __pyx_v_y = __pyx_t_41;
 
-    /* "skeletontricks.pyx":917
+    /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -34750,12 +34380,12 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_44 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 917, __pyx_L1_error)
+      __PYX_ERR(0, 913, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_42, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_43, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_44, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":918
+      /* "skeletontricks.pyx":914
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -34764,7 +34394,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":917
+      /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -34773,7 +34403,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":919
+    /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -34789,17 +34419,17 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_47 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 919, __pyx_L1_error)
+      __PYX_ERR(0, 915, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_45, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_46, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_47, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":920
+      /* "skeletontricks.pyx":916
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_48 = __pyx_v_cx;
       __pyx_t_49 = __pyx_v_y;
@@ -34810,23 +34440,23 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_50 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 920, __pyx_L1_error)
+        __PYX_ERR(0, 916, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint16_t((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint16_t((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":921
+      /* "skeletontricks.pyx":917
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[2] = None
+ * 
+ *   for y in range(cy, 0, -1):
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":919
+      /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -34835,21 +34465,10 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":923
- *       break
- *   else:
- *     changes[2] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
-  }
   __pyx_L14_break:;
 
-  /* "skeletontricks.pyx":925
- *     changes[2] = None
+  /* "skeletontricks.pyx":919
+ *       break
  * 
  *   for y in range(cy, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -34858,7 +34477,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cy + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_y = __pyx_t_21;
 
-    /* "skeletontricks.pyx":926
+    /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -34874,12 +34493,12 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_51 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 926, __pyx_L1_error)
+      __PYX_ERR(0, 920, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_41, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_51, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":927
+      /* "skeletontricks.pyx":921
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -34888,7 +34507,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":926
+      /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -34897,7 +34516,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":928
+    /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -34913,17 +34532,17 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_54 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 928, __pyx_L1_error)
+      __PYX_ERR(0, 922, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_52, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_53, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_54, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":929
+      /* "skeletontricks.pyx":923
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_55 = __pyx_v_cx;
       __pyx_t_56 = __pyx_v_y;
@@ -34934,23 +34553,23 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_57 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 929, __pyx_L1_error)
+        __PYX_ERR(0, 923, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint16_t((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint16_t((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":930
+      /* "skeletontricks.pyx":924
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[3] = None
+ * 
+ *   for z in range(cz, sz):
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":928
+      /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -34959,21 +34578,10 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":932
- *       break
- *   else:
- *     changes[3] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, sz):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 932, __pyx_L1_error)
-  }
   __pyx_L18_break:;
 
-  /* "skeletontricks.pyx":934
- *     changes[3] = None
+  /* "skeletontricks.pyx":926
+ *       break
  * 
  *   for z in range(cz, sz):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -34984,7 +34592,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_59 = __pyx_v_cz; __pyx_t_59 < __pyx_t_58; __pyx_t_59+=1) {
     __pyx_v_z = __pyx_t_59;
 
-    /* "skeletontricks.pyx":935
+    /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -35000,12 +34608,12 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_62 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 935, __pyx_L1_error)
+      __PYX_ERR(0, 927, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_60, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_61, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_62, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":936
+      /* "skeletontricks.pyx":928
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -35014,7 +34622,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":935
+      /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -35023,7 +34631,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":937
+    /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -35039,17 +34647,17 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_65 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 937, __pyx_L1_error)
+      __PYX_ERR(0, 929, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_65, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":938
+      /* "skeletontricks.pyx":930
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_66 = __pyx_v_cx;
       __pyx_t_67 = __pyx_v_cy;
@@ -35060,23 +34668,23 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_68 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 938, __pyx_L1_error)
+        __PYX_ERR(0, 930, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint16_t((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint16_t((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":939
+      /* "skeletontricks.pyx":931
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[4] = None
+ * 
+ *   for z in range(cz, 0, -1):
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":937
+      /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -35085,21 +34693,10 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":941
- *       break
- *   else:
- *     changes[4] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 941, __pyx_L1_error)
-  }
   __pyx_L22_break:;
 
-  /* "skeletontricks.pyx":943
- *     changes[4] = None
+  /* "skeletontricks.pyx":933
+ *       break
  * 
  *   for z in range(cz, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -35108,7 +34705,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cz + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_z = __pyx_t_21;
 
-    /* "skeletontricks.pyx":944
+    /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -35124,12 +34721,12 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_69 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 944, __pyx_L1_error)
+      __PYX_ERR(0, 934, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_58, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_59, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_69, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":945
+      /* "skeletontricks.pyx":935
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -35138,7 +34735,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":944
+      /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -35147,7 +34744,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":946
+    /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -35163,17 +34760,17 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_72 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 946, __pyx_L1_error)
+      __PYX_ERR(0, 936, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_70, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_71, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_72, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":947
+      /* "skeletontricks.pyx":937
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_73 = __pyx_v_cx;
       __pyx_t_74 = __pyx_v_cy;
@@ -35184,23 +34781,23 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_75 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 947, __pyx_L1_error)
+        __PYX_ERR(0, 937, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint16_t((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint16_t((*__Pyx_BufPtrStrided3d(uint16_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":948
+      /* "skeletontricks.pyx":938
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[5] = None
+ * 
+ *   changes = [ _ for _ in changes if _ is not None ]
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":946
+      /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -35209,36 +34806,25 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":950
- *       break
- *   else:
- *     changes[5] = None             # <<<<<<<<<<<<<<
- * 
- *   changes = [ _ for _ in changes if _ is not None ]
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 950, __pyx_L1_error)
-  }
   __pyx_L26_break:;
 
-  /* "skeletontricks.pyx":952
- *     changes[5] = None
+  /* "skeletontricks.pyx":940
+ *       break
  * 
  *   changes = [ _ for _ in changes if _ is not None ]             # <<<<<<<<<<<<<<
  * 
  *   if len(changes) == 0:
  */
   { /* enter inner scope */
-    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 952, __pyx_L31_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_8); __pyx_t_76 = 0;
+    __pyx_t_8 = PyList_New(0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 940, __pyx_L31_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_7 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_7); __pyx_t_76 = 0;
     for (;;) {
-      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_8)) break;
+      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_7)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 940, __pyx_L31_error)
       #else
-      __pyx_t_17 = PySequence_ITEM(__pyx_t_8, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PySequence_ITEM(__pyx_t_7, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 940, __pyx_L31_error)
       __Pyx_GOTREF(__pyx_t_17);
       #endif
       __Pyx_XDECREF_SET(__pyx_8genexpr6__pyx_v__, __pyx_t_17);
@@ -35246,10 +34832,10 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
       __pyx_t_5 = (__pyx_8genexpr6__pyx_v__ != Py_None);
       __pyx_t_6 = (__pyx_t_5 != 0);
       if (__pyx_t_6) {
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_8genexpr6__pyx_v__))) __PYX_ERR(0, 952, __pyx_L31_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_8, (PyObject*)__pyx_8genexpr6__pyx_v__))) __PYX_ERR(0, 940, __pyx_L31_error)
       }
     }
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF(__pyx_8genexpr6__pyx_v__); __pyx_8genexpr6__pyx_v__ = 0;
     goto __pyx_L35_exit_scope;
     __pyx_L31_error:;
@@ -35257,21 +34843,21 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L1_error;
     __pyx_L35_exit_scope:;
   } /* exit inner scope */
-  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_7));
-  __pyx_t_7 = 0;
+  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_8));
+  __pyx_t_8 = 0;
 
-  /* "skeletontricks.pyx":954
+  /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 954, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 942, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 == 0) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":955
+    /* "skeletontricks.pyx":943
  * 
  *   if len(changes) == 0:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -35279,23 +34865,23 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  *   if len(changes) > 3: # if more than 3, allow one non-match
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_uint16_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 955, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyInt_From_uint16_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_uint16_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_From_uint16_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 943, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_8);
-    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_8);
-    __pyx_t_7 = 0;
+    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_8);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_7);
     __pyx_t_8 = 0;
+    __pyx_t_7 = 0;
     __pyx_r = __pyx_t_17;
     __pyx_t_17 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":954
+    /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
@@ -35304,18 +34890,18 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":957
+  /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 957, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 945, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 > 3) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":958
+    /* "skeletontricks.pyx":946
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match
  *     allowed_differences = 1             # <<<<<<<<<<<<<<
@@ -35324,7 +34910,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
     __pyx_v_allowed_differences = 1;
 
-    /* "skeletontricks.pyx":957
+    /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
@@ -35334,7 +34920,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L37;
   }
 
-  /* "skeletontricks.pyx":960
+  /* "skeletontricks.pyx":948
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  *     allowed_differences = 0             # <<<<<<<<<<<<<<
@@ -35346,147 +34932,147 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
   }
   __pyx_L37:;
 
-  /* "skeletontricks.pyx":962
+  /* "skeletontricks.pyx":950
  *     allowed_differences = 0
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)             # <<<<<<<<<<<<<<
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_INCREF(__pyx_v_changes);
   __Pyx_GIVEREF(__pyx_v_changes);
   PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_v_changes);
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
-  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_17, __pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_17, __pyx_t_8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if ((likely(PyTuple_CheckExact(__pyx_t_14))) || (PyList_CheckExact(__pyx_t_14))) {
     PyObject* sequence = __pyx_t_14;
     Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 962, __pyx_L1_error)
+      __PYX_ERR(0, 950, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyTuple_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyTuple_GET_ITEM(sequence, 1); 
     } else {
-      __pyx_t_7 = PyList_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyList_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyList_GET_ITEM(sequence, 1); 
     }
-    __Pyx_INCREF(__pyx_t_7);
+    __Pyx_INCREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_t_17);
     #else
-    __pyx_t_7 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+    __pyx_t_8 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
     #endif
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __pyx_t_77 = Py_TYPE(__pyx_t_8)->tp_iternext;
-    index = 0; __pyx_t_7 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L38_unpacking_failed;
+    __pyx_t_7 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __pyx_t_77 = Py_TYPE(__pyx_t_7)->tp_iternext;
+    index = 0; __pyx_t_8 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_8)) goto __pyx_L38_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_8);
+    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_17);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_8), 2) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_7), 2) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_t_77 = NULL;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     goto __pyx_L39_unpacking_done;
     __pyx_L38_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_77 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 962, __pyx_L1_error)
+    __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_L39_unpacking_done:;
   }
-  __pyx_v_uniq = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_v_uniq = __pyx_t_8;
+  __pyx_t_8 = 0;
   __pyx_v_cts = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":963
+  /* "skeletontricks.pyx":951
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)             # <<<<<<<<<<<<<<
  *   differences = len(changes) - cts[candidate_fruit_index]
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 963, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 963, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 951, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __pyx_t_17 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
-    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_7);
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
+    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_8);
     if (likely(__pyx_t_17)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
       __Pyx_INCREF(__pyx_t_17);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __Pyx_DECREF_SET(__pyx_t_8, function);
     }
   }
-  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_cts);
+  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_cts);
   __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
-  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 963, __pyx_L1_error)
+  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_candidate_fruit_index = __pyx_t_14;
   __pyx_t_14 = 0;
 
-  /* "skeletontricks.pyx":964
+  /* "skeletontricks.pyx":952
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]             # <<<<<<<<<<<<<<
  * 
  *   # it's not an avocado if there's lots of
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 964, __pyx_L1_error)
-  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 952, __pyx_L1_error)
+  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 964, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_7); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 952, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_8); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_differences = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":968
+  /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_8 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 968, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 956, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":969
+    /* "skeletontricks.pyx":957
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -35494,23 +35080,23 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  *   return (label, uniq[candidate_fruit_index])
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_uint16_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 969, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = __Pyx_PyInt_From_uint16_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_uint16_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 957, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = __Pyx_PyInt_From_uint16_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_8);
+    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_8);
     __Pyx_GIVEREF(__pyx_t_17);
     PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_17);
-    __pyx_t_7 = 0;
+    __pyx_t_8 = 0;
     __pyx_t_17 = 0;
     __pyx_r = __pyx_t_14;
     __pyx_t_14 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":968
+    /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
@@ -35519,7 +35105,7 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":971
+  /* "skeletontricks.pyx":959
  *     return (label, label)
  * 
  *   return (label, uniq[candidate_fruit_index])             # <<<<<<<<<<<<<<
@@ -35527,20 +35113,20 @@ static PyObject *__pyx_pf_14skeletontricks_106find_avocado_fruit(CYTHON_UNUSED P
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_14 = __Pyx_PyInt_From_uint16_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyInt_From_uint16_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 971, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_14);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_14);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_17);
-  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_17);
+  PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_17);
   __pyx_t_14 = 0;
   __pyx_t_17 = 0;
-  __pyx_r = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_r = __pyx_t_8;
+  __pyx_t_8 = 0;
   goto __pyx_L0;
 
   /* "skeletontricks.pyx":872
@@ -36014,7 +35600,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  * 
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]             # <<<<<<<<<<<<<<
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  */
   __pyx_t_18 = __pyx_v_cx;
@@ -36033,27 +35619,24 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
   /* "skeletontricks.pyx":896
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]
- *   cdef list changes = [ label ] * 6             # <<<<<<<<<<<<<<
+ *   cdef list changes = [ None ] * 6             # <<<<<<<<<<<<<<
  * 
  *   for x in range(cx, sx):
  */
-  __pyx_t_8 = __Pyx_PyInt_From_uint32_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1 * 6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyList_New(1 * 6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 896, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
   { Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < 6; __pyx_temp++) {
-      __Pyx_INCREF(__pyx_t_8);
-      __Pyx_GIVEREF(__pyx_t_8);
-      PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_t_8);
+      __Pyx_INCREF(Py_None);
+      __Pyx_GIVEREF(Py_None);
+      PyList_SET_ITEM(__pyx_t_8, __pyx_temp, Py_None);
     }
   }
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_v_changes = ((PyObject*)__pyx_t_7);
-  __pyx_t_7 = 0;
+  __pyx_v_changes = ((PyObject*)__pyx_t_8);
+  __pyx_t_8 = 0;
 
   /* "skeletontricks.pyx":898
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  *   for x in range(cx, sx):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -36129,7 +35712,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_30 = __pyx_v_x;
       __pyx_t_31 = __pyx_v_cy;
@@ -36142,17 +35725,17 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
         __PYX_ERR(0, 902, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint32_t((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint32_t((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
       /* "skeletontricks.pyx":903
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[0] = None
+ * 
+ *   for x in range(cx, 0, -1):
  */
       goto __pyx_L8_break;
 
@@ -36165,21 +35748,10 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":905
- *       break
- *   else:
- *     changes[0] = None             # <<<<<<<<<<<<<<
- * 
- *   for x in range(cx, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 905, __pyx_L1_error)
-  }
   __pyx_L8_break:;
 
-  /* "skeletontricks.pyx":907
- *     changes[0] = None
+  /* "skeletontricks.pyx":905
+ *       break
  * 
  *   for x in range(cx, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -36188,7 +35760,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cx + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_x = __pyx_t_21;
 
-    /* "skeletontricks.pyx":908
+    /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -36204,12 +35776,12 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_33 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 908, __pyx_L1_error)
+      __PYX_ERR(0, 906, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_33, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":909
+      /* "skeletontricks.pyx":907
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -36218,7 +35790,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":908
+      /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -36227,7 +35799,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":910
+    /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -36243,17 +35815,17 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_36 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 910, __pyx_L1_error)
+      __PYX_ERR(0, 908, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_35, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_36, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":911
+      /* "skeletontricks.pyx":909
  *       break
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_37 = __pyx_v_x;
       __pyx_t_38 = __pyx_v_cy;
@@ -36264,23 +35836,23 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_39 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 911, __pyx_L1_error)
+        __PYX_ERR(0, 909, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint32_t((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint32_t((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":912
+      /* "skeletontricks.pyx":910
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[1] = None
+ * 
+ *   for y in range(cy, sy):
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":910
+      /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -36289,21 +35861,10 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":914
- *       break
- *   else:
- *     changes[1] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, sy):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 914, __pyx_L1_error)
-  }
   __pyx_L11_break:;
 
-  /* "skeletontricks.pyx":916
- *     changes[1] = None
+  /* "skeletontricks.pyx":912
+ *       break
  * 
  *   for y in range(cy, sy):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -36314,7 +35875,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_41 = __pyx_v_cy; __pyx_t_41 < __pyx_t_40; __pyx_t_41+=1) {
     __pyx_v_y = __pyx_t_41;
 
-    /* "skeletontricks.pyx":917
+    /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -36330,12 +35891,12 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_44 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 917, __pyx_L1_error)
+      __PYX_ERR(0, 913, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_42, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_43, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_44, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":918
+      /* "skeletontricks.pyx":914
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -36344,7 +35905,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":917
+      /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -36353,7 +35914,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":919
+    /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -36369,17 +35930,17 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_47 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 919, __pyx_L1_error)
+      __PYX_ERR(0, 915, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_45, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_46, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_47, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":920
+      /* "skeletontricks.pyx":916
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_48 = __pyx_v_cx;
       __pyx_t_49 = __pyx_v_y;
@@ -36390,23 +35951,23 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_50 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 920, __pyx_L1_error)
+        __PYX_ERR(0, 916, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint32_t((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint32_t((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":921
+      /* "skeletontricks.pyx":917
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[2] = None
+ * 
+ *   for y in range(cy, 0, -1):
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":919
+      /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -36415,21 +35976,10 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":923
- *       break
- *   else:
- *     changes[2] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
-  }
   __pyx_L14_break:;
 
-  /* "skeletontricks.pyx":925
- *     changes[2] = None
+  /* "skeletontricks.pyx":919
+ *       break
  * 
  *   for y in range(cy, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -36438,7 +35988,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cy + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_y = __pyx_t_21;
 
-    /* "skeletontricks.pyx":926
+    /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -36454,12 +36004,12 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_51 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 926, __pyx_L1_error)
+      __PYX_ERR(0, 920, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_41, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_51, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":927
+      /* "skeletontricks.pyx":921
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -36468,7 +36018,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":926
+      /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -36477,7 +36027,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":928
+    /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -36493,17 +36043,17 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_54 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 928, __pyx_L1_error)
+      __PYX_ERR(0, 922, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_52, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_53, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_54, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":929
+      /* "skeletontricks.pyx":923
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_55 = __pyx_v_cx;
       __pyx_t_56 = __pyx_v_y;
@@ -36514,23 +36064,23 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_57 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 929, __pyx_L1_error)
+        __PYX_ERR(0, 923, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint32_t((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint32_t((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":930
+      /* "skeletontricks.pyx":924
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[3] = None
+ * 
+ *   for z in range(cz, sz):
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":928
+      /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -36539,21 +36089,10 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":932
- *       break
- *   else:
- *     changes[3] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, sz):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 932, __pyx_L1_error)
-  }
   __pyx_L18_break:;
 
-  /* "skeletontricks.pyx":934
- *     changes[3] = None
+  /* "skeletontricks.pyx":926
+ *       break
  * 
  *   for z in range(cz, sz):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -36564,7 +36103,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_59 = __pyx_v_cz; __pyx_t_59 < __pyx_t_58; __pyx_t_59+=1) {
     __pyx_v_z = __pyx_t_59;
 
-    /* "skeletontricks.pyx":935
+    /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -36580,12 +36119,12 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_62 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 935, __pyx_L1_error)
+      __PYX_ERR(0, 927, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_60, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_61, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_62, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":936
+      /* "skeletontricks.pyx":928
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -36594,7 +36133,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":935
+      /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -36603,7 +36142,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":937
+    /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -36619,17 +36158,17 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_65 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 937, __pyx_L1_error)
+      __PYX_ERR(0, 929, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_65, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":938
+      /* "skeletontricks.pyx":930
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_66 = __pyx_v_cx;
       __pyx_t_67 = __pyx_v_cy;
@@ -36640,23 +36179,23 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_68 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 938, __pyx_L1_error)
+        __PYX_ERR(0, 930, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint32_t((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint32_t((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":939
+      /* "skeletontricks.pyx":931
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[4] = None
+ * 
+ *   for z in range(cz, 0, -1):
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":937
+      /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -36665,21 +36204,10 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":941
- *       break
- *   else:
- *     changes[4] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 941, __pyx_L1_error)
-  }
   __pyx_L22_break:;
 
-  /* "skeletontricks.pyx":943
- *     changes[4] = None
+  /* "skeletontricks.pyx":933
+ *       break
  * 
  *   for z in range(cz, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -36688,7 +36216,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cz + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_z = __pyx_t_21;
 
-    /* "skeletontricks.pyx":944
+    /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -36704,12 +36232,12 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_69 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 944, __pyx_L1_error)
+      __PYX_ERR(0, 934, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_58, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_59, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_69, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":945
+      /* "skeletontricks.pyx":935
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -36718,7 +36246,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":944
+      /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -36727,7 +36255,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":946
+    /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -36743,17 +36271,17 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_72 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 946, __pyx_L1_error)
+      __PYX_ERR(0, 936, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_70, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_71, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_72, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":947
+      /* "skeletontricks.pyx":937
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_73 = __pyx_v_cx;
       __pyx_t_74 = __pyx_v_cy;
@@ -36764,23 +36292,23 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_75 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 947, __pyx_L1_error)
+        __PYX_ERR(0, 937, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint32_t((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint32_t((*__Pyx_BufPtrStrided3d(uint32_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":948
+      /* "skeletontricks.pyx":938
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[5] = None
+ * 
+ *   changes = [ _ for _ in changes if _ is not None ]
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":946
+      /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -36789,36 +36317,25 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":950
- *       break
- *   else:
- *     changes[5] = None             # <<<<<<<<<<<<<<
- * 
- *   changes = [ _ for _ in changes if _ is not None ]
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 950, __pyx_L1_error)
-  }
   __pyx_L26_break:;
 
-  /* "skeletontricks.pyx":952
- *     changes[5] = None
+  /* "skeletontricks.pyx":940
+ *       break
  * 
  *   changes = [ _ for _ in changes if _ is not None ]             # <<<<<<<<<<<<<<
  * 
  *   if len(changes) == 0:
  */
   { /* enter inner scope */
-    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 952, __pyx_L31_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_8); __pyx_t_76 = 0;
+    __pyx_t_8 = PyList_New(0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 940, __pyx_L31_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_7 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_7); __pyx_t_76 = 0;
     for (;;) {
-      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_8)) break;
+      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_7)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 940, __pyx_L31_error)
       #else
-      __pyx_t_17 = PySequence_ITEM(__pyx_t_8, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PySequence_ITEM(__pyx_t_7, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 940, __pyx_L31_error)
       __Pyx_GOTREF(__pyx_t_17);
       #endif
       __Pyx_XDECREF_SET(__pyx_8genexpr7__pyx_v__, __pyx_t_17);
@@ -36826,10 +36343,10 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
       __pyx_t_5 = (__pyx_8genexpr7__pyx_v__ != Py_None);
       __pyx_t_6 = (__pyx_t_5 != 0);
       if (__pyx_t_6) {
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_8genexpr7__pyx_v__))) __PYX_ERR(0, 952, __pyx_L31_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_8, (PyObject*)__pyx_8genexpr7__pyx_v__))) __PYX_ERR(0, 940, __pyx_L31_error)
       }
     }
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF(__pyx_8genexpr7__pyx_v__); __pyx_8genexpr7__pyx_v__ = 0;
     goto __pyx_L35_exit_scope;
     __pyx_L31_error:;
@@ -36837,21 +36354,21 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L1_error;
     __pyx_L35_exit_scope:;
   } /* exit inner scope */
-  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_7));
-  __pyx_t_7 = 0;
+  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_8));
+  __pyx_t_8 = 0;
 
-  /* "skeletontricks.pyx":954
+  /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 954, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 942, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 == 0) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":955
+    /* "skeletontricks.pyx":943
  * 
  *   if len(changes) == 0:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -36859,23 +36376,23 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  *   if len(changes) > 3: # if more than 3, allow one non-match
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_uint32_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 955, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyInt_From_uint32_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_uint32_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_From_uint32_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 943, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_8);
-    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_8);
-    __pyx_t_7 = 0;
+    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_8);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_7);
     __pyx_t_8 = 0;
+    __pyx_t_7 = 0;
     __pyx_r = __pyx_t_17;
     __pyx_t_17 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":954
+    /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
@@ -36884,18 +36401,18 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":957
+  /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 957, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 945, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 > 3) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":958
+    /* "skeletontricks.pyx":946
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match
  *     allowed_differences = 1             # <<<<<<<<<<<<<<
@@ -36904,7 +36421,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
     __pyx_v_allowed_differences = 1;
 
-    /* "skeletontricks.pyx":957
+    /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
@@ -36914,7 +36431,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L37;
   }
 
-  /* "skeletontricks.pyx":960
+  /* "skeletontricks.pyx":948
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  *     allowed_differences = 0             # <<<<<<<<<<<<<<
@@ -36926,147 +36443,147 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
   }
   __pyx_L37:;
 
-  /* "skeletontricks.pyx":962
+  /* "skeletontricks.pyx":950
  *     allowed_differences = 0
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)             # <<<<<<<<<<<<<<
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_INCREF(__pyx_v_changes);
   __Pyx_GIVEREF(__pyx_v_changes);
   PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_v_changes);
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
-  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_17, __pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_17, __pyx_t_8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if ((likely(PyTuple_CheckExact(__pyx_t_14))) || (PyList_CheckExact(__pyx_t_14))) {
     PyObject* sequence = __pyx_t_14;
     Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 962, __pyx_L1_error)
+      __PYX_ERR(0, 950, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyTuple_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyTuple_GET_ITEM(sequence, 1); 
     } else {
-      __pyx_t_7 = PyList_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyList_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyList_GET_ITEM(sequence, 1); 
     }
-    __Pyx_INCREF(__pyx_t_7);
+    __Pyx_INCREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_t_17);
     #else
-    __pyx_t_7 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+    __pyx_t_8 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
     #endif
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __pyx_t_77 = Py_TYPE(__pyx_t_8)->tp_iternext;
-    index = 0; __pyx_t_7 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L38_unpacking_failed;
+    __pyx_t_7 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __pyx_t_77 = Py_TYPE(__pyx_t_7)->tp_iternext;
+    index = 0; __pyx_t_8 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_8)) goto __pyx_L38_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_8);
+    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_17);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_8), 2) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_7), 2) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_t_77 = NULL;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     goto __pyx_L39_unpacking_done;
     __pyx_L38_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_77 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 962, __pyx_L1_error)
+    __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_L39_unpacking_done:;
   }
-  __pyx_v_uniq = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_v_uniq = __pyx_t_8;
+  __pyx_t_8 = 0;
   __pyx_v_cts = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":963
+  /* "skeletontricks.pyx":951
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)             # <<<<<<<<<<<<<<
  *   differences = len(changes) - cts[candidate_fruit_index]
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 963, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 963, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 951, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __pyx_t_17 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
-    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_7);
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
+    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_8);
     if (likely(__pyx_t_17)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
       __Pyx_INCREF(__pyx_t_17);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __Pyx_DECREF_SET(__pyx_t_8, function);
     }
   }
-  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_cts);
+  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_cts);
   __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
-  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 963, __pyx_L1_error)
+  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_candidate_fruit_index = __pyx_t_14;
   __pyx_t_14 = 0;
 
-  /* "skeletontricks.pyx":964
+  /* "skeletontricks.pyx":952
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]             # <<<<<<<<<<<<<<
  * 
  *   # it's not an avocado if there's lots of
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 964, __pyx_L1_error)
-  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 952, __pyx_L1_error)
+  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 964, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_7); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 952, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_8); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_differences = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":968
+  /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_8 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 968, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 956, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":969
+    /* "skeletontricks.pyx":957
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -37074,23 +36591,23 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  *   return (label, uniq[candidate_fruit_index])
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_uint32_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 969, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = __Pyx_PyInt_From_uint32_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_uint32_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 957, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = __Pyx_PyInt_From_uint32_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_8);
+    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_8);
     __Pyx_GIVEREF(__pyx_t_17);
     PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_17);
-    __pyx_t_7 = 0;
+    __pyx_t_8 = 0;
     __pyx_t_17 = 0;
     __pyx_r = __pyx_t_14;
     __pyx_t_14 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":968
+    /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
@@ -37099,7 +36616,7 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":971
+  /* "skeletontricks.pyx":959
  *     return (label, label)
  * 
  *   return (label, uniq[candidate_fruit_index])             # <<<<<<<<<<<<<<
@@ -37107,20 +36624,20 @@ static PyObject *__pyx_pf_14skeletontricks_108find_avocado_fruit(CYTHON_UNUSED P
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_14 = __Pyx_PyInt_From_uint32_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyInt_From_uint32_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 971, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_14);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_14);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_17);
-  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_17);
+  PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_17);
   __pyx_t_14 = 0;
   __pyx_t_17 = 0;
-  __pyx_r = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_r = __pyx_t_8;
+  __pyx_t_8 = 0;
   goto __pyx_L0;
 
   /* "skeletontricks.pyx":872
@@ -37594,7 +37111,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  * 
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]             # <<<<<<<<<<<<<<
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  */
   __pyx_t_18 = __pyx_v_cx;
@@ -37613,27 +37130,24 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
   /* "skeletontricks.pyx":896
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]
- *   cdef list changes = [ label ] * 6             # <<<<<<<<<<<<<<
+ *   cdef list changes = [ None ] * 6             # <<<<<<<<<<<<<<
  * 
  *   for x in range(cx, sx):
  */
-  __pyx_t_8 = __Pyx_PyInt_From_uint64_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1 * 6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyList_New(1 * 6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 896, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
   { Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < 6; __pyx_temp++) {
-      __Pyx_INCREF(__pyx_t_8);
-      __Pyx_GIVEREF(__pyx_t_8);
-      PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_t_8);
+      __Pyx_INCREF(Py_None);
+      __Pyx_GIVEREF(Py_None);
+      PyList_SET_ITEM(__pyx_t_8, __pyx_temp, Py_None);
     }
   }
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_v_changes = ((PyObject*)__pyx_t_7);
-  __pyx_t_7 = 0;
+  __pyx_v_changes = ((PyObject*)__pyx_t_8);
+  __pyx_t_8 = 0;
 
   /* "skeletontricks.pyx":898
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  *   for x in range(cx, sx):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -37709,7 +37223,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_30 = __pyx_v_x;
       __pyx_t_31 = __pyx_v_cy;
@@ -37722,17 +37236,17 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
         __PYX_ERR(0, 902, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint64_t((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint64_t((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
       /* "skeletontricks.pyx":903
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[0] = None
+ * 
+ *   for x in range(cx, 0, -1):
  */
       goto __pyx_L8_break;
 
@@ -37745,21 +37259,10 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":905
- *       break
- *   else:
- *     changes[0] = None             # <<<<<<<<<<<<<<
- * 
- *   for x in range(cx, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 905, __pyx_L1_error)
-  }
   __pyx_L8_break:;
 
-  /* "skeletontricks.pyx":907
- *     changes[0] = None
+  /* "skeletontricks.pyx":905
+ *       break
  * 
  *   for x in range(cx, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -37768,7 +37271,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cx + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_x = __pyx_t_21;
 
-    /* "skeletontricks.pyx":908
+    /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -37784,12 +37287,12 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_33 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 908, __pyx_L1_error)
+      __PYX_ERR(0, 906, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_33, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":909
+      /* "skeletontricks.pyx":907
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -37798,7 +37301,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":908
+      /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -37807,7 +37310,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":910
+    /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -37823,17 +37326,17 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_36 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 910, __pyx_L1_error)
+      __PYX_ERR(0, 908, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_35, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_36, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":911
+      /* "skeletontricks.pyx":909
  *       break
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_37 = __pyx_v_x;
       __pyx_t_38 = __pyx_v_cy;
@@ -37844,23 +37347,23 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_39 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 911, __pyx_L1_error)
+        __PYX_ERR(0, 909, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint64_t((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint64_t((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":912
+      /* "skeletontricks.pyx":910
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[1] = None
+ * 
+ *   for y in range(cy, sy):
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":910
+      /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -37869,21 +37372,10 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":914
- *       break
- *   else:
- *     changes[1] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, sy):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 914, __pyx_L1_error)
-  }
   __pyx_L11_break:;
 
-  /* "skeletontricks.pyx":916
- *     changes[1] = None
+  /* "skeletontricks.pyx":912
+ *       break
  * 
  *   for y in range(cy, sy):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -37894,7 +37386,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_41 = __pyx_v_cy; __pyx_t_41 < __pyx_t_40; __pyx_t_41+=1) {
     __pyx_v_y = __pyx_t_41;
 
-    /* "skeletontricks.pyx":917
+    /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -37910,12 +37402,12 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_44 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 917, __pyx_L1_error)
+      __PYX_ERR(0, 913, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_42, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_43, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_44, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":918
+      /* "skeletontricks.pyx":914
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -37924,7 +37416,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":917
+      /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -37933,7 +37425,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":919
+    /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -37949,17 +37441,17 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_47 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 919, __pyx_L1_error)
+      __PYX_ERR(0, 915, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_45, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_46, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_47, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":920
+      /* "skeletontricks.pyx":916
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_48 = __pyx_v_cx;
       __pyx_t_49 = __pyx_v_y;
@@ -37970,23 +37462,23 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_50 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 920, __pyx_L1_error)
+        __PYX_ERR(0, 916, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint64_t((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint64_t((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":921
+      /* "skeletontricks.pyx":917
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[2] = None
+ * 
+ *   for y in range(cy, 0, -1):
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":919
+      /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -37995,21 +37487,10 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":923
- *       break
- *   else:
- *     changes[2] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
-  }
   __pyx_L14_break:;
 
-  /* "skeletontricks.pyx":925
- *     changes[2] = None
+  /* "skeletontricks.pyx":919
+ *       break
  * 
  *   for y in range(cy, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -38018,7 +37499,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cy + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_y = __pyx_t_21;
 
-    /* "skeletontricks.pyx":926
+    /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -38034,12 +37515,12 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_51 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 926, __pyx_L1_error)
+      __PYX_ERR(0, 920, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_41, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_51, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":927
+      /* "skeletontricks.pyx":921
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -38048,7 +37529,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":926
+      /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -38057,7 +37538,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":928
+    /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -38073,17 +37554,17 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_54 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 928, __pyx_L1_error)
+      __PYX_ERR(0, 922, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_52, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_53, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_54, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":929
+      /* "skeletontricks.pyx":923
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_55 = __pyx_v_cx;
       __pyx_t_56 = __pyx_v_y;
@@ -38094,23 +37575,23 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_57 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 929, __pyx_L1_error)
+        __PYX_ERR(0, 923, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint64_t((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint64_t((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":930
+      /* "skeletontricks.pyx":924
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[3] = None
+ * 
+ *   for z in range(cz, sz):
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":928
+      /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -38119,21 +37600,10 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":932
- *       break
- *   else:
- *     changes[3] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, sz):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 932, __pyx_L1_error)
-  }
   __pyx_L18_break:;
 
-  /* "skeletontricks.pyx":934
- *     changes[3] = None
+  /* "skeletontricks.pyx":926
+ *       break
  * 
  *   for z in range(cz, sz):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -38144,7 +37614,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_59 = __pyx_v_cz; __pyx_t_59 < __pyx_t_58; __pyx_t_59+=1) {
     __pyx_v_z = __pyx_t_59;
 
-    /* "skeletontricks.pyx":935
+    /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -38160,12 +37630,12 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_62 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 935, __pyx_L1_error)
+      __PYX_ERR(0, 927, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_60, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_61, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_62, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":936
+      /* "skeletontricks.pyx":928
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -38174,7 +37644,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":935
+      /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -38183,7 +37653,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":937
+    /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -38199,17 +37669,17 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_65 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 937, __pyx_L1_error)
+      __PYX_ERR(0, 929, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_65, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":938
+      /* "skeletontricks.pyx":930
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_66 = __pyx_v_cx;
       __pyx_t_67 = __pyx_v_cy;
@@ -38220,23 +37690,23 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_68 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 938, __pyx_L1_error)
+        __PYX_ERR(0, 930, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint64_t((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint64_t((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":939
+      /* "skeletontricks.pyx":931
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[4] = None
+ * 
+ *   for z in range(cz, 0, -1):
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":937
+      /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -38245,21 +37715,10 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":941
- *       break
- *   else:
- *     changes[4] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 941, __pyx_L1_error)
-  }
   __pyx_L22_break:;
 
-  /* "skeletontricks.pyx":943
- *     changes[4] = None
+  /* "skeletontricks.pyx":933
+ *       break
  * 
  *   for z in range(cz, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -38268,7 +37727,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cz + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_z = __pyx_t_21;
 
-    /* "skeletontricks.pyx":944
+    /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -38284,12 +37743,12 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_69 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 944, __pyx_L1_error)
+      __PYX_ERR(0, 934, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_58, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_59, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_69, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":945
+      /* "skeletontricks.pyx":935
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -38298,7 +37757,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":944
+      /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -38307,7 +37766,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":946
+    /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -38323,17 +37782,17 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_72 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 946, __pyx_L1_error)
+      __PYX_ERR(0, 936, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_70, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_71, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_72, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":947
+      /* "skeletontricks.pyx":937
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_73 = __pyx_v_cx;
       __pyx_t_74 = __pyx_v_cy;
@@ -38344,23 +37803,23 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_75 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 947, __pyx_L1_error)
+        __PYX_ERR(0, 937, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_uint64_t((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_uint64_t((*__Pyx_BufPtrStrided3d(uint64_t *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":948
+      /* "skeletontricks.pyx":938
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[5] = None
+ * 
+ *   changes = [ _ for _ in changes if _ is not None ]
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":946
+      /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -38369,36 +37828,25 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":950
- *       break
- *   else:
- *     changes[5] = None             # <<<<<<<<<<<<<<
- * 
- *   changes = [ _ for _ in changes if _ is not None ]
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 950, __pyx_L1_error)
-  }
   __pyx_L26_break:;
 
-  /* "skeletontricks.pyx":952
- *     changes[5] = None
+  /* "skeletontricks.pyx":940
+ *       break
  * 
  *   changes = [ _ for _ in changes if _ is not None ]             # <<<<<<<<<<<<<<
  * 
  *   if len(changes) == 0:
  */
   { /* enter inner scope */
-    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 952, __pyx_L31_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_8); __pyx_t_76 = 0;
+    __pyx_t_8 = PyList_New(0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 940, __pyx_L31_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_7 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_7); __pyx_t_76 = 0;
     for (;;) {
-      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_8)) break;
+      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_7)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 940, __pyx_L31_error)
       #else
-      __pyx_t_17 = PySequence_ITEM(__pyx_t_8, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PySequence_ITEM(__pyx_t_7, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 940, __pyx_L31_error)
       __Pyx_GOTREF(__pyx_t_17);
       #endif
       __Pyx_XDECREF_SET(__pyx_8genexpr8__pyx_v__, __pyx_t_17);
@@ -38406,10 +37854,10 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
       __pyx_t_5 = (__pyx_8genexpr8__pyx_v__ != Py_None);
       __pyx_t_6 = (__pyx_t_5 != 0);
       if (__pyx_t_6) {
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_8genexpr8__pyx_v__))) __PYX_ERR(0, 952, __pyx_L31_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_8, (PyObject*)__pyx_8genexpr8__pyx_v__))) __PYX_ERR(0, 940, __pyx_L31_error)
       }
     }
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF(__pyx_8genexpr8__pyx_v__); __pyx_8genexpr8__pyx_v__ = 0;
     goto __pyx_L35_exit_scope;
     __pyx_L31_error:;
@@ -38417,21 +37865,21 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L1_error;
     __pyx_L35_exit_scope:;
   } /* exit inner scope */
-  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_7));
-  __pyx_t_7 = 0;
+  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_8));
+  __pyx_t_8 = 0;
 
-  /* "skeletontricks.pyx":954
+  /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 954, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 942, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 == 0) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":955
+    /* "skeletontricks.pyx":943
  * 
  *   if len(changes) == 0:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -38439,23 +37887,23 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  *   if len(changes) > 3: # if more than 3, allow one non-match
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_uint64_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 955, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyInt_From_uint64_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_uint64_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_From_uint64_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 943, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_8);
-    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_8);
-    __pyx_t_7 = 0;
+    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_8);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_7);
     __pyx_t_8 = 0;
+    __pyx_t_7 = 0;
     __pyx_r = __pyx_t_17;
     __pyx_t_17 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":954
+    /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
@@ -38464,18 +37912,18 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":957
+  /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 957, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 945, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 > 3) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":958
+    /* "skeletontricks.pyx":946
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match
  *     allowed_differences = 1             # <<<<<<<<<<<<<<
@@ -38484,7 +37932,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
     __pyx_v_allowed_differences = 1;
 
-    /* "skeletontricks.pyx":957
+    /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
@@ -38494,7 +37942,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L37;
   }
 
-  /* "skeletontricks.pyx":960
+  /* "skeletontricks.pyx":948
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  *     allowed_differences = 0             # <<<<<<<<<<<<<<
@@ -38506,147 +37954,147 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
   }
   __pyx_L37:;
 
-  /* "skeletontricks.pyx":962
+  /* "skeletontricks.pyx":950
  *     allowed_differences = 0
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)             # <<<<<<<<<<<<<<
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_INCREF(__pyx_v_changes);
   __Pyx_GIVEREF(__pyx_v_changes);
   PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_v_changes);
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
-  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_17, __pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_17, __pyx_t_8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if ((likely(PyTuple_CheckExact(__pyx_t_14))) || (PyList_CheckExact(__pyx_t_14))) {
     PyObject* sequence = __pyx_t_14;
     Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 962, __pyx_L1_error)
+      __PYX_ERR(0, 950, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyTuple_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyTuple_GET_ITEM(sequence, 1); 
     } else {
-      __pyx_t_7 = PyList_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyList_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyList_GET_ITEM(sequence, 1); 
     }
-    __Pyx_INCREF(__pyx_t_7);
+    __Pyx_INCREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_t_17);
     #else
-    __pyx_t_7 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+    __pyx_t_8 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
     #endif
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __pyx_t_77 = Py_TYPE(__pyx_t_8)->tp_iternext;
-    index = 0; __pyx_t_7 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L38_unpacking_failed;
+    __pyx_t_7 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __pyx_t_77 = Py_TYPE(__pyx_t_7)->tp_iternext;
+    index = 0; __pyx_t_8 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_8)) goto __pyx_L38_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_8);
+    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_17);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_8), 2) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_7), 2) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_t_77 = NULL;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     goto __pyx_L39_unpacking_done;
     __pyx_L38_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_77 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 962, __pyx_L1_error)
+    __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_L39_unpacking_done:;
   }
-  __pyx_v_uniq = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_v_uniq = __pyx_t_8;
+  __pyx_t_8 = 0;
   __pyx_v_cts = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":963
+  /* "skeletontricks.pyx":951
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)             # <<<<<<<<<<<<<<
  *   differences = len(changes) - cts[candidate_fruit_index]
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 963, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 963, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 951, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __pyx_t_17 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
-    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_7);
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
+    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_8);
     if (likely(__pyx_t_17)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
       __Pyx_INCREF(__pyx_t_17);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __Pyx_DECREF_SET(__pyx_t_8, function);
     }
   }
-  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_cts);
+  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_cts);
   __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
-  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 963, __pyx_L1_error)
+  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_candidate_fruit_index = __pyx_t_14;
   __pyx_t_14 = 0;
 
-  /* "skeletontricks.pyx":964
+  /* "skeletontricks.pyx":952
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]             # <<<<<<<<<<<<<<
  * 
  *   # it's not an avocado if there's lots of
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 964, __pyx_L1_error)
-  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 952, __pyx_L1_error)
+  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 964, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_7); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 952, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_8); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_differences = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":968
+  /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_8 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 968, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 956, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":969
+    /* "skeletontricks.pyx":957
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -38654,23 +38102,23 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  *   return (label, uniq[candidate_fruit_index])
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_uint64_t(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 969, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = __Pyx_PyInt_From_uint64_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_uint64_t(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 957, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = __Pyx_PyInt_From_uint64_t(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_8);
+    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_8);
     __Pyx_GIVEREF(__pyx_t_17);
     PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_17);
-    __pyx_t_7 = 0;
+    __pyx_t_8 = 0;
     __pyx_t_17 = 0;
     __pyx_r = __pyx_t_14;
     __pyx_t_14 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":968
+    /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
@@ -38679,7 +38127,7 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":971
+  /* "skeletontricks.pyx":959
  *     return (label, label)
  * 
  *   return (label, uniq[candidate_fruit_index])             # <<<<<<<<<<<<<<
@@ -38687,20 +38135,20 @@ static PyObject *__pyx_pf_14skeletontricks_110find_avocado_fruit(CYTHON_UNUSED P
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_14 = __Pyx_PyInt_From_uint64_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyInt_From_uint64_t(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 971, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_14);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_14);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_17);
-  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_17);
+  PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_17);
   __pyx_t_14 = 0;
   __pyx_t_17 = 0;
-  __pyx_r = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_r = __pyx_t_8;
+  __pyx_t_8 = 0;
   goto __pyx_L0;
 
   /* "skeletontricks.pyx":872
@@ -39174,7 +38622,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  * 
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]             # <<<<<<<<<<<<<<
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  */
   __pyx_t_18 = __pyx_v_cx;
@@ -39193,27 +38641,24 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
   /* "skeletontricks.pyx":896
  *   cdef size_t x, y, z
  *   cdef INTEGER label = labels[cx, cy, cz]
- *   cdef list changes = [ label ] * 6             # <<<<<<<<<<<<<<
+ *   cdef list changes = [ None ] * 6             # <<<<<<<<<<<<<<
  * 
  *   for x in range(cx, sx):
  */
-  __pyx_t_8 = __Pyx_PyInt_From_unsigned_char(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
+  __pyx_t_8 = PyList_New(1 * 6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 896, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyList_New(1 * 6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 896, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
   { Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < 6; __pyx_temp++) {
-      __Pyx_INCREF(__pyx_t_8);
-      __Pyx_GIVEREF(__pyx_t_8);
-      PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_t_8);
+      __Pyx_INCREF(Py_None);
+      __Pyx_GIVEREF(Py_None);
+      PyList_SET_ITEM(__pyx_t_8, __pyx_temp, Py_None);
     }
   }
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_v_changes = ((PyObject*)__pyx_t_7);
-  __pyx_t_7 = 0;
+  __pyx_v_changes = ((PyObject*)__pyx_t_8);
+  __pyx_t_8 = 0;
 
   /* "skeletontricks.pyx":898
- *   cdef list changes = [ label ] * 6
+ *   cdef list changes = [ None ] * 6
  * 
  *   for x in range(cx, sx):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -39289,7 +38734,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_30 = __pyx_v_x;
       __pyx_t_31 = __pyx_v_cy;
@@ -39302,17 +38747,17 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
         __PYX_ERR(0, 902, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_unsigned_char((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_unsigned_char((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_32, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 902, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
       /* "skeletontricks.pyx":903
  *     elif labels[x,cy,cz] != label:
  *       changes[0] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[0] = None
+ * 
+ *   for x in range(cx, 0, -1):
  */
       goto __pyx_L8_break;
 
@@ -39325,21 +38770,10 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":905
- *       break
- *   else:
- *     changes[0] = None             # <<<<<<<<<<<<<<
- * 
- *   for x in range(cx, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 905, __pyx_L1_error)
-  }
   __pyx_L8_break:;
 
-  /* "skeletontricks.pyx":907
- *     changes[0] = None
+  /* "skeletontricks.pyx":905
+ *       break
  * 
  *   for x in range(cx, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[x,cy,cz] == background:
@@ -39348,7 +38782,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cx + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_x = __pyx_t_21;
 
-    /* "skeletontricks.pyx":908
+    /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -39364,12 +38798,12 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_33 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 908, __pyx_L1_error)
+      __PYX_ERR(0, 906, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_33, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":909
+      /* "skeletontricks.pyx":907
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -39378,7 +38812,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":908
+      /* "skeletontricks.pyx":906
  * 
  *   for x in range(cx, 0, -1):
  *     if labels[x,cy,cz] == background:             # <<<<<<<<<<<<<<
@@ -39387,7 +38821,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":910
+    /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -39403,17 +38837,17 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_36 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 910, __pyx_L1_error)
+      __PYX_ERR(0, 908, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_35, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_36, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":911
+      /* "skeletontricks.pyx":909
  *       break
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_37 = __pyx_v_x;
       __pyx_t_38 = __pyx_v_cy;
@@ -39424,23 +38858,23 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_39 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 911, __pyx_L1_error)
+        __PYX_ERR(0, 909, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_unsigned_char((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 911, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_unsigned_char((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_38, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_39, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 909, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":912
+      /* "skeletontricks.pyx":910
  *     elif labels[x,cy,cz] != label:
  *       changes[1] = labels[x,cy,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[1] = None
+ * 
+ *   for y in range(cy, sy):
  */
       goto __pyx_L11_break;
 
-      /* "skeletontricks.pyx":910
+      /* "skeletontricks.pyx":908
  *     if labels[x,cy,cz] == background:
  *       break
  *     elif labels[x,cy,cz] != label:             # <<<<<<<<<<<<<<
@@ -39449,21 +38883,10 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":914
- *       break
- *   else:
- *     changes[1] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, sy):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 1, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 914, __pyx_L1_error)
-  }
   __pyx_L11_break:;
 
-  /* "skeletontricks.pyx":916
- *     changes[1] = None
+  /* "skeletontricks.pyx":912
+ *       break
  * 
  *   for y in range(cy, sy):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -39474,7 +38897,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_41 = __pyx_v_cy; __pyx_t_41 < __pyx_t_40; __pyx_t_41+=1) {
     __pyx_v_y = __pyx_t_41;
 
-    /* "skeletontricks.pyx":917
+    /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -39490,12 +38913,12 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_44 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 917, __pyx_L1_error)
+      __PYX_ERR(0, 913, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_42, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_43, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_44, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":918
+      /* "skeletontricks.pyx":914
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -39504,7 +38927,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":917
+      /* "skeletontricks.pyx":913
  * 
  *   for y in range(cy, sy):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -39513,7 +38936,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":919
+    /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -39529,17 +38952,17 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_47 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 919, __pyx_L1_error)
+      __PYX_ERR(0, 915, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_45, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_46, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_47, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":920
+      /* "skeletontricks.pyx":916
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_48 = __pyx_v_cx;
       __pyx_t_49 = __pyx_v_y;
@@ -39550,23 +38973,23 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_50 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 920, __pyx_L1_error)
+        __PYX_ERR(0, 916, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_unsigned_char((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 920, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_unsigned_char((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 916, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":921
+      /* "skeletontricks.pyx":917
  *     if labels[cx,y,cz] != label:
  *       changes[2] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[2] = None
+ * 
+ *   for y in range(cy, 0, -1):
  */
       goto __pyx_L14_break;
 
-      /* "skeletontricks.pyx":919
+      /* "skeletontricks.pyx":915
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -39575,21 +38998,10 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":923
- *       break
- *   else:
- *     changes[2] = None             # <<<<<<<<<<<<<<
- * 
- *   for y in range(cy, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 2, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
-  }
   __pyx_L14_break:;
 
-  /* "skeletontricks.pyx":925
- *     changes[2] = None
+  /* "skeletontricks.pyx":919
+ *       break
  * 
  *   for y in range(cy, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,y,cz] == background:
@@ -39598,7 +39010,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cy + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_y = __pyx_t_21;
 
-    /* "skeletontricks.pyx":926
+    /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -39614,12 +39026,12 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_51 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 926, __pyx_L1_error)
+      __PYX_ERR(0, 920, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_41, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_51, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":927
+      /* "skeletontricks.pyx":921
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -39628,7 +39040,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":926
+      /* "skeletontricks.pyx":920
  * 
  *   for y in range(cy, 0, -1):
  *     if labels[cx,y,cz] == background:             # <<<<<<<<<<<<<<
@@ -39637,7 +39049,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":928
+    /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -39653,17 +39065,17 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_54 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 928, __pyx_L1_error)
+      __PYX_ERR(0, 922, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_52, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_53, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_54, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":929
+      /* "skeletontricks.pyx":923
  *       break
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_55 = __pyx_v_cx;
       __pyx_t_56 = __pyx_v_y;
@@ -39674,23 +39086,23 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_57 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 929, __pyx_L1_error)
+        __PYX_ERR(0, 923, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_unsigned_char((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 929, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_unsigned_char((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_57, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 923, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":930
+      /* "skeletontricks.pyx":924
  *     if labels[cx,y,cz] != label:
  *       changes[3] = labels[cx,y,cz]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[3] = None
+ * 
+ *   for z in range(cz, sz):
  */
       goto __pyx_L18_break;
 
-      /* "skeletontricks.pyx":928
+      /* "skeletontricks.pyx":922
  *     if labels[cx,y,cz] == background:
  *       break
  *     if labels[cx,y,cz] != label:             # <<<<<<<<<<<<<<
@@ -39699,21 +39111,10 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":932
- *       break
- *   else:
- *     changes[3] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, sz):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 3, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 932, __pyx_L1_error)
-  }
   __pyx_L18_break:;
 
-  /* "skeletontricks.pyx":934
- *     changes[3] = None
+  /* "skeletontricks.pyx":926
+ *       break
  * 
  *   for z in range(cz, sz):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -39724,7 +39125,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_59 = __pyx_v_cz; __pyx_t_59 < __pyx_t_58; __pyx_t_59+=1) {
     __pyx_v_z = __pyx_t_59;
 
-    /* "skeletontricks.pyx":935
+    /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -39740,12 +39141,12 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_62 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 935, __pyx_L1_error)
+      __PYX_ERR(0, 927, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_60, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_61, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_62, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":936
+      /* "skeletontricks.pyx":928
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -39754,7 +39155,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":935
+      /* "skeletontricks.pyx":927
  * 
  *   for z in range(cz, sz):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -39763,7 +39164,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":937
+    /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -39779,17 +39180,17 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_65 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 937, __pyx_L1_error)
+      __PYX_ERR(0, 929, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_65, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":938
+      /* "skeletontricks.pyx":930
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_66 = __pyx_v_cx;
       __pyx_t_67 = __pyx_v_cy;
@@ -39800,23 +39201,23 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_68 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 938, __pyx_L1_error)
+        __PYX_ERR(0, 930, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_unsigned_char((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 938, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_unsigned_char((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_67, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_68, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 930, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":939
+      /* "skeletontricks.pyx":931
  *     if labels[cx,cy,z] != label:
  *       changes[4] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[4] = None
+ * 
+ *   for z in range(cz, 0, -1):
  */
       goto __pyx_L22_break;
 
-      /* "skeletontricks.pyx":937
+      /* "skeletontricks.pyx":929
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -39825,21 +39226,10 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":941
- *       break
- *   else:
- *     changes[4] = None             # <<<<<<<<<<<<<<
- * 
- *   for z in range(cz, 0, -1):
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 4, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 941, __pyx_L1_error)
-  }
   __pyx_L22_break:;
 
-  /* "skeletontricks.pyx":943
- *     changes[4] = None
+  /* "skeletontricks.pyx":933
+ *       break
  * 
  *   for z in range(cz, 0, -1):             # <<<<<<<<<<<<<<
  *     if labels[cx,cy,z] == background:
@@ -39848,7 +39238,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
   for (__pyx_t_21 = __pyx_v_cz + 1; __pyx_t_21 > 0 + 1; ) { __pyx_t_21-=1;
     __pyx_v_z = __pyx_t_21;
 
-    /* "skeletontricks.pyx":944
+    /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -39864,12 +39254,12 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_69 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 944, __pyx_L1_error)
+      __PYX_ERR(0, 934, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_58, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_59, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_69, __pyx_pybuffernd_labels.diminfo[2].strides)) == __pyx_v_background) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":945
+      /* "skeletontricks.pyx":935
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:
  *       break             # <<<<<<<<<<<<<<
@@ -39878,7 +39268,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":944
+      /* "skeletontricks.pyx":934
  * 
  *   for z in range(cz, 0, -1):
  *     if labels[cx,cy,z] == background:             # <<<<<<<<<<<<<<
@@ -39887,7 +39277,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
     }
 
-    /* "skeletontricks.pyx":946
+    /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -39903,17 +39293,17 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
     if (unlikely(__pyx_t_72 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
     if (unlikely(__pyx_t_16 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 946, __pyx_L1_error)
+      __PYX_ERR(0, 936, __pyx_L1_error)
     }
     __pyx_t_5 = (((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_70, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_71, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_72, __pyx_pybuffernd_labels.diminfo[2].strides)) != __pyx_v_label) != 0);
     if (__pyx_t_5) {
 
-      /* "skeletontricks.pyx":947
+      /* "skeletontricks.pyx":937
  *       break
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]             # <<<<<<<<<<<<<<
  *       break
- *   else:
+ * 
  */
       __pyx_t_73 = __pyx_v_cx;
       __pyx_t_74 = __pyx_v_cy;
@@ -39924,23 +39314,23 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
       if (unlikely(__pyx_t_75 >= (size_t)__pyx_pybuffernd_labels.diminfo[2].shape)) __pyx_t_16 = 2;
       if (unlikely(__pyx_t_16 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_16);
-        __PYX_ERR(0, 947, __pyx_L1_error)
+        __PYX_ERR(0, 937, __pyx_L1_error)
       }
-      __pyx_t_7 = __Pyx_PyInt_From_unsigned_char((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_7, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 947, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyInt_From_unsigned_char((*__Pyx_BufPtrStrided3d(unsigned char *, __pyx_pybuffernd_labels.rcbuffer->pybuffer.buf, __pyx_t_73, __pyx_pybuffernd_labels.diminfo[0].strides, __pyx_t_74, __pyx_pybuffernd_labels.diminfo[1].strides, __pyx_t_75, __pyx_pybuffernd_labels.diminfo[2].strides))); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 937, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "skeletontricks.pyx":948
+      /* "skeletontricks.pyx":938
  *     if labels[cx,cy,z] != label:
  *       changes[5] = labels[cx,cy,z]
  *       break             # <<<<<<<<<<<<<<
- *   else:
- *     changes[5] = None
+ * 
+ *   changes = [ _ for _ in changes if _ is not None ]
  */
       goto __pyx_L26_break;
 
-      /* "skeletontricks.pyx":946
+      /* "skeletontricks.pyx":936
  *     if labels[cx,cy,z] == background:
  *       break
  *     if labels[cx,cy,z] != label:             # <<<<<<<<<<<<<<
@@ -39949,36 +39339,25 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
     }
   }
-  /*else*/ {
-
-    /* "skeletontricks.pyx":950
- *       break
- *   else:
- *     changes[5] = None             # <<<<<<<<<<<<<<
- * 
- *   changes = [ _ for _ in changes if _ is not None ]
- */
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_changes, 5, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 950, __pyx_L1_error)
-  }
   __pyx_L26_break:;
 
-  /* "skeletontricks.pyx":952
- *     changes[5] = None
+  /* "skeletontricks.pyx":940
+ *       break
  * 
  *   changes = [ _ for _ in changes if _ is not None ]             # <<<<<<<<<<<<<<
  * 
  *   if len(changes) == 0:
  */
   { /* enter inner scope */
-    __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 952, __pyx_L31_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_8); __pyx_t_76 = 0;
+    __pyx_t_8 = PyList_New(0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 940, __pyx_L31_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_7 = __pyx_v_changes; __Pyx_INCREF(__pyx_t_7); __pyx_t_76 = 0;
     for (;;) {
-      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_8)) break;
+      if (__pyx_t_76 >= PyList_GET_SIZE(__pyx_t_7)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_76); __Pyx_INCREF(__pyx_t_17); __pyx_t_76++; if (unlikely(0 < 0)) __PYX_ERR(0, 940, __pyx_L31_error)
       #else
-      __pyx_t_17 = PySequence_ITEM(__pyx_t_8, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L31_error)
+      __pyx_t_17 = PySequence_ITEM(__pyx_t_7, __pyx_t_76); __pyx_t_76++; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 940, __pyx_L31_error)
       __Pyx_GOTREF(__pyx_t_17);
       #endif
       __Pyx_XDECREF_SET(__pyx_8genexpr9__pyx_v__, __pyx_t_17);
@@ -39986,10 +39365,10 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
       __pyx_t_5 = (__pyx_8genexpr9__pyx_v__ != Py_None);
       __pyx_t_6 = (__pyx_t_5 != 0);
       if (__pyx_t_6) {
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_7, (PyObject*)__pyx_8genexpr9__pyx_v__))) __PYX_ERR(0, 952, __pyx_L31_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_8, (PyObject*)__pyx_8genexpr9__pyx_v__))) __PYX_ERR(0, 940, __pyx_L31_error)
       }
     }
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF(__pyx_8genexpr9__pyx_v__); __pyx_8genexpr9__pyx_v__ = 0;
     goto __pyx_L35_exit_scope;
     __pyx_L31_error:;
@@ -39997,21 +39376,21 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L1_error;
     __pyx_L35_exit_scope:;
   } /* exit inner scope */
-  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_7));
-  __pyx_t_7 = 0;
+  __Pyx_DECREF_SET(__pyx_v_changes, ((PyObject*)__pyx_t_8));
+  __pyx_t_8 = 0;
 
-  /* "skeletontricks.pyx":954
+  /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 954, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 942, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 == 0) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":955
+    /* "skeletontricks.pyx":943
  * 
  *   if len(changes) == 0:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -40019,23 +39398,23 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  *   if len(changes) > 3: # if more than 3, allow one non-match
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_unsigned_char(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 955, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyInt_From_unsigned_char(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_unsigned_char(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 955, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_From_unsigned_char(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 943, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_8);
-    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_8);
-    __pyx_t_7 = 0;
+    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_8);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_7);
     __pyx_t_8 = 0;
+    __pyx_t_7 = 0;
     __pyx_r = __pyx_t_17;
     __pyx_t_17 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":954
+    /* "skeletontricks.pyx":942
  *   changes = [ _ for _ in changes if _ is not None ]
  * 
  *   if len(changes) == 0:             # <<<<<<<<<<<<<<
@@ -40044,18 +39423,18 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":957
+  /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 957, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 945, __pyx_L1_error)
   __pyx_t_6 = ((__pyx_t_76 > 3) != 0);
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":958
+    /* "skeletontricks.pyx":946
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match
  *     allowed_differences = 1             # <<<<<<<<<<<<<<
@@ -40064,7 +39443,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
     __pyx_v_allowed_differences = 1;
 
-    /* "skeletontricks.pyx":957
+    /* "skeletontricks.pyx":945
  *     return (label, label)
  * 
  *   if len(changes) > 3: # if more than 3, allow one non-match             # <<<<<<<<<<<<<<
@@ -40074,7 +39453,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
     goto __pyx_L37;
   }
 
-  /* "skeletontricks.pyx":960
+  /* "skeletontricks.pyx":948
  *     allowed_differences = 1
  *   else: # allow no non-matches (we're in a corner)
  *     allowed_differences = 0             # <<<<<<<<<<<<<<
@@ -40086,147 +39465,147 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
   }
   __pyx_L37:;
 
-  /* "skeletontricks.pyx":962
+  /* "skeletontricks.pyx":950
  *     allowed_differences = 0
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)             # <<<<<<<<<<<<<<
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_unique); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_INCREF(__pyx_v_changes);
   __Pyx_GIVEREF(__pyx_v_changes);
   PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_v_changes);
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
-  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_17, __pyx_t_7); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_return_counts, Py_True) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_17, __pyx_t_8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if ((likely(PyTuple_CheckExact(__pyx_t_14))) || (PyList_CheckExact(__pyx_t_14))) {
     PyObject* sequence = __pyx_t_14;
     Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 962, __pyx_L1_error)
+      __PYX_ERR(0, 950, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyTuple_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyTuple_GET_ITEM(sequence, 1); 
     } else {
-      __pyx_t_7 = PyList_GET_ITEM(sequence, 0); 
+      __pyx_t_8 = PyList_GET_ITEM(sequence, 0); 
       __pyx_t_17 = PyList_GET_ITEM(sequence, 1); 
     }
-    __Pyx_INCREF(__pyx_t_7);
+    __Pyx_INCREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_t_17);
     #else
-    __pyx_t_7 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 962, __pyx_L1_error)
+    __pyx_t_8 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 950, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
     #endif
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 962, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __pyx_t_77 = Py_TYPE(__pyx_t_8)->tp_iternext;
-    index = 0; __pyx_t_7 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L38_unpacking_failed;
+    __pyx_t_7 = PyObject_GetIter(__pyx_t_14); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 950, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_8); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __pyx_t_77 = Py_TYPE(__pyx_t_7)->tp_iternext;
+    index = 0; __pyx_t_8 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_8)) goto __pyx_L38_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_8);
+    index = 1; __pyx_t_17 = __pyx_t_77(__pyx_t_7); if (unlikely(!__pyx_t_17)) goto __pyx_L38_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_17);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_8), 2) < 0) __PYX_ERR(0, 962, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_77(__pyx_t_7), 2) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_t_77 = NULL;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     goto __pyx_L39_unpacking_done;
     __pyx_L38_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_77 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 962, __pyx_L1_error)
+    __PYX_ERR(0, 950, __pyx_L1_error)
     __pyx_L39_unpacking_done:;
   }
-  __pyx_v_uniq = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_v_uniq = __pyx_t_8;
+  __pyx_t_8 = 0;
   __pyx_v_cts = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":963
+  /* "skeletontricks.pyx":951
  * 
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)             # <<<<<<<<<<<<<<
  *   differences = len(changes) - cts[candidate_fruit_index]
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 963, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_np); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 963, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_argmax); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 951, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   __pyx_t_17 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
-    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_7);
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
+    __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_8);
     if (likely(__pyx_t_17)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
       __Pyx_INCREF(__pyx_t_17);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __Pyx_DECREF_SET(__pyx_t_8, function);
     }
   }
-  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_cts);
+  __pyx_t_14 = (__pyx_t_17) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_17, __pyx_v_cts) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_cts);
   __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
-  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 963, __pyx_L1_error)
+  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 951, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_candidate_fruit_index = __pyx_t_14;
   __pyx_t_14 = 0;
 
-  /* "skeletontricks.pyx":964
+  /* "skeletontricks.pyx":952
  *   uniq, cts = np.unique(changes, return_counts=True)
  *   candidate_fruit_index = np.argmax(cts)
  *   differences = len(changes) - cts[candidate_fruit_index]             # <<<<<<<<<<<<<<
  * 
  *   # it's not an avocado if there's lots of
  */
-  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 964, __pyx_L1_error)
-  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_76 = PyList_GET_SIZE(__pyx_v_changes); if (unlikely(__pyx_t_76 == ((Py_ssize_t)-1))) __PYX_ERR(0, 952, __pyx_L1_error)
+  __pyx_t_14 = PyInt_FromSsize_t(__pyx_t_76); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 964, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_7); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetItem(__pyx_v_cts, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 952, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_17 = PyNumber_Subtract(__pyx_t_14, __pyx_t_8); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 952, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_differences = __pyx_t_17;
   __pyx_t_17 = 0;
 
-  /* "skeletontricks.pyx":968
+  /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
  *     return (label, label)
  * 
  */
-  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyInt_From_long(__pyx_v_allowed_differences); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_8 = PyObject_RichCompare(__pyx_v_differences, __pyx_t_17, Py_GT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 956, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 968, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 956, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (__pyx_t_6) {
 
-    /* "skeletontricks.pyx":969
+    /* "skeletontricks.pyx":957
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:
  *     return (label, label)             # <<<<<<<<<<<<<<
@@ -40234,23 +39613,23 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  *   return (label, uniq[candidate_fruit_index])
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_unsigned_char(__pyx_v_label); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 969, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_17 = __Pyx_PyInt_From_unsigned_char(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_unsigned_char(__pyx_v_label); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 957, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_17 = __Pyx_PyInt_From_unsigned_char(__pyx_v_label); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
-    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 969, __pyx_L1_error)
+    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 957, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_8);
+    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_8);
     __Pyx_GIVEREF(__pyx_t_17);
     PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_17);
-    __pyx_t_7 = 0;
+    __pyx_t_8 = 0;
     __pyx_t_17 = 0;
     __pyx_r = __pyx_t_14;
     __pyx_t_14 = 0;
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":968
+    /* "skeletontricks.pyx":956
  *   # it's not an avocado if there's lots of
  *   # labels surrounding the candidate "pit"
  *   if differences > allowed_differences:             # <<<<<<<<<<<<<<
@@ -40259,7 +39638,7 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  */
   }
 
-  /* "skeletontricks.pyx":971
+  /* "skeletontricks.pyx":959
  *     return (label, label)
  * 
  *   return (label, uniq[candidate_fruit_index])             # <<<<<<<<<<<<<<
@@ -40267,20 +39646,20 @@ static PyObject *__pyx_pf_14skeletontricks_112find_avocado_fruit(CYTHON_UNUSED P
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_14 = __Pyx_PyInt_From_unsigned_char(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyInt_From_unsigned_char(__pyx_v_label); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 971, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_uniq, __pyx_v_candidate_fruit_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 959, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
-  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 971, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_14);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_14);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_17);
-  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_17);
+  PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_17);
   __pyx_t_14 = 0;
   __pyx_t_17 = 0;
-  __pyx_r = __pyx_t_7;
-  __pyx_t_7 = 0;
+  __pyx_r = __pyx_t_8;
+  __pyx_t_8 = 0;
   goto __pyx_L0;
 
   /* "skeletontricks.pyx":872
