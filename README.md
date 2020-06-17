@@ -62,6 +62,7 @@ skels = kimimaro.skeletonize(
   fix_branching=True, # default True
   fix_borders=True, # default True
   fill_holes=False, # default False
+  fix_avocados=False, # default False
   progress=True, # default False, show progress bar
   parallel=1, # <= 0 all cpu, 1 single process, 2+ multiprocess
   parallel_chunk_size=100, # how many skeletons to process before updating progress bar
@@ -158,6 +159,12 @@ You'll probably never want to disable this, but base TEASAR is infamous for fork
 THIS WILL REMOVE INPUT LABELS THAT ARE DEEMED TO BE HOLES.
 
 If your segmentation contains artifacts that cause holes to appear in labels, you can preprocess the entire image to eliminate background holes and holes caused by entirely contained inclusions. This option adds a moderate amount of additional processing time at the beginning (perhaps ~30%). 
+
+#### `fix_avocados`
+
+Avocados are segmentations of cell somata that classify the nucleus separately from the cytoplasm. This is a common problem in automatic segmentations due to the visual similarity of a cell membrane and a nuclear membrane combined with insufficient context.  
+
+Skeletonizing an avocado results in a poor skeletonization of the cell soma that will disconnect the nucleus and usually results in too many paths traced around the nucleus. Setting `fix_avocados=True` attempts to detect and fix these problems. Currently we handle non-avocados, avocados, cells with inclusions, and nested avocados. You can see examples [here](https://github.com/seung-lab/kimimaro/pull/43).
 
 #### `progress`
 
