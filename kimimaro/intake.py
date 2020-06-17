@@ -545,17 +545,21 @@ def engage_avocado_protection_single_pass(
   if len(candidates) == 0:
     return cc_labels, unchanged, changed
 
+  # import pdb; pdb.set_trace()
+
   remap = {}
   for label in tqdm(candidates, disable=(not progress), desc="Fixing Avocados"):
     binimg = (cc_labels == label) # image of the pit
     coord = argmax(binimg * all_dbf)
-    
+
     (pit, fruit) = kimimaro.skeletontricks.find_avocado_fruit(
       cc_labels, coord[0], coord[1], coord[2]
     )
-    if pit == fruit:
+    if pit == fruit and pit not in changed:
       unchanged.add(pit)
     else:
+      unchanged.discard(pit)
+      unchanged.discard(fruit)
       changed.add(pit)
       changed.add(fruit)
       binimg |= (cc_labels == fruit)
