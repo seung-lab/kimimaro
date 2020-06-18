@@ -425,6 +425,7 @@ def compute_cc_labels(all_labels, cc_safety_factor):
     tmp_labels, remapping = fastremap.renumber(all_labels, in_place=False)
 
   cc_labels = cc3d.connected_components(tmp_labels, max_labels=int(tmp_labels.size * cc_safety_factor))
+  cc_labels = fastremap.refit(cc_labels)
 
   del tmp_labels
   remapping = kimimaro.skeletontricks.get_mapping(all_labels, cc_labels) 
