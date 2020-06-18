@@ -507,7 +507,11 @@ def engage_avocado_protection(
   # to 20 just to make sure this loop terminates no matter what.
   # Avocados aren't the end of the world.
   for _ in tqdm(range(20), disable=(not progress), desc="Avocado Pass"): 
-    candidates = set(fastremap.unique(cc_labels * (all_dbf > soma_detection_threshold)))
+    # Note: Divide soma_detection_threshold by a bit more than 2 because the nucleii are going to be
+    # about a factor of 2 or less smaller than what we'd expect from a cell. For example,
+    # in an avocado I saw, the DBF of the nucleus was 499 when the detection threshold was 
+    # set to 1100.
+    candidates = set(fastremap.unique(cc_labels * (all_dbf > soma_detection_threshold / 2.5)))
     candidates -= unchanged
     candidates.discard(0)
 
