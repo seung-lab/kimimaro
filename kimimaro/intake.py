@@ -554,9 +554,22 @@ def engage_avocado_protection_single_pass(
   if len(candidates) == 0:
     return cc_labels, unchanged, changed
 
+  def paint_walls(binimg):
+    """
+    Ensure that inclusions that touch the wall are handled
+    by performing a 2D fill on each wall.
+    """
+    binimg[:,:,0 ] = fill_voids.fill(binimg[:,:,0 ])
+    binimg[:,:,-1] = fill_voids.fill(binimg[:,:,-1])
+    binimg[:,0,: ] = fill_voids.fill(binimg[:,0,: ])
+    binimg[:,-1,:] = fill_voids.fill(binimg[:,-1,:])
+    binimg[0,:,: ] = fill_voids.fill(binimg[0,:,: ])
+    binimg[-1,:,:] = fill_voids.fill(binimg[-1,:,:])
+    return binimg
+
   remap = {}
   for label in tqdm(candidates, disable=(not progress), desc="Fixing Avocados"):
-    binimg = (cc_labels == label) # image of the pit
+    binimg = paint_walls(cc_labels == label) # image of the pit
     coord = argmax(binimg * all_dbf)
 
     (pit, fruit) = kimimaro.skeletontricks.find_avocado_fruit(
@@ -572,11 +585,9 @@ def engage_avocado_protection_single_pass(
       binimg |= (cc_labels == fruit)
     
     binimg, N = fill_voids.fill(binimg, in_place=True, return_fill_count=True)
-    segids = fastremap.unique(cc_labels * binimg)
-    segids = [ segid for segid in segids if segid != 0 ]
-    remap.update({ k: label for k in segids })
+    cc_labels *= ~binimg
+    cc_labels += label * binimg
 
-  cc_labels = fastremap.remap(cc_labels, remap, preserve_missing_labels=True, in_place=True)
   return cc_labels, unchanged, changed
 
 def synapses_to_targets(labels, synapses, progress=False):
