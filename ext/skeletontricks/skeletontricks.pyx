@@ -46,16 +46,19 @@ from collections import defaultdict
 cdef extern from "math.h":
   float INFINITY
 
-ctypedef fused INTEGER: 
-  int8_t
-  int16_t
-  int32_t
-  int64_t
+ctypedef fused UINT:
   uint8_t
   uint16_t
   uint32_t
   uint64_t
   unsigned char
+
+ctypedef fused INTEGER: 
+  int8_t
+  int16_t
+  int32_t
+  int64_t
+  UINT
 
 cdef extern from "skeletontricks.hpp" namespace "skeletontricks":
   cdef size_t _roll_invalidation_cube(
@@ -417,12 +420,12 @@ def roll_invalidation_ball(
 @cython.nonecheck(False)
 def get_mapping(
     cnp.ndarray[INTEGER, ndim=3] orig_labels, 
-    cnp.ndarray[uint32_t, ndim=3] cc_labels
+    cnp.ndarray[UINT, ndim=3] cc_labels
   ):
   """
   get_mapping(
     ndarray[INTEGER, ndim=3] orig_labels, 
-    ndarray[uint32_t, ndim=3] cc_labels
+    ndarray[UINT, ndim=3] cc_labels
   )
 
   Given a set of possibly not connected labels 
@@ -444,7 +447,7 @@ def get_mapping(
   if orig_labels.size == 0:
     return remap
 
-  cdef uint32_t last_label = cc_labels[0,0,0]
+  cdef UINT last_label = cc_labels[0,0,0]
   remap[cc_labels[0,0,0]] = orig_labels[0,0,0]
 
   for z in range(sz):
@@ -458,12 +461,12 @@ def get_mapping(
   return remap
 
 def compute_centroids(
-    cnp.ndarray[uint32_t, ndim=2] labels,
+    cnp.ndarray[UINT, ndim=2] labels,
     float wx, float wy
   ):
   """
   compute_centroids(
-    cnp.ndarray[uint32_t, ndim=2] labels,
+    cnp.ndarray[UINT, ndim=2] labels,
     float wx, float wy
   )
 
@@ -474,7 +477,7 @@ def compute_centroids(
 
   cdef float[:] xsum = np.zeros( (labels.size,), dtype=np.float32)
   cdef float[:] ysum = np.zeros( (labels.size,), dtype=np.float32)
-  cdef uint32_t[:] labelct = np.zeros( (labels.size,), dtype=np.uint32)
+  cdef UINT[:] labelct = np.zeros( (labels.size,), dtype=labels.dtype)
 
   cdef size_t sx, sy
   sx = labels.shape[0]
@@ -526,13 +529,13 @@ def compute_centroids(
 
 def find_border_targets(
     cnp.ndarray[float, ndim=2] dt,
-    cnp.ndarray[uint32_t, ndim=2] cc_labels,
+    cnp.ndarray[UINT, ndim=2] cc_labels,
     float wx, float wy
   ):
   """
   find_border_targets(
     ndarray[float, ndim=2] dt, 
-    ndarray[uint32_t, ndim=2] cc_labels,
+    ndarray[UINT, ndim=2] cc_labels,
     float wx, float wy
   )
 
@@ -563,7 +566,7 @@ def find_border_targets(
   mx = defaultdict(float)
   pts = {}
 
-  cdef uint32_t label = 0
+  cdef UINT label = 0
   cdef dict centroids = compute_centroids(cc_labels, wx, wy)
 
   cdef float px, py
@@ -753,54 +756,6 @@ def roll_invalidation_cube(
   )
 
   return invalidated, labels
-
-@cython.boundscheck(False)
-@cython.wraparound(False)  # turn off negative index wrapping for entire function
-@cython.nonecheck(False)
-def unique(cnp.ndarray[INTEGER, ndim=3] labels, return_counts=False):
-  """
-  unique(cnp.ndarray[INTEGER, ndim=3] labels, return_counts=False)
-
-  Faster implementation of np.unique that depends
-  on the maximum label in the array being less than
-  the size of the array.
-  """
-  cdef size_t max_label = np.max(labels)
-
-  cdef cnp.ndarray[uint32_t, ndim=1] counts = np.zeros( 
-    (max_label+1,), dtype=np.uint32
-  )
-
-  cdef size_t x, y, z
-  cdef size_t sx = labels.shape[0]
-  cdef size_t sy = labels.shape[1]
-  cdef size_t sz = labels.shape[2]
-
-  if labels.flags['C_CONTIGUOUS']:
-    for x in range(sx):
-      for y in range(sy):
-        for z in range(sz):
-          counts[labels[x,y,z]] += 1
-  else:
-    for z in range(sz):
-      for y in range(sy):
-        for x in range(sx):
-          counts[labels[x,y,z]] += 1
-
-  cdef list segids = []
-  cdef list cts = []
-
-  cdef size_t i = 0
-  for i in range(max_label + 1):
-    if counts[i] > 0:
-      segids.append(i)
-      cts.append(counts[i])
-
-  if return_counts:
-    return np.array(segids), np.array(cts)
-  else:
-    return np.array(segids)
-
 
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function

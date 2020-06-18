@@ -292,16 +292,6 @@ def test_joinability(axis):
   # result in a merge near the tails.
   assert not Skeleton.equivalent(skels, skels_fb)
 
-def test_unique():
-  for i in range(5):
-    arr = np.random.randint( 0, 2**16, (100, 100, 100), dtype=np.uint32)
-
-    labels_npy, ct_npy = np.unique(arr, return_counts=True)
-    labels_kimi, ct_kimi = kimimaro.skeletontricks.unique(arr, return_counts=True)
-
-    assert np.all(labels_npy == labels_kimi)
-    assert np.all(ct_npy == ct_kimi)
-
 def test_find_cycle():
   edges = np.array([
     [0, 1],
@@ -426,8 +416,8 @@ def test_fix_avocados():
   fn = lambda lbls: edt.edt(lbls)
   dt = fn(labels)
 
-  labels, dbf = kimimaro.intake.engage_avocado_protection(
-    labels, dt, 
+  labels, dbf, remapping = kimimaro.intake.engage_avocado_protection(
+    labels, dt, { 1:1, 2:2, 3:3, 4:4, 5:5 },
     soma_detection_threshold=1, 
     edtfn=fn, 
     progress=True

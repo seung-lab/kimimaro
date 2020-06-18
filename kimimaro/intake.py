@@ -166,15 +166,14 @@ def skeletonize(
   all_dbf = edtfn(cc_labels)
  
   if fix_avocados:
-    cc_labels, all_dbf = engage_avocado_protection(
-      cc_labels, all_dbf, 
+    cc_labels, all_dbf, remapping = engage_avocado_protection(
+      cc_labels, all_dbf, remapping,
       soma_detection_threshold=teasar_params.get('soma_detection_threshold', 0),
       edtfn=edtfn,
       progress=progress,
     )
-    remapping = kimimaro.skeletontricks.get_mapping(all_labels, cc_labels)
 
-  cc_segids, pxct = kimimaro.skeletontricks.unique(cc_labels, return_counts=True)
+  cc_segids, pxct = fastremap.unique(cc_labels, return_counts=True)
   cc_segids = [ sid for sid, ct in zip(cc_segids, pxct) if ct > dust_threshold and sid != 0 ]
 
   all_slices = find_objects(cc_labels)
@@ -492,10 +491,12 @@ def argmax(arr):
   return np.unravel_index(np.argmax(arr.T), arr.shape, order='F')
 
 def engage_avocado_protection(
-  cc_labels, all_dbf, 
+  cc_labels, all_dbf, remapping,
   soma_detection_threshold, edtfn, 
   progress
 ):
+  orig_cc_labels = np.copy(cc_labels, order='F')
+
   unchanged = set()
   max_iterations = max(fastremap.unique(cc_labels))
 
@@ -523,8 +524,14 @@ def engage_avocado_protection(
 
   # Downstream logic assumes cc_labels is contigiously numbered
   cc_labels, _ = fastremap.renumber(cc_labels, in_place=True)
+  cc_remapping = kimimaro.skeletontricks.get_mapping(orig_cc_labels, cc_labels)
 
-  return cc_labels, all_dbf
+  adjusted_remapping = {}
+  for new_cc, cc in cc_remapping.items():
+    if cc in remapping:
+      adjusted_remapping[new_cc] = remapping[cc]
+
+  return cc_labels, all_dbf, adjusted_remapping
 
 def engage_avocado_protection_single_pass(
   cc_labels, all_dbf, 
@@ -545,8 +552,6 @@ def engage_avocado_protection_single_pass(
 
   if len(candidates) == 0:
     return cc_labels, unchanged, changed
-
-  # import pdb; pdb.set_trace()
 
   remap = {}
   for label in tqdm(candidates, disable=(not progress), desc="Fixing Avocados"):
