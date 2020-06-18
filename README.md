@@ -156,7 +156,7 @@ You'll probably never want to disable this, but base TEASAR is infamous for fork
 
 #### `fill_holes`
 
-THIS WILL REMOVE INPUT LABELS THAT ARE DEEMED TO BE HOLES.
+_Warning: This will remove input labels that are deemed to be holes._
 
 If your segmentation contains artifacts that cause holes to appear in labels, you can preprocess the entire image to eliminate background holes and holes caused by entirely contained inclusions. This option adds a moderate amount of additional processing time at the beginning (perhaps ~30%). 
 
