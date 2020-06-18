@@ -172,6 +172,7 @@ def skeletonize(
       edtfn=edtfn,
       progress=progress,
     )
+    remapping = kimimaro.skeletontricks.get_mapping(all_labels, cc_labels)
 
   cc_segids, pxct = kimimaro.skeletontricks.unique(cc_labels, return_counts=True)
   cc_segids = [ sid for sid, ct in zip(cc_segids, pxct) if ct > dust_threshold and sid != 0 ]
