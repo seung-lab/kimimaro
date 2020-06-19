@@ -235,7 +235,7 @@ def find_objects(labels):
     return scipy.ndimage.find_objects(labels)
   else:
     all_slices = scipy.ndimage.find_objects(labels.T)
-    return [ slcs[::-1] for slcs in all_slices ]    
+    return [ (slcs and slcs[::-1]) for slcs in all_slices ]    
 
 def format_labels(labels, in_place):
   if in_place:
