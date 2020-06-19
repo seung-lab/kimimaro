@@ -35,6 +35,7 @@ import cloudvolume.sharedmemory as shm
 import cc3d # connected components
 import edt # euclidean distance transform
 import fastremap
+import fill_voids
 
 import kimimaro.skeletontricks
 import kimimaro.trace
@@ -54,7 +55,7 @@ def skeletonize(
     progress=False, fix_branching=True, in_place=False, 
     fix_borders=True, parallel=1, parallel_chunk_size=100,
     extra_targets_before=[], extra_targets_after=[],
-    fill_holes=False
+    fill_holes=False, fix_avocados=False
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -116,6 +117,8 @@ def skeletonize(
     fix_borders: ensure that segments touching the border place a 
       skeleton endpoint in a predictable place to make merging 
       adjacent chunks easier.
+    fix_avocados: If nuclei are segmented seperately from somata
+      then we can try to detect and fix this issue.
     parallel: number of subprocesses to use.
       <= 0: Use multiprocessing.count_cpu() 
          1: Only use the main process.
@@ -152,18 +155,25 @@ def skeletonize(
   extra_targets_before = points_to_labels(extra_targets_before, cc_labels)
   extra_targets_after = points_to_labels(extra_targets_after, cc_labels)
 
-  all_dbf = edt.edt(cc_labels, 
-    anisotropy=anisotropy,
-    black_border=False,
-    order='F',
-    parallel=parallel,
-  )
-  # slows things down, but saves memory
-  # max_all_dbf = np.max(all_dbf)
-  # if max_all_dbf < np.finfo(np.float16).max:
-  #   all_dbf = all_dbf.astype(np.float16)
+  def edtfn(labels):
+    return edt.edt(labels, 
+      anisotropy=anisotropy,
+      black_border=False,
+      order='F',
+      parallel=parallel,
+    )
 
-  cc_segids, pxct = kimimaro.skeletontricks.unique(cc_labels, return_counts=True)
+  all_dbf = edtfn(cc_labels)
+ 
+  if fix_avocados:
+    cc_labels, all_dbf, remapping = engage_avocado_protection(
+      cc_labels, all_dbf, remapping,
+      soma_detection_threshold=teasar_params.get('soma_detection_threshold', 0),
+      edtfn=edtfn,
+      progress=progress,
+    )
+
+  cc_segids, pxct = fastremap.unique(cc_labels, return_counts=True)
   cc_segids = [ sid for sid, ct in zip(cc_segids, pxct) if ct > dust_threshold and sid != 0 ]
 
   all_slices = find_objects(cc_labels)
@@ -225,7 +235,7 @@ def find_objects(labels):
     return scipy.ndimage.find_objects(labels)
   else:
     all_slices = scipy.ndimage.find_objects(labels.T)
-    return [ slcs[::-1]  for slcs in all_slices ]    
+    return [ (slcs and slcs[::-1]) for slcs in all_slices ]    
 
 def format_labels(labels, in_place):
   if in_place:
@@ -415,6 +425,7 @@ def compute_cc_labels(all_labels, cc_safety_factor):
     tmp_labels, remapping = fastremap.renumber(all_labels, in_place=False)
 
   cc_labels = cc3d.connected_components(tmp_labels, max_labels=int(tmp_labels.size * cc_safety_factor))
+  cc_labels = fastremap.refit(cc_labels)
 
   del tmp_labels
   remapping = kimimaro.skeletontricks.get_mapping(all_labels, cc_labels) 
@@ -475,6 +486,114 @@ def merge(skeletons):
 
   return merged_skels
 
+def argmax(arr):
+  if arr.flags['C_CONTIGUOUS']:
+    return np.unravel_index(np.argmax(arr), arr.shape, order='C')
+  return np.unravel_index(np.argmax(arr.T), arr.shape, order='F')
+
+def engage_avocado_protection(
+  cc_labels, all_dbf, remapping,
+  soma_detection_threshold, edtfn, 
+  progress
+):
+  orig_cc_labels = np.copy(cc_labels, order='F')
+
+  unchanged = set()
+  max_iterations = max(fastremap.unique(cc_labels))
+
+  # This loop handles nested avocados
+  # Unless there are deeply nested double avocados,
+  # this should complete in 2-3 passes. We limit it
+  # to 20 just to make sure this loop terminates no matter what.
+  # Avocados aren't the end of the world.
+  for _ in tqdm(range(20), disable=(not progress), desc="Avocado Pass"): 
+    # Note: Divide soma_detection_threshold by a bit more than 2 because the nucleii are going to be
+    # about a factor of 2 or less smaller than what we'd expect from a cell. For example,
+    # in an avocado I saw, the DBF of the nucleus was 499 when the detection threshold was 
+    # set to 1100.
+    candidates = set(fastremap.unique(cc_labels * (all_dbf > soma_detection_threshold / 2.5)))
+    candidates -= unchanged
+    candidates.discard(0)
+
+    cc_labels, unchanged_this_cycle, changes = engage_avocado_protection_single_pass(
+      cc_labels, all_dbf,
+      candidates=candidates,
+      progress=progress,
+    )
+    unchanged |= unchanged_this_cycle
+
+    if len(changes) == 0:
+      break 
+    
+    all_dbf = edtfn(cc_labels)
+
+  # Downstream logic assumes cc_labels is contigiously numbered
+  cc_labels, _ = fastremap.renumber(cc_labels, in_place=True)
+  cc_remapping = kimimaro.skeletontricks.get_mapping(orig_cc_labels, cc_labels)
+
+  adjusted_remapping = {}
+  for new_cc, cc in cc_remapping.items():
+    if cc in remapping:
+      adjusted_remapping[new_cc] = remapping[cc]
+
+  return cc_labels, all_dbf, adjusted_remapping
+
+def engage_avocado_protection_single_pass(
+  cc_labels, all_dbf, 
+  candidates=None, progress=False
+):
+  """
+  For each candidate, check if there's a fruit around the
+  avocado pit roughly from the center (the max EDT).
+  """
+
+  if candidates is None:
+    candidates = fastremap.unique(cc_labels)
+
+  candidates = [ label for label in candidates if label != 0 ]
+
+  unchanged = set()
+  changed = set()
+
+  if len(candidates) == 0:
+    return cc_labels, unchanged, changed
+
+  def paint_walls(binimg):
+    """
+    Ensure that inclusions that touch the wall are handled
+    by performing a 2D fill on each wall.
+    """
+    binimg[:,:,0 ] = fill_voids.fill(binimg[:,:,0 ])
+    binimg[:,:,-1] = fill_voids.fill(binimg[:,:,-1])
+    binimg[:,0,: ] = fill_voids.fill(binimg[:,0,: ])
+    binimg[:,-1,:] = fill_voids.fill(binimg[:,-1,:])
+    binimg[0,:,: ] = fill_voids.fill(binimg[0,:,: ])
+    binimg[-1,:,:] = fill_voids.fill(binimg[-1,:,:])
+    return binimg
+
+  remap = {}
+  for label in tqdm(candidates, disable=(not progress), desc="Fixing Avocados"):
+    binimg = paint_walls(cc_labels == label) # image of the pit
+    coord = argmax(binimg * all_dbf)
+
+    (pit, fruit) = kimimaro.skeletontricks.find_avocado_fruit(
+      cc_labels, coord[0], coord[1], coord[2]
+    )
+    if pit == fruit and pit not in changed:
+      unchanged.add(pit)
+    else:
+      unchanged.discard(pit)
+      unchanged.discard(fruit)
+      changed.add(pit)
+      changed.add(fruit)
+      binimg |= (cc_labels == fruit)
+    
+    binimg, N = fill_voids.fill(binimg, in_place=True, return_fill_count=True)
+    cc_labels *= ~binimg
+    cc_labels += label * binimg
+
+  return cc_labels, unchanged, changed
+
 def synapses_to_targets(labels, synapses, progress=False):
   """
   Turn the output of synapse detection and assignment, usually 
@@ -532,8 +651,6 @@ def fill_all_holes(cc_labels, progress=False, return_fill_count=False):
 
   Returns: filled_in_labels
   """
-  import fill_voids
-
   labels = fastremap.unique(cc_labels)
   labels_set = set(labels)
   labels_set.discard(0)
