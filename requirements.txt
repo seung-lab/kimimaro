@@ -1,6 +1,6 @@
 connected-components-3d>=1.5.0
 cloud-volume>=0.57.6
-dijkstra3d>=1.4.1
+dijkstra3d>=1.5.0
 fill-voids>=2.0.0
 edt>=1.3.1
 fastremap>=1.10.2

@@ -124,11 +124,12 @@ def trace(
   if root is None:
     return PrecomputedSkeleton()
  
+  free_space_radius = 0 if not soma_mode else DBF[root]
   # DBF: Distance to Boundary Field
   # DAF: Distance from any voxel Field (distance from root field)
   # PDRF: Penalized Distance from Root Field
   DBF = kimimaro.skeletontricks.zero2inf(DBF) # DBF[ DBF == 0 ] = np.inf
-  DAF = dijkstra3d.euclidean_distance_field(labels, root, anisotropy=anisotropy)
+  DAF = dijkstra3d.euclidean_distance_field(labels, root, anisotropy=anisotropy, free_space_radius=free_space_radius)
   DAF = kimimaro.skeletontricks.inf2zero(DAF) # DAF[ DAF == np.inf ] = 0
   PDRF = compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF)
 
@@ -271,7 +272,7 @@ def find_root(labels, anisotropy):
 
   DAF = dijkstra3d.euclidean_distance_field(
     np.asfortranarray(labels), any_voxel, anisotropy=anisotropy)
-  return kimimaro.skeletontricks.find_target(labels, DAF)
+  return tuple(kimimaro.skeletontricks.find_target(labels, DAF))
 
 def is_power_of_two(num):
   if int(num) != num:
