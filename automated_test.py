@@ -7,6 +7,18 @@ from cloudvolume import *
 import kimimaro.intake
 import kimimaro.skeletontricks
 
+def test_empty_image():
+  labels = np.zeros( (256, 256, 256), dtype=np.bool)  
+  skels = kimimaro.skeletonize(labels, fix_borders=True)
+
+  assert len(skels) == 0
+
+def test_solid_image():
+  labels = np.ones( (256, 256, 256), dtype=np.bool)  
+  skels = kimimaro.skeletonize(labels, fix_borders=True)
+
+  assert len(skels) == 1
+
 def test_binary_image():
   labels = np.ones( (256, 256, 3), dtype=np.bool)
   labels[-1,0] = 0
