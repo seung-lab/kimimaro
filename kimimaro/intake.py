@@ -143,7 +143,9 @@ def skeletonize(
   if all_labels.size <= dust_threshold:
     return {}
   
-  if not np.any(all_labels):
+  minlabel, maxlabel = fastremap.minmax(all_labels)
+
+  if minlabel == 0 and maxlabel == 0:
     return {}
 
   cc_labels, remapping = compute_cc_labels(all_labels, cc_safety_factor)
@@ -158,7 +160,7 @@ def skeletonize(
   def edtfn(labels):
     return edt.edt(labels, 
       anisotropy=anisotropy,
-      black_border=False,
+      black_border=(minlabel == maxlabel),
       order='F',
       parallel=parallel,
     )
