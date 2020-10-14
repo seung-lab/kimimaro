@@ -9,7 +9,7 @@ import numpy as np
 
 setuptools.setup(
   setup_requires=['pbr', 'numpy'],
-  python_requires="~=3.4", # >= 3.4 < 4.0
+  python_requires="~=3.6", # >= 3.6 < 4.0
   ext_modules=[
     setuptools.Extension(
       'kimimaro.skeletontricks',
