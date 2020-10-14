@@ -743,7 +743,7 @@ def roll_invalidation_cube(
     coord[0] + sx * coord[1] + sxy * coord[2] 
     for coord in path if tuple(coord) not in invalid_vertices 
   ]
-  path = np.array(path, dtype=np.uint64)
+  path = np.array(path, dtype=np.uintp)
 
   cdef size_t[:] pathview = path
 
