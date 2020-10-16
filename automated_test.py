@@ -24,7 +24,7 @@ def test_very_sparse_image():
   assert len(skels) == 1
 
 def test_solid_image():
-  labels = np.ones( (256, 256, 256), dtype=np.bool)  
+  labels = np.ones( (128, 128, 128), dtype=np.bool)  
   skels = kimimaro.skeletonize(labels, fix_borders=True)
 
   assert len(skels) == 1
@@ -67,7 +67,7 @@ def test_square(fill_holes):
   assert abs(skel.cable_length() - 999 * np.sqrt(2)) < 0.001
 
 def test_cube():
-  labels = np.ones( (256, 256, 256), dtype=np.uint8)
+  labels = np.ones( (128, 128, 128), dtype=np.uint8)
   labels[0, 0, 0] = 0
   labels[-1, -1, -1] = 0
   
@@ -76,9 +76,9 @@ def test_cube():
   assert len(skels) == 1
 
   skel = skels[1]
-  assert skel.vertices.shape[0] == 256
-  assert skel.edges.shape[0] == 255
-  assert abs(skel.cable_length() - 255 * np.sqrt(3)) < 0.001
+  assert skel.vertices.shape[0] == 128
+  assert skel.edges.shape[0] == 127
+  assert abs(skel.cable_length() - 127 * np.sqrt(3)) < 0.001
 
   
 def test_find_border_targets():
