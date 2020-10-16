@@ -4,11 +4,21 @@ import setuptools
 
 import numpy as np
 
+def read(fname):
+  with open(os.path.join(os.path.dirname(__file__), fname), 'rt') as f:
+    return f.read()
+
+def requirements():
+  with open(os.path.join(os.path.dirname(__file__), 'requirements.txt'), 'rt') as f:
+    return f.readlines()
+
 # NOTE: If skeletontricks.cpp does not exist, you must run
 # cython -3 --cplus ./ext/skeletontricks/skeletontricks.pyx
 
 setuptools.setup(
-  setup_requires=['pbr', 'numpy'],
+  name="kimimaro",
+  version="2.0.2",
+  setup_requires=["numpy"],
   python_requires="~=3.6", # >= 3.6 < 4.0
   ext_modules=[
     setuptools.Extension(
@@ -21,7 +31,29 @@ setuptools.setup(
       ]
     ),
   ],
-  long_description_content_type='text/markdown',
-  pbr=True,
+  author="William Silversmith, Alex Bae, Forrest Collman",
+  author_email="ws9@princeton.edu",
+  packages=setuptools.find_packages(),
+  description="Skeletonize densely labeled image volumes.",
+  long_description=read('README.md'),
+  long_description_content_type="text/markdown",
+  license = "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  keywords = "connected-components CCL volumetric-data numpy connectomics image-processing biomedical-image-processing decision-tree union-find sauf bbdt 2d 3d",
+  url = "https://github.com/seung-lab/kimimaro/",
+  classifiers=[
+    "Intended Audience :: Developers",
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Topic :: Scientific/Engineering",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+  ],  
 )
 

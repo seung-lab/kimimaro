@@ -1,6 +1,21 @@
 CHANGES
 =======
 
+2.0.2
+-----
+
+* test: faster execution for cube and solid color tests
+* fix(trace): skip adding DAF if max is 0
+* test: check extremely sparse images (one or two voxels with no dust threshold)
+* chore: drop py35 testing add .dockerignore
+
+2.0.1
+-----
+
+* fix(windows): use np.uintp before casting to size\_t
+* fix: appveyor needs numpy installed first
+* chore: new build system for binary distribution
+
 2.0.0
 -----
 

@@ -1,2 +1,2 @@
-recursive-include ext
+recursive-include ext *
 include LICENSE
