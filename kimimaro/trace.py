@@ -310,7 +310,9 @@ def compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF):
   PDRF *= f(pdrf_scale)
 
   # provide trickle of gradient so open spaces don't collapse
-  PDRF += DAF * (1 / np.max(DAF)) 
+  max_daf = np.max(DAF)
+  if max_daf != 0:
+    PDRF += DAF * (1 / max_daf)
 
   return np.asfortranarray(PDRF)
 
