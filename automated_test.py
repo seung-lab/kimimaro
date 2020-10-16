@@ -13,6 +13,16 @@ def test_empty_image():
 
   assert len(skels) == 0
 
+def test_very_sparse_image():
+  labels = np.zeros( (64, 64, 64), dtype=np.bool)  
+  labels[5,5,5] = True
+  labels[6,5,5] = True
+  labels[20,20,20] = True 
+  skels = kimimaro.skeletonize(labels, dust_threshold=0)
+  
+  # single voxels don't get skeletonized
+  assert len(skels) == 1
+
 def test_solid_image():
   labels = np.ones( (256, 256, 256), dtype=np.bool)  
   skels = kimimaro.skeletonize(labels, fix_borders=True)
