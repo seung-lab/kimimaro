@@ -8,10 +8,6 @@ def read(fname):
   with open(os.path.join(os.path.dirname(__file__), fname), 'rt') as f:
     return f.read()
 
-def requirements():
-  with open(os.path.join(os.path.dirname(__file__), 'requirements.txt'), 'rt') as f:
-    return f.readlines()
-
 # NOTE: If skeletontricks.cpp does not exist, you must run
 # cython -3 --cplus ./ext/skeletontricks/skeletontricks.pyx
 
@@ -19,6 +15,19 @@ setuptools.setup(
   name="kimimaro",
   version="2.0.2",
   setup_requires=["numpy"],
+  install_requires=[
+    "connected-components-3d>=1.5.0",
+    "cloud-volume>=0.57.6",
+    "dijkstra3d>=1.5.0",
+    "fill-voids>=2.0.0",
+    "edt>=1.3.1",
+    "fastremap>=1.10.2",
+    "networkx",
+    "numpy>=1.16.1",
+    "pathos",
+    "pytest",
+    "scipy>=1.1.0",
+  ],
   python_requires="~=3.6", # >= 3.6 < 4.0
   ext_modules=[
     setuptools.Extension(
@@ -38,7 +47,7 @@ setuptools.setup(
   long_description=read('README.md'),
   long_description_content_type="text/markdown",
   license = "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
-  keywords = "connected-components CCL volumetric-data numpy connectomics image-processing biomedical-image-processing decision-tree union-find sauf bbdt 2d 3d",
+  keywords = "volumetric-data numpy teasar skeletonization centerline medial-axis-transform centerline-extraction computer-vision-alogithms connectomics image-processing biomedical-image-processing voxel",
   url = "https://github.com/seung-lab/kimimaro/",
   classifiers=[
     "Intended Audience :: Developers",
