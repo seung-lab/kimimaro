@@ -13,7 +13,7 @@ def read(fname):
 
 setuptools.setup(
   name="kimimaro",
-  version="2.0.2",
+  version="2.0.3",
   setup_requires=["numpy"],
   install_requires=[
     "connected-components-3d>=1.5.0",
