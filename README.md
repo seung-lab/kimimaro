@@ -357,8 +357,20 @@ Alex Bae developed the precursor skeletonization package and several modificatio
 
 ## Papers Using Kimimaro
 
+Please cite Kimimaro as: 
+  
+```
+W. Silversmith and J.A. Bae. "Kimimaro: Skeletonize densely 
+labeled 3D image segmentations". 2020. https://github.com/seung-lab/kimimaro 
+```
+
+The below list is not comprehensive and is sourced from collaborators or found using internet searches and does not constitute an endorsement except to the extent that they used it for their work. 
+
 1. A.M. Wilson, R. Schalek, A. Suissa-Peleg, T.R. Jones, S. Knowles-Barley, H. Pfister, J.M. Lichtman. "Developmental Rewiring between Cerebellar Climbing Fibers and Purkinje Cells Begins with Positive Feedback Synapse Addition". Cell Reports. Vol. 29, Iss. 9, November 2019. Pgs. 2849-2861.e6 doi: 10.1016/j.celrep.2019.10.081  ([link](https://www.cell.com/cell-reports/fulltext/S2211-1247(19)31403-2))
 2. S. Dorkenwald, N.L. Turner, T. Macrina, K. Lee, R. Lu, J. Wu, A.L. Bodor, A.A. Bleckert, D. Brittain, N. Kemnitz, W.M. Silversmith, D. Ih, J. Zung, A. Zlateski, I. Tartavull, S. Yu, S. Popovych, W. Wong, M. Castro, C. S. Jordan, A.M. Wilson, E. Froudarakis, J. Buchanan, M. Takeno, R. Torres, G. Mahalingam, F. Collman, C. Schneider-Mizell, D.J. Bumbarger, Y. Li, L. Becker, S. Suckow, J. Reimer, A.S. Tolias, N. Ma<span>&ccedil;</span>arico da Costa, R. C. Reid, H.S. Seung. "Binary and analog variation of synapses between cortical pyramidal neurons". bioRXiv. December 2019. doi: 10.1101/2019.12.29.890319 ([link](https://www.biorxiv.org/content/10.1101/2019.12.29.890319v1.full))  
+3. N.L. Turner, T. Macrina, J.A. Bae, R. Yang, A.M. Wilson, C. Schneider-Mizell, K. Lee, R. Lu, J. Wu, A.L. Bodor, A.A. Bleckert, D. Brittain, E. Froudarakis, S. Dorkenwald, F. Collman, N. Kemnitz, D. Ih, W.M. Silversmith, J. Zung, A. Zlateski, I. Tartavull, S. Yu, S. Popovych, S. Mu, W. Wong, C.S. Jordan, M. Castro, J. Buchanan, D.J. Bumbarger, M. Takeno, R. Torres, G. Mahalingam, L. Elabbady, Y. Li, E. Cobos, P. Zhou, S. Suckow, L. Becker, L. Paninski, F. Polleux, J. Reimer, A.S. Tolias, R.C. Reid, N. Ma<span>&ccedil;</span>arico da Costa, H.S. Seung. "Multiscale and multimodal reconstruction of cortical structure and function".
+bioRxiv. October 2020; doi: 10.1101/2020.10.14.338681 ([link](https://www.biorxiv.org/content/10.1101/2020.10.14.338681v3))
+4. P.H. Li, L.F. Lindsey, M. Januszewski, Z. Zheng, A.S. Bates, I. Taisz, M. Tyka, M. Nichols, F. Li, E. Perlman, J. Maitin-Shepard, T. Blakely, L. Leavitt, G. S.X.E. Jefferis, D. Bock, V. Jain. "Automated Reconstruction of a Serial-Section EM Drosophila Brain with Flood-Filling Networks and Local Realignment". bioRxiv. October 2020. doi: 10.1101/605634  ([link](https://www.biorxiv.org/content/10.1101/605634v3))
 
 ## References 
 
