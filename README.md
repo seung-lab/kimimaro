@@ -32,14 +32,16 @@ Fig. 2: Memory Usage on a 512x512x512 Densely Labeled Volume
 
 Figure 2 shows the memory usage and processessing time (~390 seconds, about 6.5 minutes) required when Kimimaro 1.4.0 was applied to a 512x512x512 cutout, *labels*, from a connectomics dataset containing 2124 connected components. The different sections of the algorithm are depicted. Grossly, the preamble runs for about half a minute, skeletonization for about six minutes, and finalization within seconds. The peak memory usage was about 4.5 GB. The code below was used to process *labels*. The processing of the glia was truncated in due to a combination of *fix_borders* and max_paths.  
 
-Kimimaro has come a long way. Version 0.2.1 took over 15 minutes and had a  Preamble run time twice as long on the same dataset.    
+Kimimaro has come a long way. Version 0.2.1 took over 15 minutes and had a Preamble run time twice as long on the same dataset.    
 
 ```python
 # LISTING 1: Producing Skeletons from a labeled image.
 
 import kimimaro
 
-labels = np.load(...)
+# Run lzma -d connectomics.npy.lzma on the command line to 
+# obtain this 512 MB segmentation volume. Details below.
+labels = np.load("connectomics.npy") 
 
 skels = kimimaro.skeletonize(
   labels, 
@@ -97,6 +99,8 @@ skel = kimimaro.join_close_components([skel1, skel2], radius=None) # no threshol
 # Returns: { (x,y,z): swc_label, ... }
 extra_targets = kimimaro.synapses_to_targets(labels, synapses)
 ```
+
+`connectomics.npy` is multilabel connectomics data derived from pinky40, a 2018 experimental automated segmentation of ~1.5 million cubic micrometers of mouse visual cortex. It is an early predecessor to the now public pinky100_v185 segmentation that can be found at https://microns-explorer.org/phase1 You will need to run `lzma -d connectomics.npy.lzma` to obtain the 512x512x512 uint32 volume at 32x32x40 nm<sup>3</sup> resolution.  
 
 ### Tweaking `kimimaro.skeletonize` Parameters
 
