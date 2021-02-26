@@ -4,7 +4,7 @@
 
 Rapidly skeletonize all non-zero labels in 2D and 3D numpy arrays using a TEASAR derived method. The returned list of skeletons is in the format used by [cloud-volume](https://github.com/seung-lab/cloud-volume/wiki/Advanced-Topic:-Skeletons). 
 
-On a 3.7 GHz Intel i7 processor, this package processed a 512x512x100 volume with 333 labels in under a minute. It processed a 512x512x512 volume with 2124 labels in eight to thirteen minutes (depending on whether `fix_branching` is set).
+On an Apple Silicon M1 arm64 chip (Firestorm cores 3.2 GHz max frequency), this package processed a 512x512x100 volume with 333 labels in 20 seconds. It processed a 512x512x512 volume (`connectomics.npy`) with 2124 labels in 187 seconds.
 
 <p style="font-style: italics;" align="center">
 <img height=512 width=512 src="https://raw.githubusercontent.com/seung-lab/kimimaro/master/mass_skeletonization.png" alt="A Densely Labeled Volume Skeletonized with Kimimaro" /><br>
