@@ -13,15 +13,18 @@ Fig. 1: A Densely Labeled Volume Skeletonized with Kimimaro
 
 ## `pip` Installation 
 
-*Requires C++ compiler.*
+If a binary is available for your platform:
 
-```bash
-sudo apt-get install python3-dev g++
-pip3 install numpy
-pip3 install kimimaro 
+```
+pip install numpy
+pip install kimimaro
 ```
 
-In the future, we may create a fully binary distribution. 
+Otherwise, you'll need a C++ compiler:
+
+```bash
+sudo apt-get install python3-dev g++ # ubuntu linux
+```
 
 ## Example
 
