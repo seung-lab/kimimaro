@@ -355,6 +355,12 @@ Some of the TEASAR modifications used in this package were first demonstrated by
 
 Alex Bae developed the precursor skeletonization package and several modifications to TEASAR that we use in this package. Alex also developed the postprocessing approach used for stitching skeletons using 50% overlap. Will Silversmith adapted these techniques for mass production, refined several basic algorithms for handling thousands of labels at once, and rewrote them into the Kimimaro package. Will added trickle DAF, zero weighted previously explored paths, and fixing borders to the algorithm. Forrest Collman added parameter flexibility and helped tune DAF computation performance. Sven Dorkenwald and Forrest both provided helpful discussions and feedback.
 
+## Acknowledgments  
+
+We are grateful to our partners in the Seung Lab, the Allen Institute for Brain Science, and the Baylor College of Medicine for providing the data and problems necessitating this library.
+
+This research was supported by the Intelligence Advanced Research Projects Activity (IARPA) via Department of Interior/ Interior Business Center (DoI/IBC) contract number D16PC0005, NIH/NIMH (U01MH114824, U01MH117072, RF1MH117815), NIH/NINDS (U19NS104648, R01NS104926), NIH/NEI (R01EY027036), and ARO (W911NF-12-1-0594). The U.S. Government is authorized to reproduce and distribute reprints for Governmental purposes notwithstanding any copyright annotation thereon. Disclaimer: The views and conclusions contained herein are those of the authors and should not be interpreted as necessarily representing the official policies or endorsements, either expressed or implied, of IARPA, DoI/IBC, or the U.S. Government. We are grateful for assistance from Google, Amazon, and Intel.
+
 ## Papers Using Kimimaro
 
 Please cite Kimimaro as: 
