@@ -55,7 +55,8 @@ def skeletonize(
     progress=False, fix_branching=True, in_place=False, 
     fix_borders=True, parallel=1, parallel_chunk_size=100,
     extra_targets_before=[], extra_targets_after=[],
-    fill_holes=False, fix_avocados=False
+    fill_holes=False, fix_avocados=False,
+    voxel_graph=None
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -119,6 +120,11 @@ def skeletonize(
       adjacent chunks easier.
     fix_avocados: If nuclei are segmented seperately from somata
       then we can try to detect and fix this issue.
+    voxel_graph: a connection graph that defines permissible 
+      directions of motion between voxels. This is useful for
+      dealing with self-touches. The graph is defined by the
+      conventions used in cc3d.voxel_connectivity_graph 
+      (https://github.com/seung-lab/connected-components-3d/blob/3.2.0/cc3d_graphs.hpp#L73-L92)
     parallel: number of subprocesses to use.
       <= 0: Use multiprocessing.count_cpu() 
          1: Only use the main process.
@@ -163,6 +169,7 @@ def skeletonize(
       black_border=(minlabel == maxlabel),
       order='F',
       parallel=parallel,
+      voxel_graph=voxel_graph,
     )
 
   all_dbf = edtfn(cc_labels)
@@ -194,7 +201,7 @@ def skeletonize(
       all_dbf, cc_labels, remapping, 
       teasar_params, anisotropy, all_slices, 
       border_targets, extra_targets_before, extra_targets_after,
-      progress, fix_borders, fix_branching, 
+      progress, fix_borders, fix_branching, voxel_graph,
       cc_segids
     )
   else:
@@ -292,7 +299,7 @@ def skeletonize_parallel(
       remapping, teasar_params, anisotropy, all_slices, 
       border_targets, extra_targets_before, extra_targets_after, 
       False, # progress, use our own progress bar below
-      fix_borders, fix_branching
+      fix_borders, fix_branching, 
     )
 
     ccids = []
@@ -340,7 +347,7 @@ def skeletonize_subset(
     all_dbf, cc_labels, remapping, 
     teasar_params, anisotropy, all_slices, 
     border_targets, extra_targets_before, extra_targets_after,
-    progress, fix_borders, fix_branching,
+    progress, fix_borders, fix_branching, voxel_graph,
     cc_segids
   ):
 
@@ -392,6 +399,7 @@ def skeletonize_subset(
       manual_targets_before=manual_targets_before,
       manual_targets_after=manual_targets_after,
       root=root,
+      voxel_graph=voxel_graph,
       **teasar_params
     )
 

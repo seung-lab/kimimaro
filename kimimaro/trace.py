@@ -3,7 +3,7 @@ Skeletonization algorithm based on TEASAR (Sato et al. 2000).
 
 Authors: Alex Bae and Will Silversmith
 Affiliation: Seung Lab, Princeton Neuroscience Institue
-Date: June 2018 - April 2019
+Date: June 2018 - April 2021
 
 This file is part of Kimimaro.
 
@@ -47,6 +47,7 @@ def trace(
     manual_targets_after=[],
     root=None,
     max_paths=None,
+    voxel_graph=None,
   ):
   """
   Given the euclidean distance transform of a label ("Distance to Boundary Function"), 
@@ -82,6 +83,11 @@ def trace(
     abort and move onto the next label.
   root: If you want to force the root to be a particular voxel, you can
     specify it here.
+  voxel_graph: a connection graph that defines permissible 
+    directions of motion between voxels. This is useful for
+    dealing with self-touches. The graph is defined by the
+    conventions used in cc3d.voxel_connectivity_graph 
+    (https://github.com/seung-lab/connected-components-3d/blob/3.2.0/cc3d_graphs.hpp#L73-L92)
 
   Based on the algorithm by:
 
@@ -137,7 +143,7 @@ def trace(
   # pointers from each voxel to its parent. Then we can rapidly
   # compute multiple paths by simply hopping pointers using path_from_parents
   if not fix_branching:
-    parents = dijkstra3d.parental_field(PDRF, root)
+    parents = dijkstra3d.parental_field(PDRF, root, voxel_graph)
     del PDRF
   else:
     parents = PDRF
@@ -155,7 +161,7 @@ def trace(
     parents, scale, const, anisotropy, 
     soma_mode, soma_radius, fix_branching,
     manual_targets_before, manual_targets_after, 
-    max_paths
+    max_paths, voxel_graph
   )
 
   skel = PrecomputedSkeleton.simple_merge(
@@ -172,7 +178,7 @@ def compute_paths(
     parents, scale, const, anisotropy, 
     soma_mode, soma_radius, fix_branching,
     manual_targets_before, manual_targets_after,
-    max_paths
+    max_paths, voxel_graph
   ):
   """
   Given the labels, DBF, DAF, dijkstra parents,
@@ -210,7 +216,10 @@ def compute_paths(
       # because that way local exploration finds any zero weighted path
       # and finishes vs exploring from the neighborhood of the entire zero
       # weighted path
-      path = dijkstra3d.dijkstra(parents, target, root, bidirectional=soma_mode)
+      path = dijkstra3d.dijkstra(
+        parents, target, root, 
+        bidirectional=soma_mode, voxel_graph=voxel_graph
+      )
     else:
       path = dijkstra3d.path_from_parents(parents, target)
     
