@@ -20,7 +20,7 @@ pip install numpy
 pip install kimimaro
 ```
 
-Otherwise, you'll need a C++ compiler:
+Otherwise, you'll also need a C++ compiler:
 
 ```bash
 sudo apt-get install python3-dev g++ # ubuntu linux
