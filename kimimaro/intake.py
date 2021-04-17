@@ -198,10 +198,10 @@ def skeletonize(
 
   if parallel == 1:
     return skeletonize_subset(
-      all_dbf, cc_labels, remapping, 
+      all_dbf, cc_labels, voxel_graph, remapping, 
       teasar_params, anisotropy, all_slices, 
       border_targets, extra_targets_before, extra_targets_after,
-      progress, fix_borders, fix_branching, voxel_graph,
+      progress, fix_borders, fix_branching, 
       cc_segids
     )
   else:
@@ -212,17 +212,27 @@ def skeletonize(
 
     dbf_shm_location = 'kimimaro-shm-dbf-' + suffix
     cc_shm_location = 'kimimaro-shm-cc-labels-' + suffix
+    vg_shm_location = 'kimimaro-shm-voxel-graph-' + suffix
 
     dbf_mmap, all_dbf_shm = shm.ndarray( all_dbf.shape, all_dbf.dtype, dbf_shm_location, order='F')
-    cc_mmap, cc_labels_shm = shm.ndarray( cc_labels.shape, cc_labels.dtype, cc_shm_location, order='F')    
     all_dbf_shm[:] = all_dbf 
-    cc_labels_shm[:] = cc_labels 
     del all_dbf 
+
+    cc_mmap, cc_labels_shm = shm.ndarray( cc_labels.shape, cc_labels.dtype, cc_shm_location, order='F')    
+    cc_labels_shm[:] = cc_labels 
     del cc_labels
+
+    voxel_graph_shm = None
+    vg_mmap = None
+    if voxel_graph:
+      vg_mmap, voxel_graph_shm = shm.ndarray( voxel_graph.shape, voxel_graph.dtype, vg_shm_location, order='F')    
+      voxel_graph_shm[:] = voxel_graph
+      del voxel_graph
 
     skeletons = skeletonize_parallel(      
       all_dbf_shm, dbf_shm_location, 
       cc_labels_shm, cc_shm_location, remapping, 
+      voxel_graph_shm, vg_shm_location,
       teasar_params, anisotropy, all_slices, 
       border_targets, extra_targets_before, extra_targets_after,
       progress, fix_borders, fix_branching, 
@@ -231,6 +241,8 @@ def skeletonize(
 
     dbf_mmap.close()
     cc_mmap.close()
+    if vg_mmap:
+      vg_mmap.close()
 
     return skeletons
 
@@ -275,6 +287,7 @@ def format_labels(labels, in_place):
 def skeletonize_parallel(
     all_dbf_shm, dbf_shm_location, 
     cc_labels_shm, cc_shm_location, remapping, 
+    voxel_graph_shm, vg_shm_location,
     teasar_params, anisotropy, all_slices, 
     border_targets, extra_targets_before, extra_targets_after,
     progress, fix_borders, fix_branching, 
@@ -293,9 +306,13 @@ def skeletonize_parallel(
     signal.signal(signal.SIGINT, cleanup)
     signal.signal(signal.SIGTERM, cleanup)   
 
+    vg_shape = voxel_graph_shm.shape if voxel_graph_shm else None
+    vg_dtype = voxel_graph_shm.dtype if voxel_graph_shm else None
+
     skeletonizefn = partial(parallel_skeletonize_subset, 
       dbf_shm_location, all_dbf_shm.shape, all_dbf_shm.dtype, 
       cc_shm_location, cc_labels_shm.shape, cc_labels_shm.dtype,
+      vg_shm_location, vg_shape, vg_dtype,
       remapping, teasar_params, anisotropy, all_slices, 
       border_targets, extra_targets_before, extra_targets_after, 
       False, # progress, use our own progress bar below
@@ -325,29 +342,39 @@ def skeletonize_parallel(
     
     shm.unlink(dbf_shm_location)
     shm.unlink(cc_shm_location)
+    shm.unlink(vg_shm_location)
 
     return merge(skeletons)
 
 def parallel_skeletonize_subset(    
     dbf_shm_location, dbf_shape, dbf_dtype, 
-    cc_shm_location, cc_shape, cc_dtype, *args, **kwargs
+    cc_shm_location, cc_shape, cc_dtype, 
+    vg_shm_location, vg_shape, vg_dtype,
+    *args, **kwargs
   ):
   
   dbf_mmap, all_dbf = shm.ndarray( dbf_shape, dtype=dbf_dtype, location=dbf_shm_location, order='F')
   cc_mmap, cc_labels = shm.ndarray( cc_shape, dtype=cc_dtype, location=cc_shm_location, order='F')
 
-  skels = skeletonize_subset(all_dbf, cc_labels, *args, **kwargs)
+  if vg_shape is None:
+    vg_mmap, voxel_graph = None, None
+  else:
+    vg_mmap, voxel_graph = shm.ndarray( vg_shape, dtype=vg_dtype, location=vg_shm_location, order='F')
+
+  skels = skeletonize_subset(all_dbf, cc_labels, voxel_graph, *args, **kwargs)
 
   dbf_mmap.close()
   cc_mmap.close()
+  if vg_mmap:
+    vg_mmap.close()
 
   return skels
 
 def skeletonize_subset(
-    all_dbf, cc_labels, remapping, 
+    all_dbf, cc_labels, voxel_graph, remapping, 
     teasar_params, anisotropy, all_slices, 
     border_targets, extra_targets_before, extra_targets_after,
-    progress, fix_borders, fix_branching, voxel_graph,
+    progress, fix_borders, fix_branching, 
     cc_segids
   ):
 
