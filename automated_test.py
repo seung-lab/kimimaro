@@ -8,13 +8,13 @@ import kimimaro.intake
 import kimimaro.skeletontricks
 
 def test_empty_image():
-  labels = np.zeros( (256, 256, 256), dtype=np.bool)  
+  labels = np.zeros( (256, 256, 256), dtype=bool)  
   skels = kimimaro.skeletonize(labels, fix_borders=True)
 
   assert len(skels) == 0
 
 def test_very_sparse_image():
-  labels = np.zeros( (64, 64, 64), dtype=np.bool)  
+  labels = np.zeros( (64, 64, 64), dtype=bool)  
   labels[5,5,5] = True
   labels[6,5,5] = True
   labels[20,20,20] = True 
@@ -24,13 +24,13 @@ def test_very_sparse_image():
   assert len(skels) == 1
 
 def test_solid_image():
-  labels = np.ones( (128, 128, 128), dtype=np.bool)  
+  labels = np.ones( (128, 128, 128), dtype=bool)  
   skels = kimimaro.skeletonize(labels, fix_borders=True)
 
   assert len(skels) == 1
 
 def test_binary_image():
-  labels = np.ones( (256, 256, 3), dtype=np.bool)
+  labels = np.ones( (256, 256, 3), dtype=bool)
   labels[-1,0] = 0
   labels[0,-1] = 0
   

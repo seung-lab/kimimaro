@@ -161,7 +161,7 @@ def find_connected(nodes, edges):
   s = nodes.shape[0] 
   nodes = np.unique(edges).astype(np.uint32)
 
-  conn_mat = lil_matrix((s, s), dtype=np.bool)
+  conn_mat = lil_matrix((s, s), dtype=bool)
   conn_mat[edges[:,0], edges[:,1]] = 1
 
   n, l = csgraph.connected_components(conn_mat, directed=False)
@@ -504,7 +504,7 @@ def _remove_loops(skeleton):
       for i in range(edge_path.shape[0]):
         row_valid -= (edges_cycle[:,0] == edge_path[i,0]) * (edges_cycle[:,1] == edge_path[i,1])
 
-      row_valid = row_valid.astype(np.bool)
+      row_valid = row_valid.astype(bool)
       edge_path = edges_cycle[row_valid,:]
 
       edges = remove_row(edges, edge_path)
@@ -586,7 +586,7 @@ def find_row(array, row):
     raise ValueError("Dimensions do not match!")  
     
   NDIM = array.shape[1] 
-  valid = np.zeros(array.shape, dtype=np.bool) 
+  valid = np.zeros(array.shape, dtype=bool) 
   for i in range(NDIM):  
     valid[:,i] = array[:,i] == row[i] 
   
