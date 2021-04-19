@@ -1,5 +1,6 @@
-environment:
+image: Visual Studio 2019
 
+environment:
   matrix:
     # - PYTHON: "C:\\Python36"
     # - PYTHON: "C:\\Python37"
