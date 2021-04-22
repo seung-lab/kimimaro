@@ -135,7 +135,12 @@ def trace(
   # DAF: Distance from any voxel Field (distance from root field)
   # PDRF: Penalized Distance from Root Field
   DBF = kimimaro.skeletontricks.zero2inf(DBF) # DBF[ DBF == 0 ] = np.inf
-  DAF = dijkstra3d.euclidean_distance_field(labels, root, anisotropy=anisotropy, free_space_radius=free_space_radius)
+  DAF = dijkstra3d.euclidean_distance_field(
+    labels, root, 
+    anisotropy=anisotropy, 
+    free_space_radius=free_space_radius,
+    voxel_graph=voxel_graph,
+  )
   DAF = kimimaro.skeletontricks.inf2zero(DAF) # DAF[ DAF == np.inf ] = 0
   PDRF = compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF)
 
