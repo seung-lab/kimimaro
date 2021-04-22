@@ -224,7 +224,7 @@ def skeletonize(
 
     voxel_graph_shm = None
     vg_mmap = None
-    if voxel_graph:
+    if voxel_graph is not None:
       vg_mmap, voxel_graph_shm = shm.ndarray( voxel_graph.shape, voxel_graph.dtype, vg_shm_location, order='F')    
       voxel_graph_shm[:] = voxel_graph
       del voxel_graph
