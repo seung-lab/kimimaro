@@ -55,7 +55,8 @@ def skeletonize(
     progress=False, fix_branching=True, in_place=False, 
     fix_borders=True, parallel=1, parallel_chunk_size=100,
     extra_targets_before=[], extra_targets_after=[],
-    fill_holes=False, fix_avocados=False
+    fill_holes=False, fix_avocados=False,
+    voxel_graph=None
   ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -119,6 +120,11 @@ def skeletonize(
       adjacent chunks easier.
     fix_avocados: If nuclei are segmented seperately from somata
       then we can try to detect and fix this issue.
+    voxel_graph: a connection graph that defines permissible 
+      directions of motion between voxels. This is useful for
+      dealing with self-touches. The graph is defined by the
+      conventions used in cc3d.voxel_connectivity_graph 
+      (https://github.com/seung-lab/connected-components-3d/blob/3.2.0/cc3d_graphs.hpp#L73-L92)
     parallel: number of subprocesses to use.
       <= 0: Use multiprocessing.count_cpu() 
          1: Only use the main process.
@@ -163,6 +169,7 @@ def skeletonize(
       black_border=(minlabel == maxlabel),
       order='F',
       parallel=parallel,
+      voxel_graph=voxel_graph,
     )
 
   all_dbf = edtfn(cc_labels)
@@ -191,7 +198,7 @@ def skeletonize(
 
   if parallel == 1:
     return skeletonize_subset(
-      all_dbf, cc_labels, remapping, 
+      all_dbf, cc_labels, voxel_graph, remapping, 
       teasar_params, anisotropy, all_slices, 
       border_targets, extra_targets_before, extra_targets_after,
       progress, fix_borders, fix_branching, 
@@ -205,17 +212,27 @@ def skeletonize(
 
     dbf_shm_location = 'kimimaro-shm-dbf-' + suffix
     cc_shm_location = 'kimimaro-shm-cc-labels-' + suffix
+    vg_shm_location = 'kimimaro-shm-voxel-graph-' + suffix
 
     dbf_mmap, all_dbf_shm = shm.ndarray( all_dbf.shape, all_dbf.dtype, dbf_shm_location, order='F')
-    cc_mmap, cc_labels_shm = shm.ndarray( cc_labels.shape, cc_labels.dtype, cc_shm_location, order='F')    
     all_dbf_shm[:] = all_dbf 
-    cc_labels_shm[:] = cc_labels 
     del all_dbf 
+
+    cc_mmap, cc_labels_shm = shm.ndarray( cc_labels.shape, cc_labels.dtype, cc_shm_location, order='F')    
+    cc_labels_shm[:] = cc_labels 
     del cc_labels
+
+    voxel_graph_shm = None
+    vg_mmap = None
+    if voxel_graph is not None:
+      vg_mmap, voxel_graph_shm = shm.ndarray( voxel_graph.shape, voxel_graph.dtype, vg_shm_location, order='F')    
+      voxel_graph_shm[:] = voxel_graph
+      del voxel_graph
 
     skeletons = skeletonize_parallel(      
       all_dbf_shm, dbf_shm_location, 
       cc_labels_shm, cc_shm_location, remapping, 
+      voxel_graph_shm, vg_shm_location,
       teasar_params, anisotropy, all_slices, 
       border_targets, extra_targets_before, extra_targets_after,
       progress, fix_borders, fix_branching, 
@@ -224,6 +241,8 @@ def skeletonize(
 
     dbf_mmap.close()
     cc_mmap.close()
+    if vg_mmap:
+      vg_mmap.close()
 
     return skeletons
 
@@ -268,6 +287,7 @@ def format_labels(labels, in_place):
 def skeletonize_parallel(
     all_dbf_shm, dbf_shm_location, 
     cc_labels_shm, cc_shm_location, remapping, 
+    voxel_graph_shm, vg_shm_location,
     teasar_params, anisotropy, all_slices, 
     border_targets, extra_targets_before, extra_targets_after,
     progress, fix_borders, fix_branching, 
@@ -286,13 +306,17 @@ def skeletonize_parallel(
     signal.signal(signal.SIGINT, cleanup)
     signal.signal(signal.SIGTERM, cleanup)   
 
+    vg_shape = voxel_graph_shm.shape if voxel_graph_shm else None
+    vg_dtype = voxel_graph_shm.dtype if voxel_graph_shm else None
+
     skeletonizefn = partial(parallel_skeletonize_subset, 
       dbf_shm_location, all_dbf_shm.shape, all_dbf_shm.dtype, 
       cc_shm_location, cc_labels_shm.shape, cc_labels_shm.dtype,
+      vg_shm_location, vg_shape, vg_dtype,
       remapping, teasar_params, anisotropy, all_slices, 
       border_targets, extra_targets_before, extra_targets_after, 
       False, # progress, use our own progress bar below
-      fix_borders, fix_branching
+      fix_borders, fix_branching, 
     )
 
     ccids = []
@@ -318,29 +342,39 @@ def skeletonize_parallel(
     
     shm.unlink(dbf_shm_location)
     shm.unlink(cc_shm_location)
+    shm.unlink(vg_shm_location)
 
     return merge(skeletons)
 
 def parallel_skeletonize_subset(    
     dbf_shm_location, dbf_shape, dbf_dtype, 
-    cc_shm_location, cc_shape, cc_dtype, *args, **kwargs
+    cc_shm_location, cc_shape, cc_dtype, 
+    vg_shm_location, vg_shape, vg_dtype,
+    *args, **kwargs
   ):
   
   dbf_mmap, all_dbf = shm.ndarray( dbf_shape, dtype=dbf_dtype, location=dbf_shm_location, order='F')
   cc_mmap, cc_labels = shm.ndarray( cc_shape, dtype=cc_dtype, location=cc_shm_location, order='F')
 
-  skels = skeletonize_subset(all_dbf, cc_labels, *args, **kwargs)
+  if vg_shape is None:
+    vg_mmap, voxel_graph = None, None
+  else:
+    vg_mmap, voxel_graph = shm.ndarray( vg_shape, dtype=vg_dtype, location=vg_shm_location, order='F')
+
+  skels = skeletonize_subset(all_dbf, cc_labels, voxel_graph, *args, **kwargs)
 
   dbf_mmap.close()
   cc_mmap.close()
+  if vg_mmap:
+    vg_mmap.close()
 
   return skels
 
 def skeletonize_subset(
-    all_dbf, cc_labels, remapping, 
+    all_dbf, cc_labels, voxel_graph, remapping, 
     teasar_params, anisotropy, all_slices, 
     border_targets, extra_targets_before, extra_targets_after,
-    progress, fix_borders, fix_branching,
+    progress, fix_borders, fix_branching, 
     cc_segids
   ):
 
@@ -392,6 +426,7 @@ def skeletonize_subset(
       manual_targets_before=manual_targets_before,
       manual_targets_after=manual_targets_after,
       root=root,
+      voxel_graph=voxel_graph,
       **teasar_params
     )
 
