@@ -392,6 +392,7 @@ def skeletonize_subset(
     labels = cc_labels[slices]
     labels = (labels == segid)
     dbf = (labels * all_dbf[slices]).astype(np.float32)
+    cropped_voxel_graph = (voxel_graph[slices] if voxel_graph is not None else None)
 
     manual_targets_before = []
     manual_targets_after = []
@@ -426,7 +427,7 @@ def skeletonize_subset(
       manual_targets_before=manual_targets_before,
       manual_targets_after=manual_targets_after,
       root=root,
-      voxel_graph=voxel_graph,
+      voxel_graph=cropped_voxel_graph,
       **teasar_params
     )
 
