@@ -13,14 +13,14 @@ def read(fname):
 
 setuptools.setup(
   name="kimimaro",
-  version="2.1.0",
+  version="2.1.1",
   setup_requires=["numpy"],
   install_requires=[
     "connected-components-3d>=1.5.0",
     "cloud-volume>=0.57.6",
-    "dijkstra3d>=1.5.0",
+    "dijkstra3d>=1.9.0",
     "fill-voids>=2.0.0",
-    "edt>=1.3.1",
+    "edt>=2.1.0",
     "fastremap>=1.10.2",
     "networkx",
     "numpy>=1.16.1",
