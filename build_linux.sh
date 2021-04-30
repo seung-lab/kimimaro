@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 # Some dependencies don't support manylinux1
 docker build . -f manylinux2010.Dockerfile --tag seunglab/kimimaro:manylinux2010
 docker build . -f manylinux2014.Dockerfile --tag seunglab/kimimaro:manylinux2014
