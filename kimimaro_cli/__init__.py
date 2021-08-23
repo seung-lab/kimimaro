@@ -1,5 +1,6 @@
 import os
 
+from cloudvolume import Skeleton
 from cloudvolume.lib import mkdir
 import click
 import numpy as np
@@ -43,9 +44,9 @@ def main():
 @click.argument("src")
 @click.option('--scale', type=float, default=4, help="Adds multiple of boundary distance to invalidation zone. (You should set this!)", show_default=True)
 @click.option('--const', type=float, default=10, help="Adds constant physical distance to invalidation zone. (You should set this!)", show_default=True)
-@click.option('--pdrf-scale', type=float, default=1e5, help="Constant multiplier of penalty field.", show_default=True)
-@click.option('--pdrf-exponent', type=float, default=4, help="Exponent of penalty field. Powers of two are faster. Too big can cause floating point errors.", show_default=True)
-@click.option('--soma-detect', type=float, default=None, help="If specified, distance to boundary values above this threshold trigger special soma processing. e.g. 750 nm", show_default=True)
+@click.option('--pdrf-scale', type=int, default=1e5, help="Constant multiplier of penalty field.", show_default=True)
+@click.option('--pdrf-exponent', type=int, default=4, help="Exponent of penalty field. Powers of two are faster. Too big can cause floating point errors.", show_default=True)
+@click.option('--soma-detect', type=float, default=4000, help="If specified, distance to boundary values above this threshold trigger special soma processing. e.g. 750 nm", show_default=True)
 @click.option('--soma-scale', type=float, default=2, help="Adds multiple of boundary distance to invalidation zone around a soma. (You should set this!)", show_default=True)
 @click.option('--soma-const', type=float, default=300, help="Adds constant physical distance to invalidation zone around a soma. (You should set this!)", show_default=True)
 @click.option('--anisotropy', type=Tuple3(), default="1,1,1", help="Physical size of voxel in x,y,z axes.", show_default=True)
@@ -62,7 +63,7 @@ def forge(
   scale, const, pdrf_scale, pdrf_exponent,
   soma_detect, soma_scale, soma_const,
   anisotropy, dust, progress, fill_holes, 
-  fix_avocados, fix_branching, fix_borders,
+  fix_avocados, fix_branches, fix_borders,
   parallel, outdir
 ):
   """Skeletonize an input image and write out SWCs."""
@@ -85,7 +86,7 @@ def forge(
     progress=progress,
     fill_holes=fill_holes,
     fix_avocados=fix_avocados,
-    fix_branching=fix_branching,
+    fix_branching=fix_branches,
     fix_borders=fix_borders,
     parallel=parallel,
   )
@@ -94,11 +95,20 @@ def forge(
 
   for label, skel in skels.items():
     fname = os.path.join(directory, f"{label}.swc")
-    with open(fname, "wb") as f:
+    with open(fname, "wt") as f:
       f.write(skel.to_swc())
 
   if progress:
     print(f"kimimaro: wrote {len(skels)} skeletons to {directory}")
+
+@main.command()
+@click.argument("filename")
+def view(filename):
+  """Visualize an swc file."""
+  with open(filename, "rt") as swc:
+    skel = Skeleton.from_swc(swc.read())
+
+  skel.viewer()
 
 @main.command()
 def license():
@@ -106,9 +116,4 @@ def license():
   path = os.path.join(os.path.dirname(__file__), 'LICENSE')
   with open(path, 'rt') as f:
     print(f.read())
-
-
-
-
-
 
