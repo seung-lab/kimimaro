@@ -2,6 +2,11 @@
 
 # Kimimaro: Skeletonize Densely Labeled Images
 
+```bash
+kimimaro forge labels.npy --progress
+kimimaro view kimimaro_out/10.swc
+```
+
 Rapidly skeletonize all non-zero labels in 2D and 3D numpy arrays using a TEASAR derived method. The returned list of skeletons is in the format used by [cloud-volume](https://github.com/seung-lab/cloud-volume/wiki/Advanced-Topic:-Skeletons). 
 
 On an Apple Silicon M1 arm64 chip (Firestorm cores 3.2 GHz max frequency), this package processed a 512x512x100 volume with 333 labels in 20 seconds. It processed a 512x512x512 volume (`connectomics.npy`) with 2124 labels in 187 seconds.
