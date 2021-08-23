@@ -2,6 +2,12 @@
 
 # Kimimaro: Skeletonize Densely Labeled Images
 
+```bash
+# Produce SWC files from volumetric images.
+kimimaro forge labels.npy --progress # writes to ./kimimaro_out/
+kimimaro view kimimaro_out/10.swc
+```
+
 Rapidly skeletonize all non-zero labels in 2D and 3D numpy arrays using a TEASAR derived method. The returned list of skeletons is in the format used by [cloud-volume](https://github.com/seung-lab/cloud-volume/wiki/Advanced-Topic:-Skeletons). 
 
 On an Apple Silicon M1 arm64 chip (Firestorm cores 3.2 GHz max frequency), this package processed a 512x512x100 volume with 333 labels in 20 seconds. It processed a 512x512x512 volume (`connectomics.npy`) with 2124 labels in 187 seconds.
@@ -36,6 +42,8 @@ Fig. 2: Memory Usage on a 512x512x512 Densely Labeled Volume
 Figure 2 shows the memory usage and processessing time (~390 seconds, about 6.5 minutes) required when Kimimaro 1.4.0 was applied to a 512x512x512 cutout, *labels*, from a connectomics dataset containing 2124 connected components. The different sections of the algorithm are depicted. Grossly, the preamble runs for about half a minute, skeletonization for about six minutes, and finalization within seconds. The peak memory usage was about 4.5 GB. The code below was used to process *labels*. The processing of the glia was truncated in due to a combination of *fix_borders* and max_paths.  
 
 Kimimaro has come a long way. Version 0.2.1 took over 15 minutes and had a Preamble run time twice as long on the same dataset.    
+
+### Python Interface
 
 ```python
 # LISTING 1: Producing Skeletons from a labeled image.
@@ -105,7 +113,17 @@ extra_targets = kimimaro.synapses_to_targets(labels, synapses)
 
 `connectomics.npy` is multilabel connectomics data derived from pinky40, a 2018 experimental automated segmentation of ~1.5 million cubic micrometers of mouse visual cortex. It is an early predecessor to the now public pinky100_v185 segmentation that can be found at https://microns-explorer.org/phase1 You will need to run `lzma -d connectomics.npy.lzma` to obtain the 512x512x512 uint32 volume at 32x32x40 nm<sup>3</sup> resolution.  
 
-### Tweaking `kimimaro.skeletonize` Parameters
+### CLI Interface
+
+The CLI supports producing skeletons from a single image as SWCs and viewing the resulting SWC files one at a time. By default, the SWC files are written to `./kimimaro_out/$LABEL.swc`.
+
+Here's an equivalent example to the code above.
+
+```bash
+kimimaro forge labels.npy --scale 4 --const 10 --soma-detect 1100 --soma-accept 3500 --soma-scale 1 --soma-const 300 --anisotropy 16,16,40 --fix-borders --progress 
+```
+
+## Tweaking `kimimaro.skeletonize` Parameters
 
 This algorithm works by finding a root point on a 3D object and then serially tracing paths via dijksta's shortest path algorithm through a penalty field to the most distant unvisited point. After each pass, there is a sphere (really a circumscribing cube) that expands around each vertex in the current path that marks part of the object as visited.  
 
@@ -113,31 +131,31 @@ For a visual tutorial on the basics of the skeletonization procedure, check out 
 
 For more detailed information, [read below](https://github.com/seung-lab/kimimaro#ii-skeletonization) or the [TEASAR paper](https://ieeexplore.ieee.org/abstract/document/883951/) (though we [deviate from TEASAR](https://github.com/seung-lab/kimimaro#teasar-derived-algorthm) in a few places). [1]
 
-#### `scale` and `const`
+### `scale` and `const`
 
 Usually, the most important parameters to tweak are `scale` and `const` which control the radius of this invalidation sphere according to the equation `r(x,y,z) = scale * DBF(x,y,z) + const` where the dimensions are physical (e.g. nanometers, i.e. corrected for anisotropy). `DBF(x,y,z)` is the physical distance from the shape boundary at that point.  
 
 Check out this [wiki article](https://github.com/seung-lab/kimimaro/wiki/Intuition-for-Setting-Parameters-const-and-scale) to help refine your intuition.
 
-#### `anisotropy`
+### `anisotropy`
 
 Represents the physical dimension of each voxel. For example, a connectomics dataset might be scanned with an electron microscope at 4nm x 4nm per pixel and stacked in slices 40nm thick. i.e. `anisotropy=(4,4,40)`. You can use any units so long as you are consistent.
 
-#### `dust_threshold`
+### `dust_threshold`
 
 This threshold culls connected components that are smaller than this many voxels.  
 
-#### `extra_targets_after` and `extra_targets_before`  
+### `extra_targets_after` and `extra_targets_before`  
 
 `extra_targets_after` provides additional voxel targets to trace to after the morphological tracing algorithm completes. For example, you might add known synapse locations to the skeleton.   
 
 `extra_targets_before` is the same as `extra_targets_after` except that the additional targets are front-loaded and the paths that they cover are invalidated. This may affect the results of subsequent morphological tracing.
 
-#### `max_paths`  
+### `max_paths`  
 
 Limits the number of paths that can be drawn for the given label. Certain cells, such as glia, that may not be important for the current analysis may be expensive to process and can be aborted early.  
 
-#### `pdrf_scale` and `pdrf_exponent`
+### `pdrf_scale` and `pdrf_exponent`
 
 The `pdrf_scale` and `pdrf_exponent` represent parameters to the penalty equation that takes the euclidean distance field (**D**) and augments it so that cutting closer to the border is very penalized to make dijkstra take paths that are more centered.   
 
@@ -145,43 +163,43 @@ P<sub>r</sub> = `pdrf_scale` * (1 - **D** / max(**D**)) <sup>`pdrf_exponent`</su
 
 The default settings should work fairly well, but under large anisotropies or with cavernous morphologies, it's possible that you might need to tweak it. If you see the skeleton go haywire inside a large area, it could be a collapse of floating point precision.  
 
-#### `soma_acceptance_threshold` and `soma_detection_threshold`
+### `soma_acceptance_threshold` and `soma_detection_threshold`
 
 We process somas specially because they do not have a tubular geometry and instead should be represented in a hub and spoke manner. `soma_acceptance_threshold` is the physical radius (e.g. in nanometers) beyond which we classify a connected component of the image as containing a soma. The distance transform's output is depressed by holes in the label, which are frequently produced by segmentation algorithms on somata. We can fill them, but the hole filling algorithm we use is slow so we would like to only apply it occasionally. Therefore, we set a lower threshold, the `soma_acceptance_threshold`, beyond which we fill the holes and retest the soma.  
 
-#### `soma_invalidation_scale` and `soma_invalidation_const`   
+### `soma_invalidation_scale` and `soma_invalidation_const`   
 
 Once we have classified a region as a soma, we fix root of the skeletonization algorithm at one of the  points of maximum distance from the boundary (usually there is only one). We then mark as visited all voxels around that point in a spherical radius described by `r(x,y,z) = soma_invalidation_scale * DBF(x,y,z) + soma_invalidation_const` where DBF(x,y,z) is the physical distance from the shape boundary at that point. If done correctly, this can prevent skeletons from being drawn to the boundaries of the soma, and instead pulls the skeletons mainly into the processes extending from the cell body.  
 
-#### `fix_borders`
+### `fix_borders`
 
 This feature makes it easier to connect the skeletons of adjacent image volumes that do not fit in RAM. If enabled, skeletons will be deterministically drawn to the approximate center of the 2D contact area of each place where the shape contacts the border. This can affect the performance of the operation positively or negatively depending on the shape and number of contacts.  
 
-#### `fix_branching`  
+### `fix_branching`  
 
 You'll probably never want to disable this, but base TEASAR is infamous for forking the skeleton at branch points way too early. This option makes it preferential to fork at a more reasonable place at a significant performance penalty. 
 
-#### `fill_holes`
+### `fill_holes`
 
 _Warning: This will remove input labels that are deemed to be holes._
 
 If your segmentation contains artifacts that cause holes to appear in labels, you can preprocess the entire image to eliminate background holes and holes caused by entirely contained inclusions. This option adds a moderate amount of additional processing time at the beginning (perhaps ~30%). 
 
-#### `fix_avocados`
+### `fix_avocados`
 
 Avocados are segmentations of cell somata that classify the nucleus separately from the cytoplasm. This is a common problem in automatic segmentations due to the visual similarity of a cell membrane and a nuclear membrane combined with insufficient context.  
 
 Skeletonizing an avocado results in a poor skeletonization of the cell soma that will disconnect the nucleus and usually results in too many paths traced around the nucleus. Setting `fix_avocados=True` attempts to detect and fix these problems. Currently we handle non-avocados, avocados, cells with inclusions, and nested avocados. You can see examples [here](https://github.com/seung-lab/kimimaro/pull/43).
 
-#### `progress`
+### `progress`
 
 Show a progress bar once the skeletonization phase begins.
 
-#### `parallel`  
+### `parallel`  
 
 Use a pool of processors to skeletonize faster. Each process allocatable task is the skeletonization of one connected component (so it won't help with a single label that takes a long time to skeletonize). This option also affects the speed of the initial euclidean distance transform, which is parallel enabled and is the most expensive part of the Preamble (described below).  
 
-#### `parallel_chunk_size`  
+### `parallel_chunk_size`  
 
 This only applies when using parallel. This sets the number of skeletons a subprocess will extract before returning control to the main thread, updating the progress bar, and acquiring a new task. If this value is set too low (e.g. < 10-20) the cost of interprocess communication can become significant and even dominant. If it is set too high, task starvation may occur for the other subprocesses if a subprocess gets a particularly hard skeleton and they complete quickly. Progress bar updates will be infrequent if the value is too high as well.  
 
