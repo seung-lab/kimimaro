@@ -16,6 +16,7 @@ setuptools.setup(
   version="2.1.1",
   setup_requires=["numpy"],
   install_requires=[
+    "click",
     "connected-components-3d>=1.5.0",
     "cloud-volume>=0.57.6",
     "dijkstra3d>=1.9.0",
@@ -64,6 +65,11 @@ setuptools.setup(
     "Operating System :: POSIX",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows :: Windows 10",
-  ],  
+  ],
+  entry_points={
+    "console_scripts": [
+      "kimimaro=kimimaro_cli:main"
+    ],
+  },
 )
 
