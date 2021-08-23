@@ -46,7 +46,8 @@ def main():
 @click.option('--const', type=float, default=10, help="Adds constant physical distance to invalidation zone. (You should set this!)", show_default=True)
 @click.option('--pdrf-scale', type=int, default=1e5, help="Constant multiplier of penalty field.", show_default=True)
 @click.option('--pdrf-exponent', type=int, default=4, help="Exponent of penalty field. Powers of two are faster. Too big can cause floating point errors.", show_default=True)
-@click.option('--soma-detect', type=float, default=4000, help="If specified, distance to boundary values above this threshold trigger special soma processing. e.g. 750 nm", show_default=True)
+@click.option('--soma-detect', type=float, default=750, help="Perform more expensive check for somas for distance to boundary values above this threshold. e.g. 750 nm", show_default=True)
+@click.option('--soma-accept', type=float, default=1100, help="Distance to boundary values above this threshold trigger special soma processing. e.g. 750 nm", show_default=True)
 @click.option('--soma-scale', type=float, default=2, help="Adds multiple of boundary distance to invalidation zone around a soma. (You should set this!)", show_default=True)
 @click.option('--soma-const', type=float, default=300, help="Adds constant physical distance to invalidation zone around a soma. (You should set this!)", show_default=True)
 @click.option('--anisotropy', type=Tuple3(), default="1,1,1", help="Physical size of voxel in x,y,z axes.", show_default=True)
@@ -56,15 +57,16 @@ def main():
 @click.option('--fix-avocados', is_flag=True, default=False, help="Use heuristics to combine nucleii with cell bodies. (slower)", show_default=True)
 @click.option('--fix-borders', is_flag=True, default=False, help="Center the skeleton where the shape contacts the border.", show_default=True)
 @click.option('--fix-branches', is_flag=True, default=True, help="Improves quality of forked shapes. (slower for highly branched shapes)", show_default=True)
+@click.option('--max-paths', type=int, default=None, help="Maximum number of paths to trace per object.", show_default=True)
 @click.option('--parallel', type=int, default=1, help="Number of processes to use.", show_default=True)
 @click.option('--outdir', type=str, default="kimimaro_out", help="Where to write the SWC files.", show_default=True)
 def forge(
   src,
   scale, const, pdrf_scale, pdrf_exponent,
-  soma_detect, soma_scale, soma_const,
+  soma_detect, soma_accept, soma_scale, soma_const,
   anisotropy, dust, progress, fill_holes, 
   fix_avocados, fix_branches, fix_borders,
-  parallel, outdir
+  parallel, max_paths, outdir
 ):
   """Skeletonize an input image and write out SWCs."""
   
@@ -78,8 +80,10 @@ def forge(
       "pdrf_scale": pdrf_scale,
       "pdrf_exponent": pdrf_exponent,
       "soma_detection_threshold": soma_detect,
+      "soma_acceptance_threshold": soma_accept,
       "soma_invalidation_scale": soma_scale,
       "soma_invalidation_const": soma_const,
+      "max_paths": max_paths,
     },
     anisotropy=anisotropy,
     dust_threshold=dust,
