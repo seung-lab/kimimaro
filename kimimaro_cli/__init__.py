@@ -58,8 +58,8 @@ def main():
 @click.option('--fix-borders', is_flag=True, default=False, help="Center the skeleton where the shape contacts the border.", show_default=True)
 @click.option('--fix-branches', is_flag=True, default=True, help="Improves quality of forked shapes. (slower for highly branched shapes)", show_default=True)
 @click.option('--max-paths', type=int, default=None, help="Maximum number of paths to trace per object.", show_default=True)
-@click.option('--parallel', type=int, default=1, help="Number of processes to use.", show_default=True)
-@click.option('--outdir', type=str, default="kimimaro_out", help="Where to write the SWC files.", show_default=True)
+@click.option('-p', '--parallel', type=int, default=1, help="Number of processes to use.", show_default=True)
+@click.option('-o', '--outdir', type=str, default="kimimaro_out", help="Where to write the SWC files.", show_default=True)
 def forge(
   src,
   scale, const, pdrf_scale, pdrf_exponent,
