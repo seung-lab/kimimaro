@@ -8,7 +8,9 @@ kimimaro forge labels.npy --progress # writes to ./kimimaro_out/
 kimimaro view kimimaro_out/10.swc
 ```
 
-Rapidly skeletonize all non-zero labels in 2D and 3D numpy arrays using a TEASAR derived method. The returned list of skeletons is in the format used by [cloud-volume](https://github.com/seung-lab/cloud-volume/wiki/Advanced-Topic:-Skeletons). 
+Rapidly skeletonize all non-zero labels in 2D and 3D numpy arrays using a TEASAR derived method. The returned list of skeletons is in the format used by [cloud-volume](https://github.com/seung-lab/cloud-volume/wiki/Advanced-Topic:-Skeletons). A skeleton is a stick figure 1D representation of a 2D or 3D object that consists of a graph of verticies linked by edges. A skeleton where the verticies also carry a distance to the nearest boundary they were extracted from is called a "Medial Axis Transform", which Kimimaro provides.
+
+Skeletons are a compact representation that can be used to visualize objects, trace the connectivity of an object, or otherwise analyze the object's geometry. Kimimaro was designed for use with high resolution neurons extracted from electron microscopy data via AI segmentation, but it can be applied to many different fields.  
 
 On an Apple Silicon M1 arm64 chip (Firestorm cores 3.2 GHz max frequency), this package processed a 512x512x100 volume with 333 labels in 20 seconds. It processed a 512x512x512 volume (`connectomics.npy`) with 2124 labels in 187 seconds.
 
