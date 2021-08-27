@@ -161,6 +161,11 @@ def trace(
       anisotropy=anisotropy
     )
 
+  # delete reference to DAF and place it in
+  # a list where we can delete it later and
+  # free that memory.
+  DAF = [ DAF ] 
+
   paths = compute_paths(
     root, labels, DBF, DAF, 
     parents, scale, const, anisotropy, 
@@ -206,6 +211,14 @@ def compute_paths(
   if len(manual_targets_before) + len(manual_targets_after) >= max_paths:
     return []
 
+  target_finder = None
+  def find_target():
+    nonlocal target_finder
+    if target_finder is None:
+      target_finder = kimimaro.skeletontricks.CachedTargetFinder(labels, DAF[0])
+      DAF.pop(0)
+    return target_finder.find_target(labels)
+
   while (valid_labels > 0 or manual_targets_before or manual_targets_after) \
     and len(paths) < max_paths:
 
@@ -214,7 +227,7 @@ def compute_paths(
     elif valid_labels == 0:
       target = manual_targets_after.pop()
     else:
-      target = kimimaro.skeletontricks.find_target(labels, DAF)
+      target = find_target()
 
     if fix_branching:
       # faster to trace from target to root than root to target

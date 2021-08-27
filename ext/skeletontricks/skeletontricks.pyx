@@ -913,6 +913,44 @@ def find_avocado_fruit(
   
   return (label, uniq[candidate_fruit_index])
 
-  
+class CachedTargetFinder:
+  def __init__(self, mask: np.ndarray, daf: np.ndarray):
+    mask_indices = np.flatnonzero(mask.ravel(order='F'))
+    daf_sort = np.argsort(-daf.ravel(order='F')[mask_indices])
+    self.daf_indices = mask_indices[daf_sort]
+
+  def find_target(self, mask: np.ndarray):
+    first_positive_index = self.first_label_indexed(
+      mask.ravel(order='F'), self.daf_indices
+    )
+    if first_positive_index is None:
+      self.daf_indices = self.daf_indices[self.daf_indices.size:]  # Clear it.
+      return None
+
+    # This tells us mask positions daf_indices[0:first_positive_index] are now
+    # zeroed out. We assume that this is permanent, so we don't need to search
+    # those positions again next time.
+    self.daf_indices = self.daf_indices[first_positive_index:]
+
+    return np.unravel_index(self.daf_indices[0], mask.shape, order='F')
+
+  @cython.boundscheck(False)
+  @cython.wraparound(False)  # turn off negative index wrapping for entire function
+  @cython.nonecheck(False)
+  def first_label_indexed(self, uint8_t[:] labels not None, int64_t[:] indices not None):
+    """
+    first_label_indexed(uint8_t[:] labels not None, int64_t[:] indices not None)
+    Returns: first i for which labels[indices[i]] is non-zero.
+    """
+    cdef size_t length = indices.size
+    cdef size_t i = 0
+    cdef int64_t label_index
+
+    for i in range(length):
+      label_index = indices[i]
+      if labels[label_index]:
+        return i
+
+    return None  
 
 
