@@ -1,5 +1,6 @@
 import os
 
+import cloudvolume
 from cloudvolume import Skeleton
 from cloudvolume.lib import mkdir
 import click
@@ -108,11 +109,19 @@ def forge(
 @main.command()
 @click.argument("filename")
 def view(filename):
-  """Visualize an swc file."""
-  with open(filename, "rt") as swc:
-    skel = Skeleton.from_swc(swc.read())
+  """Visualize a .swc or .npy file."""
+  basename, ext = os.path.splitext(filename)
 
-  skel.viewer()
+  if ext == ".swc":
+    with open(filename, "rt") as swc:
+      skel = Skeleton.from_swc(swc.read())
+
+    skel.viewer()
+  elif ext == ".npy":
+    labels = np.load(filename)
+    cloudvolume.view(labels, segmentation=True)
+  else:
+    print("kimimaro: {filename} was not a .swc or .npy file.")
 
 @main.command()
 def license():
