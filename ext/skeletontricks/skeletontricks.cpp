@@ -3244,7 +3244,7 @@ static const char __pyx_k_unsigned_char_unsigned_char[] = "unsigned char|unsigne
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
 static const char __pyx_k_CachedTargetFinder_find_target[] = "CachedTargetFinder.find_target";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
-static const char __pyx_k_Certain_operations_have_to_be_f[] = "\nCertain operations have to be fast for the skeletonization\nprocedure. The ones that didn't fit elsewhere have a home here.\n\nAuthor: William Silversmith\nAffiliation: Seung Lab, Princeton Neuroscience Institute\nDate: August 2018 - Februrary 2020\n\n*****************************************************************\nThis file is part of Kimimaro.\n\nKimimaro is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nKimimaro is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.\n*****************************************************************\n";
+static const char __pyx_k_Certain_operations_have_to_be_f[] = "\nCertain operations have to be fast for the skeletonization\nprocedure. The ones that didn't fit elsewhere have a home here.\n\nAuthor: William Silversmith\nAffiliation: Seung Lab, Princeton Neuroscience Institute\nDate: August 2018 - August 2021\n\n*****************************************************************\nThis file is part of Kimimaro.\n\nKimimaro is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nKimimaro is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.\n*****************************************************************\n";
 static const char __pyx_k_must_be_be_contained_within_sha[] = "<{},{},{}> must be be contained within shape <{},{},{}>";
 static const char __pyx_k_numpy_core_multiarray_failed_to[] = "numpy.core.multiarray failed to import";
 static const char __pyx_k_Buffer_view_does_not_expose_stri[] = "Buffer view does not expose strides";
@@ -54993,25 +54993,34 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("first_label_indexed", 0);
 
-  /* "skeletontricks.pyx":949
+  /* "skeletontricks.pyx":945
+ *     Returns: first i for which labels[indices[i]] is non-zero.
+ *     """
+ *     cdef size_t length = indices.size             # <<<<<<<<<<<<<<
+ *     cdef size_t i = 0
  *     cdef int64_t label_index
- * 
- *     length = indices.size             # <<<<<<<<<<<<<<
- *     for i in range(length):
- *       label_index = indices[i]
  */
-  __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_v_indices, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn_int64_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn_int64_t, 0);; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 949, __pyx_L1_error)
+  __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_v_indices, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn_int64_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn_int64_t, 0);; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 949, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_t_2); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 949, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_t_2); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_length = __pyx_t_3;
 
-  /* "skeletontricks.pyx":950
+  /* "skeletontricks.pyx":946
+ *     """
+ *     cdef size_t length = indices.size
+ *     cdef size_t i = 0             # <<<<<<<<<<<<<<
+ *     cdef int64_t label_index
  * 
- *     length = indices.size
+ */
+  __pyx_v_i = 0;
+
+  /* "skeletontricks.pyx":949
+ *     cdef int64_t label_index
+ * 
  *     for i in range(length):             # <<<<<<<<<<<<<<
  *       label_index = indices[i]
  *       if labels[label_index]:
@@ -55021,8 +55030,8 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "skeletontricks.pyx":951
- *     length = indices.size
+    /* "skeletontricks.pyx":950
+ * 
  *     for i in range(length):
  *       label_index = indices[i]             # <<<<<<<<<<<<<<
  *       if labels[label_index]:
@@ -55031,7 +55040,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
     __pyx_t_6 = __pyx_v_i;
     __pyx_v_label_index = (*((int64_t *) ( /* dim=0 */ (__pyx_v_indices.data + __pyx_t_6 * __pyx_v_indices.strides[0]) )));
 
-    /* "skeletontricks.pyx":952
+    /* "skeletontricks.pyx":951
  *     for i in range(length):
  *       label_index = indices[i]
  *       if labels[label_index]:             # <<<<<<<<<<<<<<
@@ -55042,7 +55051,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
     __pyx_t_8 = ((*((uint8_t *) ( /* dim=0 */ (__pyx_v_labels.data + __pyx_t_7 * __pyx_v_labels.strides[0]) ))) != 0);
     if (__pyx_t_8) {
 
-      /* "skeletontricks.pyx":953
+      /* "skeletontricks.pyx":952
  *       label_index = indices[i]
  *       if labels[label_index]:
  *         return i             # <<<<<<<<<<<<<<
@@ -55050,13 +55059,13 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
  *     return None
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_i); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 953, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_i); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 952, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_r = __pyx_t_2;
       __pyx_t_2 = 0;
       goto __pyx_L0;
 
-      /* "skeletontricks.pyx":952
+      /* "skeletontricks.pyx":951
  *     for i in range(length):
  *       label_index = indices[i]
  *       if labels[label_index]:             # <<<<<<<<<<<<<<
@@ -55066,7 +55075,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
     }
   }
 
-  /* "skeletontricks.pyx":955
+  /* "skeletontricks.pyx":954
  *         return i
  * 
  *     return None             # <<<<<<<<<<<<<<

@@ -4,7 +4,7 @@ procedure. The ones that didn't fit elsewhere have a home here.
 
 Author: William Silversmith
 Affiliation: Seung Lab, Princeton Neuroscience Institute
-Date: August 2018 - Februrary 2020
+Date: August 2018 - August 2021
 
 *****************************************************************
 This file is part of Kimimaro.
