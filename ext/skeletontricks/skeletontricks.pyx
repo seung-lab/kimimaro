@@ -915,11 +915,21 @@ def find_avocado_fruit(
 
 class CachedTargetFinder:
   def __init__(self, mask: np.ndarray, daf: np.ndarray):
+    """
+    From DAF, compute a sorted list of the maximum values
+    so that finding them becomes very fast.
+    """
     mask_indices = np.flatnonzero(mask.ravel(order='F'))
     daf_sort = np.argsort(-daf.ravel(order='F')[mask_indices])
     self.daf_indices = mask_indices[daf_sort]
 
   def find_target(self, mask: np.ndarray):
+    """
+    Find the coordinate of a voxel corresponding 
+    the maximum map value.
+
+    Returns: (x, y, z)
+    """
     first_positive_index = self.first_label_indexed(
       mask.ravel(order='F'), self.daf_indices
     )

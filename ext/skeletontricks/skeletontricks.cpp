@@ -54356,13 +54356,14 @@ static PyObject *__pyx_pf_14skeletontricks_186find_avocado_fruit(CYTHON_UNUSED P
  * 
  * class CachedTargetFinder:
  *   def __init__(self, mask: np.ndarray, daf: np.ndarray):             # <<<<<<<<<<<<<<
- *     mask_indices = np.flatnonzero(mask.ravel(order='F'))
- *     daf_sort = np.argsort(-daf.ravel(order='F')[mask_indices])
+ *     """
+ *     From DAF, compute a sorted list of the maximum values
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_14skeletontricks_18CachedTargetFinder_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_14skeletontricks_18CachedTargetFinder_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14skeletontricks_18CachedTargetFinder_1__init__, METH_VARARGS|METH_KEYWORDS, 0};
+static char __pyx_doc_14skeletontricks_18CachedTargetFinder___init__[] = "\n    From DAF, compute a sorted list of the maximum values\n    so that finding them becomes very fast.\n    ";
+static PyMethodDef __pyx_mdef_14skeletontricks_18CachedTargetFinder_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14skeletontricks_18CachedTargetFinder_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_14skeletontricks_18CachedTargetFinder___init__};
 static PyObject *__pyx_pw_14skeletontricks_18CachedTargetFinder_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_mask = 0;
@@ -54451,24 +54452,24 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder___init__(CYTHON_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "skeletontricks.pyx":918
- * class CachedTargetFinder:
- *   def __init__(self, mask: np.ndarray, daf: np.ndarray):
+  /* "skeletontricks.pyx":922
+ *     so that finding them becomes very fast.
+ *     """
  *     mask_indices = np.flatnonzero(mask.ravel(order='F'))             # <<<<<<<<<<<<<<
  *     daf_sort = np.argsort(-daf.ravel(order='F')[mask_indices])
  *     self.daf_indices = mask_indices[daf_sort]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 918, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 922, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_flatnonzero); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 918, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_flatnonzero); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 922, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_mask, __pyx_n_s_ravel); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 918, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_mask, __pyx_n_s_ravel); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 922, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 918, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 922, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 918, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 918, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 922, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 922, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -54485,37 +54486,37 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder___init__(CYTHON_
   __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_5);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 918, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 922, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_mask_indices = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "skeletontricks.pyx":919
- *   def __init__(self, mask: np.ndarray, daf: np.ndarray):
+  /* "skeletontricks.pyx":923
+ *     """
  *     mask_indices = np.flatnonzero(mask.ravel(order='F'))
  *     daf_sort = np.argsort(-daf.ravel(order='F')[mask_indices])             # <<<<<<<<<<<<<<
  *     self.daf_indices = mask_indices[daf_sort]
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 919, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 923, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_argsort); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 919, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_argsort); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 923, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_daf, __pyx_n_s_ravel); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 919, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_daf, __pyx_n_s_ravel); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 923, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 919, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 923, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 919, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 919, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 923, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 923, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_v_mask_indices); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 919, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_v_mask_indices); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 923, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyNumber_Negative(__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 919, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Negative(__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 923, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_4 = NULL;
@@ -54531,30 +54532,30 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder___init__(CYTHON_
   __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 919, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 923, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_v_daf_sort = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "skeletontricks.pyx":920
+  /* "skeletontricks.pyx":924
  *     mask_indices = np.flatnonzero(mask.ravel(order='F'))
  *     daf_sort = np.argsort(-daf.ravel(order='F')[mask_indices])
  *     self.daf_indices = mask_indices[daf_sort]             # <<<<<<<<<<<<<<
  * 
  *   def find_target(self, mask: np.ndarray):
  */
-  __pyx_t_1 = __Pyx_PyObject_GetItem(__pyx_v_mask_indices, __pyx_v_daf_sort); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 920, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetItem(__pyx_v_mask_indices, __pyx_v_daf_sort); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 924, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices, __pyx_t_1) < 0) __PYX_ERR(0, 920, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices, __pyx_t_1) < 0) __PYX_ERR(0, 924, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "skeletontricks.pyx":917
  * 
  * class CachedTargetFinder:
  *   def __init__(self, mask: np.ndarray, daf: np.ndarray):             # <<<<<<<<<<<<<<
- *     mask_indices = np.flatnonzero(mask.ravel(order='F'))
- *     daf_sort = np.argsort(-daf.ravel(order='F')[mask_indices])
+ *     """
+ *     From DAF, compute a sorted list of the maximum values
  */
 
   /* function exit code */
@@ -54576,17 +54577,18 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder___init__(CYTHON_
   return __pyx_r;
 }
 
-/* "skeletontricks.pyx":922
+/* "skeletontricks.pyx":926
  *     self.daf_indices = mask_indices[daf_sort]
  * 
  *   def find_target(self, mask: np.ndarray):             # <<<<<<<<<<<<<<
- *     first_positive_index = self.first_label_indexed(
- *       mask.ravel(order='F'), self.daf_indices
+ *     """
+ *     Find the coordinate of a voxel corresponding
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_14skeletontricks_18CachedTargetFinder_3find_target(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_14skeletontricks_18CachedTargetFinder_3find_target = {"find_target", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14skeletontricks_18CachedTargetFinder_3find_target, METH_VARARGS|METH_KEYWORDS, 0};
+static char __pyx_doc_14skeletontricks_18CachedTargetFinder_2find_target[] = "\n    Find the coordinate of a voxel corresponding \n    the maximum map value.\n\n    Returns: (x, y, z)\n    ";
+static PyMethodDef __pyx_mdef_14skeletontricks_18CachedTargetFinder_3find_target = {"find_target", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14skeletontricks_18CachedTargetFinder_3find_target, METH_VARARGS|METH_KEYWORDS, __pyx_doc_14skeletontricks_18CachedTargetFinder_2find_target};
 static PyObject *__pyx_pw_14skeletontricks_18CachedTargetFinder_3find_target(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_mask = 0;
@@ -54619,11 +54621,11 @@ static PyObject *__pyx_pw_14skeletontricks_18CachedTargetFinder_3find_target(PyO
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_mask)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_target", 1, 2, 2, 1); __PYX_ERR(0, 922, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_target", 1, 2, 2, 1); __PYX_ERR(0, 926, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "find_target") < 0)) __PYX_ERR(0, 922, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "find_target") < 0)) __PYX_ERR(0, 926, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -54636,7 +54638,7 @@ static PyObject *__pyx_pw_14skeletontricks_18CachedTargetFinder_3find_target(PyO
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("find_target", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 922, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("find_target", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 926, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("skeletontricks.CachedTargetFinder.find_target", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -54667,33 +54669,33 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("find_target", 0);
 
-  /* "skeletontricks.pyx":923
- * 
- *   def find_target(self, mask: np.ndarray):
+  /* "skeletontricks.pyx":933
+ *     Returns: (x, y, z)
+ *     """
  *     first_positive_index = self.first_label_indexed(             # <<<<<<<<<<<<<<
  *       mask.ravel(order='F'), self.daf_indices
  *     )
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_first_label_indexed); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 923, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_first_label_indexed); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 933, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "skeletontricks.pyx":924
- *   def find_target(self, mask: np.ndarray):
+  /* "skeletontricks.pyx":934
+ *     """
  *     first_positive_index = self.first_label_indexed(
  *       mask.ravel(order='F'), self.daf_indices             # <<<<<<<<<<<<<<
  *     )
  *     if first_positive_index is None:
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_mask, __pyx_n_s_ravel); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 924, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_mask, __pyx_n_s_ravel); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 934, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 924, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 934, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 924, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 924, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 934, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 934, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 924, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 934, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = NULL;
   __pyx_t_6 = 0;
@@ -54710,7 +54712,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_t_5, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 923, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 933, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -54720,7 +54722,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_t_5, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 923, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 933, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -54728,7 +54730,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 923, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 933, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -54739,7 +54741,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
     PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_4);
     __pyx_t_5 = 0;
     __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 923, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 933, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -54747,7 +54749,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
   __pyx_v_first_positive_index = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "skeletontricks.pyx":926
+  /* "skeletontricks.pyx":936
  *       mask.ravel(order='F'), self.daf_indices
  *     )
  *     if first_positive_index is None:             # <<<<<<<<<<<<<<
@@ -54758,28 +54760,28 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
   __pyx_t_9 = (__pyx_t_8 != 0);
   if (__pyx_t_9) {
 
-    /* "skeletontricks.pyx":927
+    /* "skeletontricks.pyx":937
  *     )
  *     if first_positive_index is None:
  *       self.daf_indices = self.daf_indices[self.daf_indices.size:]  # Clear it.             # <<<<<<<<<<<<<<
  *       return None
  * 
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 927, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 937, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 927, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 937, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_size); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 927, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_size); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 937, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_t_1, 0, 0, &__pyx_t_7, NULL, NULL, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 927, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_t_1, 0, 0, &__pyx_t_7, NULL, NULL, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 937, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices, __pyx_t_2) < 0) __PYX_ERR(0, 927, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices, __pyx_t_2) < 0) __PYX_ERR(0, 937, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "skeletontricks.pyx":928
+    /* "skeletontricks.pyx":938
  *     if first_positive_index is None:
  *       self.daf_indices = self.daf_indices[self.daf_indices.size:]  # Clear it.
  *       return None             # <<<<<<<<<<<<<<
@@ -54790,7 +54792,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "skeletontricks.pyx":926
+    /* "skeletontricks.pyx":936
  *       mask.ravel(order='F'), self.daf_indices
  *     )
  *     if first_positive_index is None:             # <<<<<<<<<<<<<<
@@ -54799,22 +54801,22 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
  */
   }
 
-  /* "skeletontricks.pyx":933
+  /* "skeletontricks.pyx":943
  *     # zeroed out. We assume that this is permanent, so we don't need to search
  *     # those positions again next time.
  *     self.daf_indices = self.daf_indices[first_positive_index:]             # <<<<<<<<<<<<<<
  * 
  *     return np.unravel_index(self.daf_indices[0], mask.shape, order='F')
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 933, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 943, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_t_2, 0, 0, &__pyx_v_first_positive_index, NULL, NULL, 0, 0, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 933, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_t_2, 0, 0, &__pyx_v_first_positive_index, NULL, NULL, 0, 0, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 943, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices, __pyx_t_7) < 0) __PYX_ERR(0, 933, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices, __pyx_t_7) < 0) __PYX_ERR(0, 943, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "skeletontricks.pyx":935
+  /* "skeletontricks.pyx":945
  *     self.daf_indices = self.daf_indices[first_positive_index:]
  * 
  *     return np.unravel_index(self.daf_indices[0], mask.shape, order='F')             # <<<<<<<<<<<<<<
@@ -54822,19 +54824,19 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
  *   @cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 935, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_unravel_index); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 935, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_unravel_index); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 935, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_daf_indices); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_7, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 935, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_7, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_mask, __pyx_n_s_shape); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 935, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_mask, __pyx_n_s_shape); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 935, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
@@ -54842,10 +54844,10 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
   PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_7);
   __pyx_t_1 = 0;
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 935, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 935, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 935, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 945, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -54854,12 +54856,12 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "skeletontricks.pyx":922
+  /* "skeletontricks.pyx":926
  *     self.daf_indices = mask_indices[daf_sort]
  * 
  *   def find_target(self, mask: np.ndarray):             # <<<<<<<<<<<<<<
- *     first_positive_index = self.first_label_indexed(
- *       mask.ravel(order='F'), self.daf_indices
+ *     """
+ *     Find the coordinate of a voxel corresponding
  */
 
   /* function exit code */
@@ -54879,7 +54881,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_2find_target(CYT
   return __pyx_r;
 }
 
-/* "skeletontricks.pyx":940
+/* "skeletontricks.pyx":950
  *   @cython.wraparound(False)  # turn off negative index wrapping for entire function
  *   @cython.nonecheck(False)
  *   def first_label_indexed(self, uint8_t[:] labels not None, int64_t[:] indices not None):             # <<<<<<<<<<<<<<
@@ -54926,17 +54928,17 @@ static PyObject *__pyx_pw_14skeletontricks_18CachedTargetFinder_5first_label_ind
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_labels)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("first_label_indexed", 1, 3, 3, 1); __PYX_ERR(0, 940, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("first_label_indexed", 1, 3, 3, 1); __PYX_ERR(0, 950, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_indices)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("first_label_indexed", 1, 3, 3, 2); __PYX_ERR(0, 940, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("first_label_indexed", 1, 3, 3, 2); __PYX_ERR(0, 950, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "first_label_indexed") < 0)) __PYX_ERR(0, 940, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "first_label_indexed") < 0)) __PYX_ERR(0, 950, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -54946,22 +54948,22 @@ static PyObject *__pyx_pw_14skeletontricks_18CachedTargetFinder_5first_label_ind
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
     __pyx_v_self = values[0];
-    __pyx_v_labels = __Pyx_PyObject_to_MemoryviewSlice_ds_nn_uint8_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_labels.memview)) __PYX_ERR(0, 940, __pyx_L3_error)
-    __pyx_v_indices = __Pyx_PyObject_to_MemoryviewSlice_ds_nn_int64_t(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_indices.memview)) __PYX_ERR(0, 940, __pyx_L3_error)
+    __pyx_v_labels = __Pyx_PyObject_to_MemoryviewSlice_ds_nn_uint8_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_labels.memview)) __PYX_ERR(0, 950, __pyx_L3_error)
+    __pyx_v_indices = __Pyx_PyObject_to_MemoryviewSlice_ds_nn_int64_t(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_indices.memview)) __PYX_ERR(0, 950, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("first_label_indexed", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 940, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("first_label_indexed", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 950, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("skeletontricks.CachedTargetFinder.first_label_indexed", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_labels.memview) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "labels"); __PYX_ERR(0, 940, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "labels"); __PYX_ERR(0, 950, __pyx_L1_error)
   }
   if (unlikely(((PyObject *)__pyx_v_indices.memview) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "indices"); __PYX_ERR(0, 940, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "indices"); __PYX_ERR(0, 950, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_indexed(__pyx_self, __pyx_v_self, __pyx_v_labels, __pyx_v_indices);
 
@@ -54993,23 +54995,23 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("first_label_indexed", 0);
 
-  /* "skeletontricks.pyx":945
+  /* "skeletontricks.pyx":955
  *     Returns: first i for which labels[indices[i]] is non-zero.
  *     """
  *     cdef size_t length = indices.size             # <<<<<<<<<<<<<<
  *     cdef size_t i = 0
  *     cdef int64_t label_index
  */
-  __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_v_indices, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn_int64_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn_int64_t, 0);; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 945, __pyx_L1_error)
+  __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_v_indices, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn_int64_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn_int64_t, 0);; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 955, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 945, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 955, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_t_2); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 945, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_t_2); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 955, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_length = __pyx_t_3;
 
-  /* "skeletontricks.pyx":946
+  /* "skeletontricks.pyx":956
  *     """
  *     cdef size_t length = indices.size
  *     cdef size_t i = 0             # <<<<<<<<<<<<<<
@@ -55018,7 +55020,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
  */
   __pyx_v_i = 0;
 
-  /* "skeletontricks.pyx":949
+  /* "skeletontricks.pyx":959
  *     cdef int64_t label_index
  * 
  *     for i in range(length):             # <<<<<<<<<<<<<<
@@ -55030,7 +55032,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "skeletontricks.pyx":950
+    /* "skeletontricks.pyx":960
  * 
  *     for i in range(length):
  *       label_index = indices[i]             # <<<<<<<<<<<<<<
@@ -55040,7 +55042,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
     __pyx_t_6 = __pyx_v_i;
     __pyx_v_label_index = (*((int64_t *) ( /* dim=0 */ (__pyx_v_indices.data + __pyx_t_6 * __pyx_v_indices.strides[0]) )));
 
-    /* "skeletontricks.pyx":951
+    /* "skeletontricks.pyx":961
  *     for i in range(length):
  *       label_index = indices[i]
  *       if labels[label_index]:             # <<<<<<<<<<<<<<
@@ -55051,7 +55053,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
     __pyx_t_8 = ((*((uint8_t *) ( /* dim=0 */ (__pyx_v_labels.data + __pyx_t_7 * __pyx_v_labels.strides[0]) ))) != 0);
     if (__pyx_t_8) {
 
-      /* "skeletontricks.pyx":952
+      /* "skeletontricks.pyx":962
  *       label_index = indices[i]
  *       if labels[label_index]:
  *         return i             # <<<<<<<<<<<<<<
@@ -55059,13 +55061,13 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
  *     return None
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_i); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 952, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_i); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 962, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_r = __pyx_t_2;
       __pyx_t_2 = 0;
       goto __pyx_L0;
 
-      /* "skeletontricks.pyx":951
+      /* "skeletontricks.pyx":961
  *     for i in range(length):
  *       label_index = indices[i]
  *       if labels[label_index]:             # <<<<<<<<<<<<<<
@@ -55075,7 +55077,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
     }
   }
 
-  /* "skeletontricks.pyx":954
+  /* "skeletontricks.pyx":964
  *         return i
  * 
  *     return None             # <<<<<<<<<<<<<<
@@ -55086,7 +55088,7 @@ static PyObject *__pyx_pf_14skeletontricks_18CachedTargetFinder_4first_label_ind
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
 
-  /* "skeletontricks.pyx":940
+  /* "skeletontricks.pyx":950
  *   @cython.wraparound(False)  # turn off negative index wrapping for entire function
  *   @cython.nonecheck(False)
  *   def first_label_indexed(self, uint8_t[:] labels not None, int64_t[:] indices not None):             # <<<<<<<<<<<<<<
@@ -71665,37 +71667,37 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * class CachedTargetFinder:
  *   def __init__(self, mask: np.ndarray, daf: np.ndarray):             # <<<<<<<<<<<<<<
- *     mask_indices = np.flatnonzero(mask.ravel(order='F'))
- *     daf_sort = np.argsort(-daf.ravel(order='F')[mask_indices])
+ *     """
+ *     From DAF, compute a sorted list of the maximum values
  */
   __pyx_tuple__65 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_mask, __pyx_n_s_daf, __pyx_n_s_mask_indices, __pyx_n_s_daf_sort); if (unlikely(!__pyx_tuple__65)) __PYX_ERR(0, 917, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__65);
   __Pyx_GIVEREF(__pyx_tuple__65);
   __pyx_codeobj__66 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__65, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ext_skeletontricks_skeletontrick, __pyx_n_s_init, 917, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__66)) __PYX_ERR(0, 917, __pyx_L1_error)
 
-  /* "skeletontricks.pyx":922
+  /* "skeletontricks.pyx":926
  *     self.daf_indices = mask_indices[daf_sort]
  * 
  *   def find_target(self, mask: np.ndarray):             # <<<<<<<<<<<<<<
- *     first_positive_index = self.first_label_indexed(
- *       mask.ravel(order='F'), self.daf_indices
+ *     """
+ *     Find the coordinate of a voxel corresponding
  */
-  __pyx_tuple__67 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_mask, __pyx_n_s_first_positive_index); if (unlikely(!__pyx_tuple__67)) __PYX_ERR(0, 922, __pyx_L1_error)
+  __pyx_tuple__67 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_mask, __pyx_n_s_first_positive_index); if (unlikely(!__pyx_tuple__67)) __PYX_ERR(0, 926, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__67);
   __Pyx_GIVEREF(__pyx_tuple__67);
-  __pyx_codeobj__68 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__67, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ext_skeletontricks_skeletontrick, __pyx_n_s_find_target, 922, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__68)) __PYX_ERR(0, 922, __pyx_L1_error)
+  __pyx_codeobj__68 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__67, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ext_skeletontricks_skeletontrick, __pyx_n_s_find_target, 926, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__68)) __PYX_ERR(0, 926, __pyx_L1_error)
 
-  /* "skeletontricks.pyx":940
+  /* "skeletontricks.pyx":950
  *   @cython.wraparound(False)  # turn off negative index wrapping for entire function
  *   @cython.nonecheck(False)
  *   def first_label_indexed(self, uint8_t[:] labels not None, int64_t[:] indices not None):             # <<<<<<<<<<<<<<
  *     """
  *     first_label_indexed(uint8_t[:] labels not None, int64_t[:] indices not None)
  */
-  __pyx_tuple__69 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_labels, __pyx_n_s_indices, __pyx_n_s_length, __pyx_n_s_i, __pyx_n_s_label_index); if (unlikely(!__pyx_tuple__69)) __PYX_ERR(0, 940, __pyx_L1_error)
+  __pyx_tuple__69 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_labels, __pyx_n_s_indices, __pyx_n_s_length, __pyx_n_s_i, __pyx_n_s_label_index); if (unlikely(!__pyx_tuple__69)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__69);
   __Pyx_GIVEREF(__pyx_tuple__69);
-  __pyx_codeobj__70 = (PyObject*)__Pyx_PyCode_New(3, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__69, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ext_skeletontricks_skeletontrick, __pyx_n_s_first_label_indexed, 940, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__70)) __PYX_ERR(0, 940, __pyx_L1_error)
+  __pyx_codeobj__70 = (PyObject*)__Pyx_PyCode_New(3, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__69, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ext_skeletontricks_skeletontrick, __pyx_n_s_first_label_indexed, 950, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__70)) __PYX_ERR(0, 950, __pyx_L1_error)
 
   /* "View.MemoryView":286
  *         return self.name
@@ -72912,7 +72914,7 @@ if (!__Pyx_RefNanny) {
  * 
  * class CachedTargetFinder:             # <<<<<<<<<<<<<<
  *   def __init__(self, mask: np.ndarray, daf: np.ndarray):
- *     mask_indices = np.flatnonzero(mask.ravel(order='F'))
+ *     """
  */
   __pyx_t_1 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_CachedTargetFinder, __pyx_n_s_CachedTargetFinder, (PyObject *) NULL, __pyx_n_s_skeletontricks, (PyObject *) NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 916, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -72921,8 +72923,8 @@ if (!__Pyx_RefNanny) {
  * 
  * class CachedTargetFinder:
  *   def __init__(self, mask: np.ndarray, daf: np.ndarray):             # <<<<<<<<<<<<<<
- *     mask_indices = np.flatnonzero(mask.ravel(order='F'))
- *     daf_sort = np.argsort(-daf.ravel(order='F')[mask_indices])
+ *     """
+ *     From DAF, compute a sorted list of the maximum values
  */
   __pyx_t_3 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 917, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -72947,39 +72949,39 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_init, __pyx_t_2) < 0) __PYX_ERR(0, 917, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "skeletontricks.pyx":922
+  /* "skeletontricks.pyx":926
  *     self.daf_indices = mask_indices[daf_sort]
  * 
  *   def find_target(self, mask: np.ndarray):             # <<<<<<<<<<<<<<
- *     first_positive_index = self.first_label_indexed(
- *       mask.ravel(order='F'), self.daf_indices
+ *     """
+ *     Find the coordinate of a voxel corresponding
  */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 922, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 926, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 922, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 926, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_ndarray); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 922, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_ndarray); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 926, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_mask, __pyx_t_4) < 0) __PYX_ERR(0, 922, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_mask, __pyx_t_4) < 0) __PYX_ERR(0, 926, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_14skeletontricks_18CachedTargetFinder_3find_target, 0, __pyx_n_s_CachedTargetFinder_find_target, NULL, __pyx_n_s_skeletontricks, __pyx_d, ((PyObject *)__pyx_codeobj__68)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 922, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_14skeletontricks_18CachedTargetFinder_3find_target, 0, __pyx_n_s_CachedTargetFinder_find_target, NULL, __pyx_n_s_skeletontricks, __pyx_d, ((PyObject *)__pyx_codeobj__68)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 926, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_find_target, __pyx_t_4) < 0) __PYX_ERR(0, 922, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_find_target, __pyx_t_4) < 0) __PYX_ERR(0, 926, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "skeletontricks.pyx":940
+  /* "skeletontricks.pyx":950
  *   @cython.wraparound(False)  # turn off negative index wrapping for entire function
  *   @cython.nonecheck(False)
  *   def first_label_indexed(self, uint8_t[:] labels not None, int64_t[:] indices not None):             # <<<<<<<<<<<<<<
  *     """
  *     first_label_indexed(uint8_t[:] labels not None, int64_t[:] indices not None)
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_14skeletontricks_18CachedTargetFinder_5first_label_indexed, 0, __pyx_n_s_CachedTargetFinder_first_label_i, NULL, __pyx_n_s_skeletontricks, __pyx_d, ((PyObject *)__pyx_codeobj__70)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 940, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_14skeletontricks_18CachedTargetFinder_5first_label_indexed, 0, __pyx_n_s_CachedTargetFinder_first_label_i, NULL, __pyx_n_s_skeletontricks, __pyx_d, ((PyObject *)__pyx_codeobj__70)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_first_label_indexed, __pyx_t_4) < 0) __PYX_ERR(0, 940, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_first_label_indexed, __pyx_t_4) < 0) __PYX_ERR(0, 950, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "skeletontricks.pyx":916
@@ -72987,7 +72989,7 @@ if (!__Pyx_RefNanny) {
  * 
  * class CachedTargetFinder:             # <<<<<<<<<<<<<<
  *   def __init__(self, mask: np.ndarray, daf: np.ndarray):
- *     mask_indices = np.flatnonzero(mask.ravel(order='F'))
+ *     """
  */
   __pyx_t_4 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_CachedTargetFinder, __pyx_empty_tuple, __pyx_t_1, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 916, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
