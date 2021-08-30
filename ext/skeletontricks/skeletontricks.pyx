@@ -477,7 +477,7 @@ def compute_centroids(
 
   cdef float[:] xsum = np.zeros( (labels.size,), dtype=np.float32)
   cdef float[:] ysum = np.zeros( (labels.size,), dtype=np.float32)
-  cdef UINT[:] labelct = np.zeros( (labels.size,), dtype=labels.dtype)
+  cdef uint32_t[:] labelct = np.zeros( (labels.size,), dtype=np.uint32)
 
   cdef size_t sx, sy
   sx = labels.shape[0]
@@ -568,7 +568,6 @@ def find_border_targets(
 
   cdef UINT label = 0
   cdef dict centroids = compute_centroids(cc_labels, wx, wy)
-
   cdef float px, py
   cdef float centx, centy
 
