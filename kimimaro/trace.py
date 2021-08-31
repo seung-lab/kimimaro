@@ -224,6 +224,8 @@ def compute_paths(
       DAF.pop(0)
     return target_finder.find_target(labels)
 
+  parents[tuple(root)] = 0
+
   while (valid_labels > 0 or manual_targets_before or manual_targets_after) \
     and len(paths) < max_paths:
 
@@ -239,10 +241,15 @@ def compute_paths(
       # because that way local exploration finds any zero weighted path
       # and finishes vs exploring from the neighborhood of the entire zero
       # weighted path
-      path = dijkstra3d.dijkstra(
-        parents, target, root, 
-        bidirectional=soma_mode, voxel_graph=voxel_graph
-      )
+      if soma_mode:
+        path = dijkstra3d.dijkstra(
+          parents, target, root, 
+          bidirectional=True, voxel_graph=voxel_graph
+        )
+      else:
+        path = dijkstra3d.railroad(
+          parents, target, voxel_graph=voxel_graph
+        )
     else:
       path = dijkstra3d.path_from_parents(parents, target)
     
