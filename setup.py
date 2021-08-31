@@ -13,7 +13,7 @@ def read(fname):
 
 setuptools.setup(
   name="kimimaro",
-  version="2.2.0",
+  version="2.3.0",
   setup_requires=["numpy"],
   install_requires=[
     "click",
@@ -41,7 +41,7 @@ setuptools.setup(
       ]
     ),
   ],
-  author="William Silversmith, Alex Bae, Forrest Collman",
+  author="William Silversmith, Alex Bae, Forrest Collman, Peter Li",
   author_email="ws9@princeton.edu",
   packages=setuptools.find_packages(),
   description="Skeletonize densely labeled image volumes.",
