@@ -224,7 +224,7 @@ def compute_paths(
       DAF.pop(0)
     return target_finder.find_target(labels)
 
-  parents[tuple(root)] = 0
+  parents[tuple(root)] = 0 # provide initial rail for dijkstra.railroad
 
   while (valid_labels > 0 or manual_targets_before or manual_targets_after) \
     and len(paths) < max_paths:
