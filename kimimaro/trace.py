@@ -237,19 +237,9 @@ def compute_paths(
       target = find_target()
 
     if fix_branching:
-      # faster to trace from target to root than root to target
-      # because that way local exploration finds any zero weighted path
-      # and finishes vs exploring from the neighborhood of the entire zero
-      # weighted path
-      if soma_mode:
-        path = dijkstra3d.dijkstra(
-          parents, target, root, 
-          bidirectional=True, voxel_graph=voxel_graph
-        )
-      else:
-        path = dijkstra3d.railroad(
-          parents, target, voxel_graph=voxel_graph
-        )
+      path = dijkstra3d.railroad(
+        parents, target, voxel_graph=voxel_graph
+      )
     else:
       path = dijkstra3d.path_from_parents(parents, target)
     
