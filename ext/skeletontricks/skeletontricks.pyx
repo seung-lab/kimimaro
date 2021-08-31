@@ -4,7 +4,7 @@ procedure. The ones that didn't fit elsewhere have a home here.
 
 Author: William Silversmith
 Affiliation: Seung Lab, Princeton Neuroscience Institute
-Date: August 2018 - Februrary 2020
+Date: August 2018 - August 2021
 
 *****************************************************************
 This file is part of Kimimaro.
@@ -477,7 +477,7 @@ def compute_centroids(
 
   cdef float[:] xsum = np.zeros( (labels.size,), dtype=np.float32)
   cdef float[:] ysum = np.zeros( (labels.size,), dtype=np.float32)
-  cdef UINT[:] labelct = np.zeros( (labels.size,), dtype=labels.dtype)
+  cdef uint32_t[:] labelct = np.zeros( (labels.size,), dtype=np.uint32)
 
   cdef size_t sx, sy
   sx = labels.shape[0]
@@ -568,7 +568,6 @@ def find_border_targets(
 
   cdef UINT label = 0
   cdef dict centroids = compute_centroids(cc_labels, wx, wy)
-
   cdef float px, py
   cdef float centx, centy
 
@@ -913,6 +912,54 @@ def find_avocado_fruit(
   
   return (label, uniq[candidate_fruit_index])
 
-  
+class CachedTargetFinder:
+  def __init__(self, mask: np.ndarray, daf: np.ndarray):
+    """
+    From DAF, compute a sorted list of the maximum values
+    so that finding them becomes very fast.
+    """
+    mask_indices = np.flatnonzero(mask.ravel(order='F'))
+    daf_sort = np.argsort(-daf.ravel(order='F')[mask_indices])
+    self.daf_indices = mask_indices[daf_sort]
+
+  def find_target(self, mask: np.ndarray):
+    """
+    Find the coordinate of a voxel corresponding 
+    the maximum map value.
+
+    Returns: (x, y, z)
+    """
+    first_positive_index = self.first_label_indexed(
+      mask.ravel(order='F'), self.daf_indices
+    )
+    if first_positive_index is None:
+      self.daf_indices = self.daf_indices[self.daf_indices.size:]  # Clear it.
+      return None
+
+    # This tells us mask positions daf_indices[0:first_positive_index] are now
+    # zeroed out. We assume that this is permanent, so we don't need to search
+    # those positions again next time.
+    self.daf_indices = self.daf_indices[first_positive_index:]
+
+    return np.unravel_index(self.daf_indices[0], mask.shape, order='F')
+
+  @cython.boundscheck(False)
+  @cython.wraparound(False)  # turn off negative index wrapping for entire function
+  @cython.nonecheck(False)
+  def first_label_indexed(self, uint8_t[:] labels not None, int64_t[:] indices not None):
+    """
+    first_label_indexed(uint8_t[:] labels not None, int64_t[:] indices not None)
+    Returns: first i for which labels[indices[i]] is non-zero.
+    """
+    cdef size_t length = indices.size
+    cdef size_t i = 0
+    cdef int64_t label_index
+
+    for i in range(length):
+      label_index = indices[i]
+      if labels[label_index]:
+        return i
+
+    return None  
 
 
