@@ -3,7 +3,7 @@ Skeletonization algorithm based on TEASAR (Sato et al. 2000).
 
 Authors: Alex Bae and Will Silversmith
 Affiliation: Seung Lab, Princeton Neuroscience Institue
-Date: June 2018 - April 2021
+Date: June 2018 - August 2021
 
 This file is part of Kimimaro.
 
