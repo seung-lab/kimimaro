@@ -44,9 +44,14 @@ class DimensionError(Exception):
   pass
 
 DEFAULT_TEASAR_PARAMS = {
-  'scale': 10, 'const': 50,
-  'pdrf_scale': 100000,
-  'pdrf_exponent': 4,
+  "scale": 1.5, 
+  "const": 300,
+  "pdrf_scale": 100000,
+  "pdrf_exponent": 4,
+  "soma_acceptance_threshold": 3500,
+  "soma_detection_threshold": 750,
+  "soma_invalidation_const": 300,
+  "soma_invalidation_scale": 2
 }
 
 def skeletonize(
