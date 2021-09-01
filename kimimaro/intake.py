@@ -56,7 +56,7 @@ DEFAULT_TEASAR_PARAMS = {
 
 def skeletonize(
     all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
-    object_ids=None, dust_threshold=1000, cc_safety_factor=1,
+    object_ids=None, dust_threshold=1000, 
     progress=False, fix_branching=True, in_place=False, 
     fix_borders=True, parallel=1, parallel_chunk_size=100,
     extra_targets_before=[], extra_targets_after=[],
@@ -96,11 +96,6 @@ def skeletonize(
       by the segmentation pipeline. This option incurs moderate overhead.
 
       WARNING: THIS WILL REMOVE INPUT LABELS THAT ARE DEEMED TO BE HOLES.
-
-    cc_safety_factor: Value between 0 and 1 that scales the size of the 
-      disjoint set maps in connected_components. 1 is guaranteed to work,
-      but is probably excessive and corresponds to every pixel being a different
-      label. Use smaller values to save some memory.
 
     extra_targets_before: List of x,y,z voxel coordinates that will all 
       be traced to from the root regardless of whether those points have 
@@ -159,7 +154,7 @@ def skeletonize(
   if minlabel == 0 and maxlabel == 0:
     return {}
 
-  cc_labels, remapping = compute_cc_labels(all_labels, cc_safety_factor)
+  cc_labels, remapping = compute_cc_labels(all_labels)
   del all_labels
 
   if fill_holes:
@@ -459,15 +454,12 @@ def apply_object_mask(all_labels, object_ids):
 
   return all_labels
 
-def compute_cc_labels(all_labels, cc_safety_factor):
-  if cc_safety_factor <= 0 or cc_safety_factor > 1:
-    raise ValueError("cc_safety_factor must be greater than zero and less than or equal to one. Got: " + str(cc_safety_factor))
-
+def compute_cc_labels(all_labels):
   tmp_labels = all_labels
   if np.dtype(all_labels.dtype).itemsize > 1:
     tmp_labels, remapping = fastremap.renumber(all_labels, in_place=False)
 
-  cc_labels = cc3d.connected_components(tmp_labels, max_labels=int(tmp_labels.size * cc_safety_factor))
+  cc_labels = cc3d.connected_components(tmp_labels)
   cc_labels = fastremap.refit(cc_labels)
 
   del tmp_labels
