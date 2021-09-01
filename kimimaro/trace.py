@@ -237,6 +237,13 @@ def compute_paths(
       target = find_target()
 
     if fix_branching:
+      # Draw a path (a "road") from the target to the nearest zero weighted
+      # path (a "rail"). This has some minor efficiencies vs drawing
+      # from a target all the way to the source. Also, target -> source
+      # is much more efficient than source -> target for three reasons.
+      # (a) target -> catches a rail instead of exploring all rails
+      # (b) target has a natural edge effect that restrict exploration
+      # (c) in soma, target -> source follows gradients vs fights them
       path = dijkstra3d.railroad(
         parents, target, voxel_graph=voxel_graph
       )
