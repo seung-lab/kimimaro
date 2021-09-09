@@ -13,4 +13,9 @@ Fig. 1: Kimimaro Execution Time by Version on `connectomics.npy`
 Fig. 2: Kimimaro Peak Memory Usage by Version on `connectomics.npy`
 </p>
 
+<p style="font-style: italics;" align="center">
+<img height=512 src="https://raw.githubusercontent.com/seung-lab/kimimaro/master/benchmarks/kimimaro-memory-profiles-0.1.0-3.0.0.png" alt="Kimimaro Memory Profile Versions 0.3.1 vs. 3.0.0" /><br>
+Fig. 3: Kimimaro Memory Profile Versions (blue) 0.3.1 (black) 3.0.0. The first hump on the left is processing a soma. The second hump is a glia.
+</p>
+
 
