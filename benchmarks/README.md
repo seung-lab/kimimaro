@@ -1,7 +1,7 @@
 Benchmarks
 ==========
 
-Except where noted, these benchmarks were executed on an 2.8 GHz Dual-Core Intel Core i7 with 1600 MHz DDR3 RAM. The data source used was `connectomics.npy` which can be found in this repository.
+Except where noted, these benchmarks were executed on an 2.8 GHz Dual-Core Intel Core i7 with 1600 MHz DDR3 RAM. The data source used was `connectomics.npy` which can be found in this repository. `connectomics.npy` is a 512x512x512 cutout of mouse visual cortex at 16nm x 16nm x 40nm resolution that contains 2124 connected components including a partial cell body and a large glia fragment.
 
 <p style="font-style: italics;" align="center">
 <img height=512 src="https://raw.githubusercontent.com/seung-lab/kimimaro/master/benchmarks/kimimaro-execution-time-by-version.png" alt="Kimimaro Execution Time by Version on connectomics.npy" /><br>
