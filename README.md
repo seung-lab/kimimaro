@@ -390,12 +390,7 @@ This research was supported by the Intelligence Advanced Research Projects Activ
 
 ## Papers Using Kimimaro
 
-Please cite Kimimaro as: 
-  
-```
-W. Silversmith and J.A. Bae. "Kimimaro: Skeletonize densely 
-labeled 3D image segmentations". 2020. https://github.com/seung-lab/kimimaro 
-```
+Please cite Kimimaro using the CITATION.cff file located in this repository.
 
 The below list is not comprehensive and is sourced from collaborators or found using internet searches and does not constitute an endorsement except to the extent that they used it for their work. 
 
