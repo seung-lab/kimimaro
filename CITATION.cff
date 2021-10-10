@@ -1,18 +1,18 @@
 cff-version: 1.1.0
 message: "If you use this software, please cite it as below."
 authors:
-  - family-names: Silversmith
-    given-names: William
-    orcid: https://orcid.org/0000-0002-5485-5341
-  - family-names: Bae
-    given-names: J. Alexander
-    orcid: https://orcid.org/0000-0002-4681-6342
-  - family-names: Li
-    given-names: Peter H.
-    orcid: https://orcid.org/0000-0001-6193-4454
-  - family-names: Wilson
-    given-names: A.M.
-    orcid: https://orcid.org/0000-0002-3822-5200
+- family-names: Silversmith
+  given-names: William
+  orcid: https://orcid.org/0000-0002-5485-5341
+- family-names: Bae
+  given-names: J. Alexander
+  orcid: https://orcid.org/0000-0002-4681-6342
+- family-names: Li
+  given-names: Peter H.
+  orcid: https://orcid.org/0000-0001-6193-4454
+- family-names: Wilson
+  given-names: A.M.
+  orcid: https://orcid.org/0000-0002-3822-5200
 title: Kimimaro: Skeletonize densely labeled 3D image segmentations
 version: 3.0.0
 date-released: 2021-09-29
