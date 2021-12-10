@@ -355,6 +355,40 @@ def compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF):
 
   return np.asfortranarray(PDRF)
 
+def point_to_point(
+  binary_img, start, end,
+  anisotropy=(1,1,1), 
+  pdrf_scale=100000, 
+  pdrf_exponent=4,
+):
+  """
+  Trace a single centerline path from 
+  start to end.
+  """
+  DBF = edt.edt(
+    binary_img, 
+    anisotropy=anisotropy,
+    black_border=True,
+    order='F',
+  )
+  dbf_max = np.max(DBF)
+
+  DBF = kimimaro.skeletontricks.zero2inf(DBF) # DBF[ DBF == 0 ] = np.inf
+  DAF = dijkstra3d.euclidean_distance_field(
+    binary_img, start, 
+    anisotropy=anisotropy,
+  )
+  DAF = kimimaro.skeletontricks.inf2zero(DAF) # DAF[ DAF == np.inf ] = 0
+  PDRF = compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF)
+  del DAF
+
+  path = dijkstra3d.dijkstra(PDRF, end, start)
+  skel = PrecomputedSkeleton.from_path(path)
+
+  verts = skel.vertices.flatten().astype(np.uint32)
+  skel.radii = DBF[verts[::3], verts[1::3], verts[2::3]]
+  return skel
+
 def xy_path_projection(paths, labels, N=0):
   """Used for debugging paths."""
   if type(paths) != list:
