@@ -111,6 +111,20 @@ skel = kimimaro.join_close_components([skel1, skel2], radius=None) # no threshol
 # Input: { label: [ ((x,y,z), swc_label), ... ] }
 # Returns: { (x,y,z): swc_label, ... }
 extra_targets = kimimaro.synapses_to_targets(labels, synapses)
+
+
+# LISTING 3: Drawing a centerline between
+#   preselected points on a binary image.
+#   This is a much simpler option for when
+#   you know exactly what you want, but may
+#   be less efficient for large scale procesing.
+
+skel = kimimaro.connect_points(
+  labels == 67301298,
+  start=(3, 215, 202), 
+  end=(121, 426, 227),
+  anisotropy=(32,32,40),
+)
 ```
 
 `connectomics.npy` is multilabel connectomics data derived from pinky40, a 2018 experimental automated segmentation of ~1.5 million cubic micrometers of mouse visual cortex. It is an early predecessor to the now public pinky100_v185 segmentation that can be found at https://microns-explorer.org/phase1 You will need to run `lzma -d connectomics.npy.lzma` to obtain the 512x512x512 uint32 volume at 32x32x40 nm<sup>3</sup> resolution.  

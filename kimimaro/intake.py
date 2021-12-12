@@ -246,6 +246,52 @@ def skeletonize(
 
     return skeletons
 
+def connect_points(
+  labels, start, end,
+  anisotropy=(1,1,1), 
+  fill_holes=False, 
+  in_place=False,
+  pdrf_scale=100000, 
+  pdrf_exponent=4,
+):
+  """
+  Extract a single centerline skeleton between
+  two preselected points from a binary image.
+
+  labels: a 2D or 3D binary image
+  start: an (x,y,z) tuple
+  end: an (x,y,z) tuple
+
+  anisotropy: the physical dimensions of each axis (e.g. 4nm x 4nm x 40nm)
+  fill_holes: preemptively run a void filling algorithm on all connected
+    components and delete labels that get filled in. This can improve the
+    quality of the reconstruction if holes in the shapes are artifacts introduced
+    by the segmentation pipeline.
+
+  pdrf_scale: scale factor in front of dbf, used to weight dbf over euclidean distance (higher to pay more attention to dbf)
+  pdrf_exponent: exponent in dbf formula on distance from edge, faster if factor of 2
+  """
+  anisotropy = np.array(anisotropy, dtype=np.float32)
+  start = tuple(start)
+  end = tuple(end)
+
+  labels = labels.astype(np.bool)
+  labels = format_labels(labels, in_place=in_place)
+
+  cc_labels, remapping = compute_cc_labels(labels)
+  if cc_labels[start] == 0 or cc_labels[start] != cc_labels[end]:
+    raise ValueError("Cannot extract centerline from disconnected components.")
+  del cc_labels
+  del remapping
+
+  skel = kimimaro.trace.point_to_point(
+    labels, start, end,
+    anisotropy=anisotropy, 
+    pdrf_scale=pdrf_scale, pdrf_exponent=pdrf_exponent,
+  )
+  skel.vertices *= anisotropy
+  return skel
+
 def find_objects(labels):
   """  
   scipy.ndimage.find_objects performs about 7-8x faster on C 

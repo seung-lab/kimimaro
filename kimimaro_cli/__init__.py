@@ -108,7 +108,8 @@ def forge(
 
 @main.command()
 @click.argument("filename")
-def view(filename):
+@click.option('--port', type=int, default=8080, help="Which port to run the microviewer on for npy files.", show_default=True)
+def view(filename, port):
   """Visualize a .swc or .npy file."""
   basename, ext = os.path.splitext(filename)
 
@@ -119,7 +120,7 @@ def view(filename):
     skel.viewer()
   elif ext == ".npy":
     labels = np.load(filename)
-    cloudvolume.view(labels, segmentation=True)
+    cloudvolume.view(labels, segmentation=True, port=port)
   else:
     print("kimimaro: {filename} was not a .swc or .npy file.")
 
