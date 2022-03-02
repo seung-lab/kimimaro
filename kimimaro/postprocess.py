@@ -24,6 +24,7 @@ along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 
 from collections import defaultdict
 
+import fastremap
 import networkx as nx
 import numpy as np
 
@@ -159,7 +160,7 @@ def combination_pairs(n):
 
 def find_connected(nodes, edges):
   s = nodes.shape[0] 
-  nodes = np.unique(edges).astype(np.uint32)
+  nodes = fastremap.unique(edges).astype(np.uint32, copy=False)
 
   conn_mat = lil_matrix((s, s), dtype=bool)
   conn_mat[edges[:,0], edges[:,1]] = 1
@@ -167,7 +168,7 @@ def find_connected(nodes, edges):
   n, l = csgraph.connected_components(conn_mat, directed=False)
   
   l_nodes = l[nodes]
-  l_list = np.unique(l_nodes)
+  l_list = fastremap.unique(l_nodes)
   return [ l == i for i in l_list  ]
 
 def remove_dust(skeleton, dust_threshold):
@@ -299,7 +300,7 @@ def _remove_ticks(skeleton, threshold):
   vertices = skeleton.vertices
   edges = skeleton.edges
 
-  unique_nodes, unique_counts = np.unique(edges, return_counts=True)
+  unique_nodes, unique_counts = fastremap.unique(edges, return_counts=True)
   terminal_nodes = set(unique_nodes[ unique_counts == 1 ])
 
   branch_idx = np.where(unique_counts >= 3)[0]
@@ -379,7 +380,7 @@ def _create_distance_graph(skeleton):
   vertices = skeleton.vertices
   edges = skeleton.edges
 
-  unique_nodes, unique_counts = np.unique(edges, return_counts=True)
+  unique_nodes, unique_counts = fastremap.unique(edges, return_counts=True)
   terminal_nodes = unique_nodes[ unique_counts == 1 ]
   branch_nodes = set(unique_nodes[ unique_counts >= 3 ])
   
