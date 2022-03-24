@@ -180,7 +180,7 @@ def trace(
   )
 
   skel = PrecomputedSkeleton.simple_merge(
-    [ PrecomputedSkeleton.from_path(path) for path in paths ]
+    [ PrecomputedSkeleton.from_path(path) for path in paths if len(path) > 0 ]
   ).consolidate()
 
   verts = skel.vertices.flatten().astype(np.uint32)
