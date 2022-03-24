@@ -55,14 +55,14 @@ DEFAULT_TEASAR_PARAMS = {
 }
 
 def skeletonize(
-    all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
-    object_ids=None, dust_threshold=1000, 
-    progress=False, fix_branching=True, in_place=False, 
-    fix_borders=True, parallel=1, parallel_chunk_size=100,
-    extra_targets_before=[], extra_targets_after=[],
-    fill_holes=False, fix_avocados=False,
-    voxel_graph=None
-  ):
+  all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
+  object_ids=None, dust_threshold=1000, 
+  progress=True, fix_branching=True, in_place=False, 
+  fix_borders=True, parallel=1, parallel_chunk_size=100,
+  extra_targets_before=[], extra_targets_after=[],
+  fill_holes=False, fix_avocados=False,
+  voxel_graph=None
+):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
 
