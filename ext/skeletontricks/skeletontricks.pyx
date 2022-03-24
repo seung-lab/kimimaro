@@ -893,7 +893,8 @@ def find_avocado_fruit(
 
   changes = [ _ for _ in changes if _ is not None ]
 
-  if len(changes) == 0:
+  # Too little info to make a decision
+  if len(changes) < 3:
     return (label, label)
 
   if len(changes) > 3: # if more than 3, allow one non-match
