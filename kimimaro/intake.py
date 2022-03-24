@@ -652,10 +652,13 @@ def engage_avocado_protection_single_pass(
     binimg[-1,:,:] = fill_voids.fill(binimg[-1,:,:])
     return binimg
 
-  remap = {}
+  slcs = find_objects(cc_labels)
+
   for label in tqdm(candidates, disable=(not progress), desc="Fixing Avocados"):
-    binimg = paint_walls(cc_labels == label) # image of the pit
-    coord = argmax(binimg * all_dbf)
+    slc = slcs[label - 1]
+    offset = Bbox.from_slices(slc).minpt
+    binimg = paint_walls(cc_labels[slc] == label) # image of the pit
+    coord = argmax(binimg * all_dbf[slc]) + offset
 
     (pit, fruit) = kimimaro.skeletontricks.find_avocado_fruit(
       cc_labels, coord[0], coord[1], coord[2]
@@ -667,11 +670,12 @@ def engage_avocado_protection_single_pass(
       unchanged.discard(fruit)
       changed.add(pit)
       changed.add(fruit)
-      binimg |= (cc_labels == fruit)
-    
+      binimg |= (cc_labels[slc] == fruit)
+
+    fruit = np.cast[cc_labels.dtype](fruit)
     binimg, N = fill_voids.fill(binimg, in_place=True, return_fill_count=True)
-    cc_labels *= ~binimg
-    cc_labels += label * binimg
+    cc_labels[slc] *= ~binimg
+    cc_labels[slc] += fruit * binimg
 
   return cc_labels, unchanged, changed
 
