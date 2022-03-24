@@ -429,20 +429,26 @@ def test_fix_avocados():
   labels[60:90, 50:90, 40:70] = 4
   labels[60:70, 51:89, 41:69] = 5
 
+  # not an avocado
+  labels[200:,200:,200:] = 6 # not a pit
+  labels[150:200,200:,200:] = 7 # not a fruit
+
   fn = lambda lbls: edt.edt(lbls)
   dt = fn(labels)
 
   labels, dbf, remapping = kimimaro.intake.engage_avocado_protection(
-    labels, dt, { 1:1, 2:2, 3:3, 4:4, 5:5 },
+    labels, dt, { 1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7 },
     soma_detection_threshold=1, 
     edtfn=fn, 
     progress=True
   )
 
   uniq = set(np.unique(labels))
-  assert uniq == set([0, 1, 2]) # 0,2,5 renumbered
+  assert uniq == set([0, 1, 2, 3, 4]) # 0,2,5 renumbered
   assert np.all(labels[:50, :40, :30] == 1)
   assert np.all(labels[50:100, 40:100, 30:80] == 2)
+  assert np.all(labels[150:200,200:,200:] == 3)
+  assert np.all(labels[200:,200:,200:] == 4)
 
 
 
