@@ -5,15 +5,16 @@ on:
     tags:
       - '*'
 env:
-  CIBW_SKIP: cp27-* cp33-* cp34-* cp35-* cp36-* pp* *-musllinux*
+  CIBW_SKIP: cp27-* cp33-* cp34-* cp35-* pp* *-musllinux*
 
 jobs:
   build_wheels:
-    name: Build wheels on ${{ matrix.os }}
+    name: Build wheels on ${{matrix.arch}} for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-20.04, windows-2019, macos-latest]
+        arch: [auto]
         include:
           - os: ubuntu-20.04
             arch: aarch64
@@ -21,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-     - name: Set up QEMU
+      - name: Set up QEMU
         if:  ${{ matrix.arch == 'aarch64' }}
         uses: docker/setup-qemu-action@v1
 
