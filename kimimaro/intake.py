@@ -580,7 +580,6 @@ def engage_avocado_protection(
   orig_cc_labels = np.copy(cc_labels, order='F')
 
   unchanged = set()
-  max_iterations = max(fastremap.unique(cc_labels))
 
   # This loop handles nested avocados
   # Unless there are deeply nested double avocados,
