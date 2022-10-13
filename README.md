@@ -139,6 +139,20 @@ Here's an equivalent example to the code above.
 kimimaro forge labels.npy --scale 4 --const 10 --soma-detect 1100 --soma-accept 3500 --soma-scale 1 --soma-const 300 --anisotropy 16,16,40 --fix-borders --progress 
 ```
 
+Visualize the your data:
+
+```bash
+kimimaro view 1241241.swc # visualize skeleton
+kimimaro view labels.npy # visualize segmentation
+```
+
+It can also convert binary image skeletons produced by thinning algorithms into SWC files and back. This can be helpful for comparing different skeletonization algorithms or even just using their results.
+
+```bash
+kimimaro swc from binary_image.tiff # -> binary_image.swc
+kimimaro swc to --format tiff binary_image.swc # -> binary_image.tiff or npy
+```
+
 ## Tweaking `kimimaro.skeletonize` Parameters
 
 This algorithm works by finding a root point on a 3D object and then serially tracing paths via dijksta's shortest path algorithm through a penalty field to the most distant unvisited point. After each pass, there is a sphere (really a circumscribing cube) that expands around each vertex in the current path that marks part of the object as visited.  
