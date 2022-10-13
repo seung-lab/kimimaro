@@ -17,3 +17,4 @@ along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 
 from .intake import skeletonize, DimensionError, synapses_to_targets, connect_points
 from .postprocess import postprocess, join_close_components
+from .utility import extract_skeleton_from_binary_image

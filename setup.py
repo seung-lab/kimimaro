@@ -29,7 +29,10 @@ setuptools.setup(
     "pytest",
     "scipy>=1.1.0",
   ],
-  python_requires="~=3.6", # >= 3.6 < 4.0
+  extras_require={
+    'tif': [ 'tifffile' ],
+  },
+  python_requires=">=3.6.0,<4.0.0",
   ext_modules=[
     setuptools.Extension(
       'kimimaro.skeletontricks',

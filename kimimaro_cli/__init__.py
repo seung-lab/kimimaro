@@ -7,6 +7,8 @@ import click
 import numpy as np
 
 import kimimaro
+import fastremap
+from tqdm import tqdm
 
 class Tuple3(click.ParamType):
   """A command line option type consisting of 3 comma-separated integers."""
@@ -105,6 +107,73 @@ def forge(
 
   if progress:
     print(f"kimimaro: wrote {len(skels)} skeletons to {directory}")
+
+@main.group()
+def swc():
+  """Utilities for managing SWC files. Use forge to create new skeletons."""
+  pass
+
+@swc.command("from")
+@click.argument("src", nargs=-1)
+def from_image(src):
+  """Convert a binary image that has already been skeletonized by a thinning algorithm into an swc."""
+
+  for srcpath in tqdm(src):
+    basename, ext = os.path.splitext(srcpath)
+    if ext == ".npy":
+      image = np.load(srcpath)
+    elif ext in (".tif", ".tiff"):
+      try:
+        import tifffile
+      except ImportError:
+        print("kimimaro: tifffile not installed. Run pip install tifffile.")
+        return
+      image = tifffile.imread(srcpath)
+    else:
+      print(f"Unsupported image format {ext}. Only npy and tiff are supported.")
+      return
+
+    image = np.asfortranarray(image)
+    skel = kimimaro.extract_skeleton_from_binary_image(image)
+
+    with open(f"{basename}.swc", "wt") as f:
+      f.write(skel.to_swc())
+
+@swc.command("to")
+@click.argument("src", nargs=-1)
+@click.option('--format', type=str, default="npy", help="Which format to use. Options: npy, tiff", show_default=True)
+def to_image(src, format):
+  """Convert an swc into a binary image."""
+  if format not in ("npy", "tiff"):
+    print(f"kimimaro: invalid format {format}. npy or tiff allowed.")
+
+  for srcpath in tqdm(src):
+    with open(srcpath, 'rt') as f:
+      skel = Skeleton.from_swc(f.read())
+
+    xmin, xmax = fastremap.minmax(skel.vertices[:,0])
+    ymin, ymax = fastremap.minmax(skel.vertices[:,1])
+    zmin, zmax = fastremap.minmax(skel.vertices[:,2])
+
+    image = np.zeros((xmax-xmin, ymax-ymin, zmax-zmin), dtype=np.bool, order='F')
+    minpt = np.array([xmin,ymin,zmin])
+    drawpts = skel.vertices - minpt
+
+    image[drawpts] = True
+
+    basename, ext = os.path.splitext(srcpath)
+
+    if format == "npy":
+      np.save(f"{basename}.npy", image)
+    elif format == "tiff":
+      try:
+        import tifffile
+        tifffile.imwrite(f"{basename}.tiff", binimg, photometric='minisblack')
+      except ImportError:
+        print("kimimaro: tifffile not installed. Run pip install tifffile.")
+        return
+    else:
+      raise ValueError("should never happen")
 
 @main.command()
 @click.argument("filename")

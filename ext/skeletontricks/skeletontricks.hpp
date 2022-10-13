@@ -30,6 +30,7 @@
 #include <unordered_map>
 #include <string>
 #include <set>
+#include <utility>
 
 #ifndef SKELETONTRICKS_HPP
 #define SKELETONTRICKS_HPP
@@ -371,6 +372,109 @@ std::unordered_map<uint64_t, float> _create_distance_graph(
 
   return distgraph;
 }
+
+// extracting skeletons from binary images produced by
+// other thinning based skeletonization algorithms
+
+inline void compute_neighborhood(
+  int *neighborhood, 
+  const int x, const int y, const int z,
+  const uint64_t sx, const uint64_t sy, const uint64_t sz,
+  const int connectivity = 26
+) {
+
+  const int sxy = sx * sy;
+
+  const int plus_x = (x < (static_cast<int>(sx) - 1)); // +x
+  const int minus_x = -1 * (x > 0); // -x
+  const int plus_y = static_cast<int>(sx) * (y < static_cast<int>(sy) - 1); // +y
+  const int minus_y = -static_cast<int>(sx) * (y > 0); // -y
+  const int minus_z = -sxy * static_cast<int>(z > 0); // -z
+
+  // 6-hood
+  neighborhood[0] = minus_x;
+  neighborhood[1] = minus_y;
+  neighborhood[2] = minus_z;
+  
+  // 18-hood
+
+  // xy diagonals
+  neighborhood[3] = (connectivity > 6) * (minus_x + minus_y) * (minus_x && minus_y); // up-left
+  neighborhood[4] = (connectivity > 6) * (plus_x + minus_y) * (plus_x && minus_y); // up-right
+
+  // yz diagonals
+  neighborhood[5] = (connectivity > 6) * (minus_x + minus_z) * (minus_x && minus_z); // down-left
+  neighborhood[6] = (connectivity > 6) * (plus_x + minus_z) * (plus_x && minus_z); // down-right
+
+  // xz diagonals
+  neighborhood[7] = (connectivity > 6) * (minus_y + minus_z) * (minus_y && minus_z); // down-left
+  neighborhood[8] = (connectivity > 6) * (plus_y + minus_z) * (plus_y && minus_z); // down-right
+
+  // 26-hood
+
+  // Now the eight corners of the cube
+  neighborhood[9] = (connectivity > 18) * (minus_x + minus_y + minus_z) * (minus_y && minus_z);
+  neighborhood[10] = (connectivity > 18) * (plus_x + minus_y + minus_z) * (minus_y && minus_z);
+  neighborhood[11] = (connectivity > 18) * (minus_x + plus_y + minus_z) * (plus_y && minus_z);
+  neighborhood[12] = (connectivity > 18) * (plus_x + plus_y + minus_z) * (plus_y && minus_z);
+}
+
+struct pair_hash {
+  inline std::size_t operator()(const std::pair<uint64_t,uint64_t> & v) const {
+    return v.first * 31 + v.second; // arbitrary hash fn
+  }
+};
+
+std::unordered_set<std::pair<uint64_t, uint64_t>, pair_hash> 
+_extract_edges_from_binary_image(
+  const uint8_t* image,
+  const uint64_t sx, const uint64_t sy, const uint64_t sz,
+  const int connectivity = 26
+) {
+
+  const uint64_t sxy = sx * sy;
+
+  std::unordered_set<std::pair<uint64_t, uint64_t>, pair_hash> edges;
+  edges.reserve(sx * sy * sz / 100);
+
+  int neighborhood[13];
+  uint64_t neighboridx = 0;
+
+  for (uint64_t z = 0; z < sz; z++) {
+    for (uint64_t y = 0; y < sy; y++) {
+      for (uint64_t x = 0; x < sx; x++) {
+        uint64_t loc = x + sx * y + sxy * z;
+        if (image[loc] == 0) {
+          continue;
+        }
+
+        compute_neighborhood(neighborhood, x, y, z, sx, sy, sz, connectivity);
+
+        for (int i = 0; i < 13; i++) {
+          if (neighborhood[i] == 0) {
+            continue;
+          }
+
+          neighboridx = loc + neighborhood[i];
+          if (image[neighboridx] == 0) {
+            continue;
+          }
+
+          if (loc <= neighboridx) {
+            edges.emplace(std::make_pair(loc, neighboridx));
+          } 
+          else {
+            edges.emplace(std::make_pair(neighboridx, loc));
+          }
+        }
+      }
+    }
+  }
+
+  return edges;
+}
+
+
 
 };
 

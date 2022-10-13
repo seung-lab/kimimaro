@@ -36,6 +36,7 @@ import sys
 
 from libcpp.vector cimport vector
 from libcpp.unordered_map cimport unordered_map
+from libcpp.unordered_set cimport unordered_set
 from libcpp.utility cimport pair as cpp_pair
 
 cimport numpy as cnp
@@ -75,6 +76,14 @@ cdef extern from "skeletontricks.hpp" namespace "skeletontricks":
     float* vertices, size_t Nv, 
     uint32_t* edges, size_t Ne, uint32_t start_node,
     vector[int32_t] critical_points_vec
+  )
+
+  cdef struct pair_hash:
+    size_t __call__(cpp_pair[uint64_t,uint64_t] v)
+  cdef unordered_set[ cpp_pair[uint64_t, uint64_t], pair_hash ] _extract_edges_from_binary_image(
+    uint8_t* image, 
+    uint64_t sx, uint64_t sy, uint64_t sz,
+    int connectivity
   )
 
 def find_cycle(cnp.ndarray[int32_t, ndim=2] edges):
@@ -962,5 +971,47 @@ class CachedTargetFinder:
         return i
 
     return None  
+
+def extract_edges_from_binary_image(uint8_t[:,:,:] binimg, int connectivity = 26):
+  cdef uint64_t sx, sy, sz
+  sx, sy, sz = tuple(binimg.shape)[:3]
+
+  cdef uint64_t sxy = sx * sy
+
+  binimg = np.asfortranarray(binimg)
+  cdef unordered_set[cpp_pair[uint64_t,uint64_t], pair_hash] edges = _extract_edges_from_binary_image(
+    &binimg[0,0,0], 
+    sx, sy, sz, 
+    connectivity
+  )
+
+  numbering = {}
+  cdef size_t i = 0
+  for edge in edges:
+    for v in (edge.first, edge.second):
+      if v not in numbering:
+        numbering[v] = i
+        i += 1
+
+  inumbering = { v:k for k,v in numbering.items() }
+  vertices = []
+
+  cdef uint64_t loc, x, y, z
+  for i in range(len(inumbering)):
+    loc = inumbering[i]
+    z = loc // sxy
+    y = (loc - z * sxy) // sx
+    x = loc - z * sxy - y * sx
+    vertices.append((x,y,z))
+
+  int_edges = []
+  for v1,v2 in edges:
+    int_edges.append((numbering[v1], numbering[v2]))
+
+  vertices = np.array(vertices, dtype=np.uint32)
+  int_edges = np.array(int_edges, dtype=np.uint32)
+
+  return (vertices, int_edges)
+
 
 
