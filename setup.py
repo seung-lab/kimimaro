@@ -13,7 +13,7 @@ def read(fname):
 
 setuptools.setup(
   name="kimimaro",
-  version="3.2.1",
+  version="3.3.0",
   setup_requires=["numpy"],
   install_requires=[
     "click",
