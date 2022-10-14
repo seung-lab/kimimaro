@@ -986,7 +986,7 @@ def extract_edges_from_binary_image(uint8_t[:,:,:] binimg, int connectivity = 26
   )
 
   numbering = {}
-  cdef size_t i = 0
+  cdef int64_t i = 0
   for edge in edges:
     for v in (edge.first, edge.second):
       if v not in numbering:

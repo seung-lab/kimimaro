@@ -55387,7 +55387,7 @@ static PyObject *__pyx_pf_14skeletontricks_34extract_edges_from_binary_image(CYT
   uint64_t __pyx_v_sxy;
   std::unordered_set<std::pair<uint64_t,uint64_t> ,struct skeletontricks::pair_hash>  __pyx_v_edges;
   PyObject *__pyx_v_numbering = NULL;
-  size_t __pyx_v_i;
+  int64_t __pyx_v_i;
   std::pair<uint64_t,uint64_t>  __pyx_v_edge;
   PyObject *__pyx_v_v = NULL;
   PyObject *__pyx_v_inumbering = NULL;
@@ -55422,7 +55422,7 @@ static PyObject *__pyx_pf_14skeletontricks_34extract_edges_from_binary_image(CYT
   int __pyx_t_17;
   Py_ssize_t __pyx_t_18;
   int __pyx_t_19;
-  size_t __pyx_t_20;
+  int64_t __pyx_t_20;
   int __pyx_t_21;
   PyObject *(*__pyx_t_22)(PyObject *);
   PyObject *__pyx_t_23 = NULL;
@@ -55568,7 +55568,7 @@ static PyObject *__pyx_pf_14skeletontricks_34extract_edges_from_binary_image(CYT
  *   )
  * 
  *   numbering = {}             # <<<<<<<<<<<<<<
- *   cdef size_t i = 0
+ *   cdef int64_t i = 0
  *   for edge in edges:
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 988, __pyx_L1_error)
@@ -55579,7 +55579,7 @@ static PyObject *__pyx_pf_14skeletontricks_34extract_edges_from_binary_image(CYT
   /* "skeletontricks.pyx":989
  * 
  *   numbering = {}
- *   cdef size_t i = 0             # <<<<<<<<<<<<<<
+ *   cdef int64_t i = 0             # <<<<<<<<<<<<<<
  *   for edge in edges:
  *     for v in (edge.first, edge.second):
  */
@@ -55587,7 +55587,7 @@ static PyObject *__pyx_pf_14skeletontricks_34extract_edges_from_binary_image(CYT
 
   /* "skeletontricks.pyx":990
  *   numbering = {}
- *   cdef size_t i = 0
+ *   cdef int64_t i = 0
  *   for edge in edges:             # <<<<<<<<<<<<<<
  *     for v in (edge.first, edge.second):
  *       if v not in numbering:
@@ -55600,7 +55600,7 @@ static PyObject *__pyx_pf_14skeletontricks_34extract_edges_from_binary_image(CYT
     __pyx_v_edge = __pyx_t_14;
 
     /* "skeletontricks.pyx":991
- *   cdef size_t i = 0
+ *   cdef int64_t i = 0
  *   for edge in edges:
  *     for v in (edge.first, edge.second):             # <<<<<<<<<<<<<<
  *       if v not in numbering:
@@ -55649,7 +55649,7 @@ static PyObject *__pyx_pf_14skeletontricks_34extract_edges_from_binary_image(CYT
  *         i += 1
  * 
  */
-        __pyx_t_4 = __Pyx_PyInt_FromSize_t(__pyx_v_i); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 993, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyInt_From_int64_t(__pyx_v_i); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 993, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         if (unlikely(PyDict_SetItem(__pyx_v_numbering, __pyx_v_v, __pyx_t_4) < 0)) __PYX_ERR(0, 993, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -55673,7 +55673,7 @@ static PyObject *__pyx_pf_14skeletontricks_34extract_edges_from_binary_image(CYT
       }
 
       /* "skeletontricks.pyx":991
- *   cdef size_t i = 0
+ *   cdef int64_t i = 0
  *   for edge in edges:
  *     for v in (edge.first, edge.second):             # <<<<<<<<<<<<<<
  *       if v not in numbering:
@@ -55684,7 +55684,7 @@ static PyObject *__pyx_pf_14skeletontricks_34extract_edges_from_binary_image(CYT
 
     /* "skeletontricks.pyx":990
  *   numbering = {}
- *   cdef size_t i = 0
+ *   cdef int64_t i = 0
  *   for edge in edges:             # <<<<<<<<<<<<<<
  *     for v in (edge.first, edge.second):
  *       if v not in numbering:
@@ -55763,7 +55763,7 @@ static PyObject *__pyx_pf_14skeletontricks_34extract_edges_from_binary_image(CYT
  *     z = loc // sxy
  *     y = (loc - z * sxy) // sx
  */
-    __pyx_t_3 = __Pyx_PyInt_FromSize_t(__pyx_v_i); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1001, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int64_t(__pyx_v_i); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1001, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = __Pyx_PyDict_GetItem(__pyx_v_inumbering, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1001, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
