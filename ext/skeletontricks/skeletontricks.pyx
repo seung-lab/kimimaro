@@ -539,7 +539,8 @@ def compute_centroids(
 def find_border_targets(
     cnp.ndarray[float, ndim=2] dt,
     cnp.ndarray[UINT, ndim=2] cc_labels,
-    float wx, float wy
+    float wx, float wy,
+    prefer_centroids=False,
   ):
   """
   find_border_targets(
@@ -598,6 +599,11 @@ def find_border_targets(
           centx, centy,
           sx, sy, wx, wy
         )
+
+  if prefer_centroids:
+    for label, pt in centroids.items():
+      if cc_labels[pt] == label:
+        pts[label] = pt
 
   return pts
 

@@ -61,7 +61,7 @@ def skeletonize(
   fix_borders=True, parallel=1, parallel_chunk_size=100,
   extra_targets_before=[], extra_targets_after=[],
   fill_holes=False, fix_avocados=False,
-  voxel_graph=None
+  voxel_graph=None, prefer_centroids=True,
 ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -189,7 +189,7 @@ def skeletonize(
 
   border_targets = defaultdict(list)
   if fix_borders:
-    border_targets = compute_border_targets(cc_labels, anisotropy)
+    border_targets = compute_border_targets(cc_labels, anisotropy, prefer_centroids)
 
   print_quotes(parallel) # easter egg
 
@@ -519,7 +519,7 @@ def points_to_labels(pts, cc_labels):
     mapping[ cc_labels[pt] ].append(pt)
   return mapping
 
-def compute_border_targets(cc_labels, anisotropy):
+def compute_border_targets(cc_labels, anisotropy, prefer_centroids):
   sx, sy, sz = cc_labels.shape
 
   planes = (
