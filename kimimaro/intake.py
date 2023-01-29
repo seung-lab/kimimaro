@@ -22,6 +22,13 @@ import multiprocessing as mp
 import signal
 import uuid
 
+# Below two lines fix MacOS warning on 
+# High Sierra and above when we are using
+# a thread before forking. Instead, don't fork,
+# spawn entirely new processes.
+import multiprocess.context as ctx
+ctx._force_start_method('spawn')
+
 import numpy as np
 import pathos.pools
 import scipy.ndimage
