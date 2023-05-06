@@ -2,7 +2,14 @@
 import os
 import setuptools
 
-import numpy as np
+class NumpyImport:
+  def __repr__(self):
+    import numpy as np
+
+    return np.get_include()
+
+  __fspath__ = __repr__
+
 
 def read(fname):
   with open(os.path.join(os.path.dirname(__file__), fname), 'rt') as f:
@@ -14,7 +21,7 @@ def read(fname):
 setuptools.setup(
   name="kimimaro",
   version="3.3.0",
-  setup_requires=["numpy"],
+  setup_requires=["numpy", "cython"],
   install_requires=[
     "click",
     "connected-components-3d>=1.5.0",
@@ -35,9 +42,9 @@ setuptools.setup(
   ext_modules=[
     setuptools.Extension(
       'kimimaro.skeletontricks',
-      sources=[ './ext/skeletontricks/skeletontricks.cpp' ],
+      sources=[ './ext/skeletontricks/skeletontricks.pyx' ],
       language='c++',
-      include_dirs=[ np.get_include() ],
+      include_dirs=[ NumpyImport() ],
       extra_compile_args=[
         '-std=c++11', '-O3', '-ffast-math'
       ]

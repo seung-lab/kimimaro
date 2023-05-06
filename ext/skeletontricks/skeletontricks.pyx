@@ -1,3 +1,4 @@
+# cython: language_level=3
 """
 Certain operations have to be fast for the skeletonization
 procedure. The ones that didn't fit elsewhere have a home here.
