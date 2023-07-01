@@ -87,10 +87,10 @@ skels = kimimaro.skeletonize(
 #            adjacent or overlapping images.
 
 import kimimaro
-from cloudvolume import PrecomputedSkeleton
+from cloudvolume import Skeleton
 
 skels = ... # a set of skeletons produced from the same label id
-skel = PrecomputedSkeleton.simple_merge(skels).consolidate()
+skel = Skeleton.simple_merge(skels).consolidate()
 skel = kimimaro.postprocess(
   skel, 
   dust_threshold=1000, # physical units
