@@ -59,15 +59,15 @@ labels = np.load("connectomics.npy")
 skels = kimimaro.skeletonize(
   labels, 
   teasar_params={
-    'scale': 4,
-    'const': 500, # physical units
-    'pdrf_exponent': 4,
-    'pdrf_scale': 100000,
-    'soma_detection_threshold': 1100, # physical units
-    'soma_acceptance_threshold': 3500, # physical units
-    'soma_invalidation_scale': 1.0,
-    'soma_invalidation_const': 300, # physical units
-    'max_paths': 50, # default None
+    "scale": 1.5, 
+    "const": 300, # physical units
+    "pdrf_scale": 100000,
+    "pdrf_exponent": 4,
+    "soma_acceptance_threshold": 3500, # physical units
+    "soma_detection_threshold": 750, # physical units
+    "soma_invalidation_const": 300, # physical units
+    "soma_invalidation_scale": 2,
+    "max_paths": 300, # default None
   },
   # object_ids=[ ... ], # process only the specified labels
   # extra_targets_before=[ (27,33,100), (44,45,46) ], # target points in voxels
