@@ -35,6 +35,6 @@ jobs:
           CIBW_BEFORE_BUILD: pip install oldest-supported-numpy setuptools wheel cython 
           CIBW_ARCHS_MACOS: "x86_64 arm64"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v2
         with:
           path: ./wheelhouse/*.whl
