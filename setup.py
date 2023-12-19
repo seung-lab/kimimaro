@@ -44,7 +44,7 @@ setuptools.setup(
       'kimimaro.skeletontricks',
       sources=[ './ext/skeletontricks/skeletontricks.pyx' ],
       language='c++',
-      include_dirs=[ NumpyImport() ],
+      include_dirs=[ str(NumpyImport()) ],
       extra_compile_args=[
         '-std=c++11', '-O3', '-ffast-math'
       ]
