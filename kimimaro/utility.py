@@ -44,6 +44,7 @@ def compute_cross_sectional_area(
   all_labels:np.ndarray, 
   skeletons:Dict[int,Skeleton],
   resolution:np.ndarray,
+  smoothing_window:int = 3,
 ) -> Dict[int,Skeleton]:
 
   from tqdm import tqdm
@@ -55,7 +56,6 @@ def compute_cross_sectional_area(
     "data_type": "float32",
     "num_components": 1,
   }
-
 
   all_slices = find_objects(all_labels)
 
@@ -88,15 +88,17 @@ def compute_cross_sectional_area(
       path = (path / resolution).round().astype(int)
       path -= roi.minpt
 
-      prev = None
-      if len(path):
-        prev = np.copy(path[0])
-        prev[0] -= 1
+      normals = (path[:-1] - path[1:]).astype(np.float32)
+      normals = np.concatenate([ normals, [normals[-1]] ])
+      normals = moving_average(normals, smoothing_window)
 
-      for vert in tqdm(path):
+      for i in range(len(normals)):
+        normal = normals[i,:]
+        normal /= np.linalg.norm(normal)        
+
+      for i, vert in tqdm(enumerate(path)):
         idx = mapping[tuple(vert)]
-        normal = (vert - prev).astype(np.float32)
-        normal /= np.linalg.norm(normal)
+        normal = normals[i]
 
         if areas[idx] == 0:
           areas[idx] = xs3d.cross_sectional_area(
@@ -111,8 +113,21 @@ def compute_cross_sectional_area(
 
   return skeletons
 
-
-
+# From SO: https://stackoverflow.com/questions/14313510/how-to-calculate-rolling-moving-average-using-python-numpy-scipy
+def moving_average(a:np.ndarray, n:int) -> np.ndarray:
+  if n <= 0:
+    raise ValueError(f"Window size ({n}), must be >= 1.")
+  elif n == 1:
+    return a
+  mirror = (len(a) - (len(a) - n + 1)) / 2
+  extra = 0
+  if mirror != int(mirror):
+    extra = 1
+  mirror = int(mirror)
+  a = np.concatenate([ [a[0] ] * (mirror + extra), a, [ a[-1] ] * mirror ])
+  ret = np.cumsum(a, dtype=float, axis=0)
+  ret[n:] = ret[n:] - ret[:-n]
+  return ret[n - 1:] / n
 
 
 
