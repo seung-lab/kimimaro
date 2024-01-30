@@ -24,7 +24,6 @@ import uuid
 
 import numpy as np
 import pathos.pools
-import scipy.ndimage
 import scipy.spatial
 from tqdm import tqdm
 
@@ -39,6 +38,8 @@ import fill_voids
 
 import kimimaro.skeletontricks
 import kimimaro.trace
+
+from .utility import compute_cc_labels, find_objects
 
 class DimensionError(Exception):
   pass
@@ -292,18 +293,6 @@ def connect_points(
   skel.vertices *= anisotropy
   return skel
 
-def find_objects(labels):
-  """  
-  scipy.ndimage.find_objects performs about 7-8x faster on C 
-  ordered arrays, so we just do it that way and convert
-  the results if it's in F order.
-  """
-  if labels.flags['C_CONTIGUOUS']:
-    return scipy.ndimage.find_objects(labels)
-  else:
-    all_slices = scipy.ndimage.find_objects(labels.T)
-    return [ (slcs and slcs[::-1]) for slcs in all_slices ]    
-
 def format_labels(labels, in_place):
   if in_place:
     labels = fastremap.asfortranarray(labels)
@@ -499,18 +488,6 @@ def apply_object_mask(all_labels, object_ids):
     all_labels = fastremap.mask_except(all_labels, object_ids, in_place=True)
 
   return all_labels
-
-def compute_cc_labels(all_labels):
-  tmp_labels = all_labels
-  if np.dtype(all_labels.dtype).itemsize > 1:
-    tmp_labels, remapping = fastremap.renumber(all_labels, in_place=False)
-
-  cc_labels = cc3d.connected_components(tmp_labels)
-  cc_labels = fastremap.refit(cc_labels)
-
-  del tmp_labels
-  remapping = kimimaro.skeletontricks.get_mapping(all_labels, cc_labels) 
-  return cc_labels, remapping
 
 def points_to_labels(pts, cc_labels):
   mapping = defaultdict(list)
