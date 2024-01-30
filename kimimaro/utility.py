@@ -1,9 +1,10 @@
-from typing import Dict
+from typing import Dict, Union, List
 
 import copy
 
 import numpy as np
 import scipy.ndimage
+from tqdm import tqdm
 
 from cloudvolume import Skeleton, Bbox
 import kimimaro.skeletontricks
@@ -40,26 +41,44 @@ def find_objects(labels):
     all_slices = scipy.ndimage.find_objects(labels.T)
     return [ (slcs and slcs[::-1]) for slcs in all_slices ]    
 
-def compute_cross_sectional_area(
+def cross_sectional_area(
   all_labels:np.ndarray, 
-  skeletons:Dict[int,Skeleton],
-  resolution:np.ndarray,
-  smoothing_window:int = 3,
-) -> Dict[int,Skeleton]:
+  skeletons:Union[Dict[int,Skeleton],List[Skeleton],Skeleton],
+  anisotropy:np.ndarray = np.array([1,1,1], dtype=np.float32),
+  smoothing_window:int = 1,
+  progress:bool = False,
+) -> Union[Dict[int,Skeleton],List[Skeleton],Skeleton]:
+  """
+  Given a set of skeletons, find the cross sectional area
+  for each vertex indicated by the sectioning plane
+  defined by the vector pointing to the next vertex.
 
-  from tqdm import tqdm
-
-  uniq = fastremap.unique(all_labels)
-
+  When the smoothing_window is >1, these plane normal 
+  vectors will be smoothed with a rolling average. This
+  is useful since there can be high frequency
+  oscillations in the skeleton.
+  """
   prop = {
-    "id": "cross_sectional_areas",
+    "id": "cross_sectional_area",
     "data_type": "float32",
     "num_components": 1,
   }
 
+  iterator = skeletons
+  if type(skeletons) == dict:
+    iterator = skeletons.values()
+    total = len(skeletons)
+  elif type(skeletons) == Skeleton:
+    iterator = [ skeletons ]
+    total = 1
+  else:
+    total = len(skeletons)
+
   all_slices = find_objects(all_labels)
 
-  for label, skel in tqdm(skeletons.items()):
+  for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
+    label = skel.id
+
     if label == 0:
       continue
 
@@ -73,7 +92,7 @@ def compute_cross_sectional_area(
 
     binimg = np.asfortranarray(all_labels[slices] == label)
 
-    all_verts = (skel.vertices / resolution).round().astype(int)
+    all_verts = (skel.vertices / anisotropy).round().astype(int)
     all_verts -= roi.minpt
 
     mapping = { tuple(v): i for i, v in enumerate(all_verts) }
@@ -85,10 +104,10 @@ def compute_cross_sectional_area(
     normal = np.array([1,0,0], dtype=np.float32)
 
     for path in paths:
-      path = (path / resolution).round().astype(int)
+      path = (path / anisotropy).round().astype(int)
       path -= roi.minpt
 
-      normals = (path[:-1] - path[1:]).astype(np.float32)
+      normals = (path[1:] - path[:-1]).astype(np.float32)
       normals = np.concatenate([ normals, [normals[-1]] ])
       normals = moving_average(normals, smoothing_window)
 
@@ -96,20 +115,18 @@ def compute_cross_sectional_area(
         normal = normals[i,:]
         normal /= np.linalg.norm(normal)        
 
-      for i, vert in tqdm(enumerate(path)):
+      for i, vert in enumerate(path):
         idx = mapping[tuple(vert)]
         normal = normals[i]
 
         if areas[idx] == 0:
           areas[idx] = xs3d.cross_sectional_area(
             binimg, vert, 
-            normal, resolution,
+            normal, anisotropy,
           )
 
-        prev = vert
-
     skel.extra_attributes.append(prop)
-    skel.cross_sectional_areas = areas
+    skel.cross_sectional_area = areas
 
   return skeletons
 
@@ -129,11 +146,3 @@ def moving_average(a:np.ndarray, n:int) -> np.ndarray:
   ret[n:] = ret[n:] - ret[:-n]
   return ret[n - 1:] / n
 
-
-
-
-
-
-
-
-  

@@ -451,6 +451,28 @@ def test_fix_avocados():
   assert np.all(labels[200:,200:,200:] == 4)
 
 
+def test_cross_sectional_area():
+  labels = np.ones((100,3,3), dtype=bool, order="F")
+
+  vertices = np.array([
+    [x,1,1] for x in range(labels.shape[0])
+  ])
+
+  edges = np.array([
+    [x,x+1] for x in range(labels.shape[0] - 1)
+  ])
+
+  skel = Skeleton(vertices, edges, segid=1)
+  skel = kimimaro.cross_sectional_area(labels, skel, smoothing_window=5)
+
+  assert len(skel.cross_sectional_area == 100)
+  assert np.all(skel.cross_sectional_area == 9)
+
+
+
+
+
+
 
 
 
