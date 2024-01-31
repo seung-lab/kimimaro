@@ -34,6 +34,7 @@ setuptools.setup(
     "numpy>=1.16.1",
     "pathos",
     "scipy>=1.1.0",
+    "xs3d>=0.2.0",
   ],
   extras_require={
     'tif': [ 'tifffile' ],
