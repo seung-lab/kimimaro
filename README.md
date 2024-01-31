@@ -97,6 +97,19 @@ skel = kimimaro.postprocess(
   tick_threshold=3500 # physical units
 )
 
+# LISTING 3: Adding cross sectional area to skeletons
+# Cross section planes are defined by normal vectors. Those
+# vectors come from the difference between adjacent vertices.
+skels = ... # one or more skeletons produced from a single image
+skels = kimimaro.cross_sectional_area(
+  labels, skels, 
+  anisotropy=(16,16,40), 
+  smoothing_window=5, # rolling average window of plane normals
+  progress=True,
+)
+skel = skels[0]
+skel.cross_sectional_area # array of cross sectional areas
+
 # Split input skeletons into connected components and
 # then join the two nearest vertices within `radius` distance
 # of each other until there is only a single connected component
