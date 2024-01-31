@@ -24,6 +24,8 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
+      env:
+          BUILD_WITH_CYTHON: 1 # for pysimdjson
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt pytest cython
