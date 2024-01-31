@@ -74,7 +74,9 @@ def cross_sectional_area(
   else:
     total = len(skeletons)
 
-  all_slices = find_objects(all_labels)
+  cc_labels, remapping = compute_cc_labels(all_labels)
+  all_slices = find_objects(cc_labels)
+  del all_labels
 
   for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
     label = skel.id
@@ -82,6 +84,7 @@ def cross_sectional_area(
     if label == 0:
       continue
 
+    label = remapping[label]
     slices = all_slices[label - 1]
     if slices is None:
       continue
@@ -90,7 +93,7 @@ def cross_sectional_area(
     if roi.volume() <= 1:
       continue
 
-    binimg = np.asfortranarray(all_labels[slices] == label)
+    binimg = np.asfortranarray(cc_labels[slices] == label)
 
     all_verts = (skel.vertices / anisotropy).round().astype(int)
     all_verts -= roi.minpt
