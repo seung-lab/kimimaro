@@ -1,7 +1,5 @@
 from typing import Dict, Union, List
 
-import copy
-
 import numpy as np
 import scipy.ndimage
 from tqdm import tqdm
@@ -74,11 +72,8 @@ def cross_sectional_area(
   else:
     total = len(skeletons)
 
-  cc_labels, remapping = compute_cc_labels(all_labels)
-  remapping = { v:k for k,v in remapping.items() }
-
-  all_slices = find_objects(cc_labels)
-  del all_labels
+  all_labels, remapping = fastremap.renumber(all_labels, in_place=True)
+  all_slices = find_objects(all_labels)
 
   for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
     label = skel.id
@@ -95,7 +90,7 @@ def cross_sectional_area(
     if roi.volume() <= 1:
       continue
 
-    binimg = np.asfortranarray(cc_labels[slices] == label)
+    binimg = np.asfortranarray(all_labels[slices] == label)
 
     all_verts = (skel.vertices / anisotropy).round().astype(int)
     all_verts -= roi.minpt
