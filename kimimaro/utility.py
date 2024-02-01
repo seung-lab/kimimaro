@@ -75,6 +75,8 @@ def cross_sectional_area(
     total = len(skeletons)
 
   cc_labels, remapping = compute_cc_labels(all_labels)
+  remapping = { v:k for k,v in remapping.items() }
+
   all_slices = find_objects(cc_labels)
   del all_labels
 
