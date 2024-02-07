@@ -45,6 +45,7 @@ def cross_sectional_area(
   anisotropy:np.ndarray = np.array([1,1,1], dtype=np.float32),
   smoothing_window:int = 1,
   progress:bool = False,
+  in_place:bool = False,
 ) -> Union[Dict[int,Skeleton],List[Skeleton],Skeleton]:
   """
   Given a set of skeletons, find the cross sectional area
@@ -72,7 +73,8 @@ def cross_sectional_area(
   else:
     total = len(skeletons)
 
-  all_labels, remapping = fastremap.renumber(all_labels, in_place=True)
+  all_labels, remapping = fastremap.renumber(all_labels, in_place=in_place)
+  all_labels = fastremap.refit(all_labels)
   all_slices = find_objects(all_labels)
 
   for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
