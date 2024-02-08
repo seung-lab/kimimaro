@@ -20,7 +20,7 @@ def read(fname):
 
 setuptools.setup(
   name="kimimaro",
-  version="3.4.3",
+  version="3.5.0",
   setup_requires=["numpy", "cython"],
   install_requires=[
     "click",
