@@ -109,6 +109,7 @@ skels = kimimaro.cross_sectional_area(
 )
 skel = skels[0]
 skel.cross_sectional_area # array of cross sectional areas
+skel.cross_sectional_area_contacts # non-zero contacted the image border
 
 # Split input skeletons into connected components and
 # then join the two nearest vertices within `radius` distance
