@@ -58,6 +58,21 @@ def cross_sectional_area(
   vectors will be smoothed with a rolling average. This
   is useful since there can be high frequency
   oscillations in the skeleton.
+
+  This function will add the following attributes to
+  each skeleton provided.
+
+  skel.cross_sectional_area: float32 array of cross 
+    sectional area per a vertex.
+
+  skel.cross_sectional_area_contacts: uint8 array
+    where non-zero entries indicate that the image
+    border was contacted during the cross section
+    computation, indicating a possible underestimate.
+
+    The first six bits are a bitfield xxyyzz that
+    tell you which image faces were touched and
+    alternate from low (0) to high (size-1).
   """
   prop = {
     "id": "cross_sectional_area",
