@@ -100,6 +100,7 @@ def cross_sectional_area(
     mapping = { tuple(v): i for i, v in enumerate(all_verts) }
 
     areas = np.zeros([all_verts.shape[0]], dtype=np.float32)
+    contacts = np.zeros([all_verts.shape[0]], dtype=np.uint8)
 
     paths = skel.paths()
 
@@ -122,13 +123,15 @@ def cross_sectional_area(
         normal = normals[i]
 
         if areas[idx] == 0:
-          areas[idx] = xs3d.cross_sectional_area(
+          areas[idx], contacts[idx] = xs3d.cross_sectional_area(
             binimg, vert, 
             normal, anisotropy,
+            return_contact=True,
           )
 
     skel.extra_attributes.append(prop)
     skel.cross_sectional_area = areas
+    skel.cross_sectional_area_contacts = contacts
 
   return skeletons
 
