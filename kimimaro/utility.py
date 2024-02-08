@@ -9,6 +9,7 @@ import kimimaro.skeletontricks
 
 import cc3d
 import fastremap
+import fill_voids
 import xs3d
 
 def extract_skeleton_from_binary_image(image):
@@ -46,6 +47,7 @@ def cross_sectional_area(
   smoothing_window:int = 1,
   progress:bool = False,
   in_place:bool = False,
+  fill_holes:bool = False,
 ) -> Union[Dict[int,Skeleton],List[Skeleton],Skeleton]:
   """
   Given a set of skeletons, find the cross sectional area
@@ -93,6 +95,9 @@ def cross_sectional_area(
       continue
 
     binimg = np.asfortranarray(all_labels[slices] == label)
+
+    if fill_holes:
+      binimg = fill_voids.fill(binimg, in_place=True)
 
     all_verts = (skel.vertices / anisotropy).round().astype(int)
     all_verts -= roi.minpt
