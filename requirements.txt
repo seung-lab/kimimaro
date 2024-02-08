@@ -10,4 +10,4 @@ numpy>=1.16.1
 pathos
 pytest
 scipy>=1.1.0
-xs3d
+xs3d>=1.2.0,<2
