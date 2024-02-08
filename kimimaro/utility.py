@@ -91,7 +91,6 @@ def cross_sectional_area(
     total = len(skeletons)
 
   all_labels, remapping = fastremap.renumber(all_labels, in_place=in_place)
-  all_labels = fastremap.refit(all_labels)
   all_slices = find_objects(all_labels)
 
   for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
