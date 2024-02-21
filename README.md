@@ -409,7 +409,8 @@ Several classic algorithms had to be specially tuned to make this module possibl
 2. [dijkstra3d](https://github.com/seung-lab/dijkstra3d): Dijkstra's shortest-path algorithm defined on 26-connected 3D images. This avoids the time cost of edge generation and wasted memory of a graph representation.
 3. [connected-components-3d](https://github.com/seung-lab/connected-components-3d): A connected components implementation defined on 26-connected 3D images with multiple labels.
 4. [fastremap](https://github.com/seung-lab/fastremap): Allows high speed renumbering of labels from 1 in a 3D array in order to reduce memory consumption caused by unnecessarily large 32 and 64-bit labels.
-5. [fill_voids](https://github.com/seung-lab/fill_voids): High speed binary_fill_holes.  
+5. [fill_voids](https://github.com/seung-lab/fill_voids): High speed binary_fill_holes.
+6. [xs3d](https://github.com/seung-lab/cross-section): Cross section analysis of 3D images.
 
 This module was originally designed to be used with CloudVolume and Igneous. 
 
