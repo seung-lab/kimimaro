@@ -4,7 +4,7 @@ import numpy as np
 import scipy.ndimage
 from tqdm import tqdm
 
-from cloudvolume import Skeleton, Bbox
+from cloudvolume import Skeleton, Bbox, Vec
 import kimimaro.skeletontricks
 
 import cc3d
@@ -48,6 +48,7 @@ def cross_sectional_area(
   progress:bool = False,
   in_place:bool = False,
   fill_holes:bool = False,
+  repair_contacts:bool = False,
 ) -> Union[Dict[int,Skeleton],List[Skeleton],Skeleton]:
   """
   Given a set of skeletons, find the cross sectional area
@@ -73,6 +74,11 @@ def cross_sectional_area(
     The first six bits are a bitfield xxyyzz that
     tell you which image faces were touched and
     alternate from low (0) to high (size-1).
+
+  repair_contacts: When True, only examine vertices
+    that have a nonzero value for 
+    skel.cross_sectional_area_contacts. This is intended
+    to be used as a second pass after widening the image.
   """
   prop = {
     "id": "cross_sectional_area",
@@ -90,11 +96,18 @@ def cross_sectional_area(
   else:
     total = len(skeletons)
 
-  all_labels, remapping = fastremap.renumber(all_labels, in_place=in_place)
+  if all_labels.dtype == bool:
+    remapping = { True: 1, False: 0, 1:1, 0:0 }
+  else:
+    all_labels, remapping = fastremap.renumber(all_labels, in_place=in_place)
+
   all_slices = find_objects(all_labels)
 
   for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
-    label = skel.id
+    if all_labels.dtype == bool:
+      label = 1
+    else:
+      label = skel.id
 
     if label == 0:
       continue
@@ -108,6 +121,10 @@ def cross_sectional_area(
     if roi.volume() <= 1:
       continue
 
+    roi.grow(1)
+    roi.minpt = Vec.clamp(roi.minpt, Vec(0,0,0), roi.maxpt)
+    slices = roi.to_slices()
+
     binimg = np.asfortranarray(all_labels[slices] == label)
 
     if fill_holes:
@@ -118,12 +135,18 @@ def cross_sectional_area(
 
     mapping = { tuple(v): i for i, v in enumerate(all_verts) }
 
-    areas = np.zeros([all_verts.shape[0]], dtype=np.float32)
-    contacts = np.zeros([all_verts.shape[0]], dtype=np.uint8)
+    if repair_contacts:
+      areas = skel.cross_sectional_area
+      contacts = skel.cross_sectional_area_contacts
+    else:
+      areas = np.zeros([all_verts.shape[0]], dtype=np.float32)
+      contacts = np.zeros([all_verts.shape[0]], dtype=np.uint8)
 
     paths = skel.paths()
 
     normal = np.array([1,0,0], dtype=np.float32)
+
+    shape = np.array(binimg.shape)
 
     for path in paths:
       path = (path / anisotropy).round().astype(int)
@@ -137,18 +160,29 @@ def cross_sectional_area(
         normal = normals[i,:]
         normal /= np.linalg.norm(normal)        
 
-      for i, vert in enumerate(path):
+      for i, vert in tqdm(enumerate(path)):
+        if np.any(vert < 0) or np.any(vert > shape):
+          continue
+
         idx = mapping[tuple(vert)]
         normal = normals[i]
 
-        if areas[idx] == 0:
+        if areas[idx] == 0 or (repair_contacts and contacts[i] > 0):
           areas[idx], contacts[idx] = xs3d.cross_sectional_area(
             binimg, vert, 
             normal, anisotropy,
             return_contact=True,
           )
 
-    skel.extra_attributes.append(prop)
+    needs_prop = True
+    for skel_prop in skel.extra_attributes:
+      if skel_prop["id"] == "cross_sectional_area":
+        needs_prop = False
+        break
+
+    if needs_prop:
+      skel.extra_attributes.append(prop)
+
     skel.cross_sectional_area = areas
     skel.cross_sectional_area_contacts = contacts
 
