@@ -167,7 +167,7 @@ def cross_sectional_area(
         idx = mapping[tuple(vert)]
         normal = normals[i]
 
-        if areas[idx] == 0 or (repair_contacts and contacts[i] > 0):
+        if areas[idx] == 0 or (repair_contacts and contacts[idx] > 0):
           areas[idx], contacts[idx] = xs3d.cross_sectional_area(
             binimg, vert, 
             normal, anisotropy,
