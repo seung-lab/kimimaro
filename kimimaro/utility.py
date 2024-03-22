@@ -199,7 +199,7 @@ def moving_average(a:np.ndarray, n:int) -> np.ndarray:
   if mirror != int(mirror):
     extra = 1
   mirror = int(mirror)
-  a = np.concatenate([ [a[0] ] * (mirror + extra), a, [ a[-1] ] * mirror ])
+  a = np.pad(a, [[mirror+extra, extra],[0,0]], mode="symmetric")
   ret = np.cumsum(a, dtype=float, axis=0)
   ret[n:] = ret[n:] - ret[:-n]
   return ret[n - 1:] / n
