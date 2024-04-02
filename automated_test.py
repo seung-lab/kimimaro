@@ -6,6 +6,7 @@ from cloudvolume import *
 
 import kimimaro.intake
 import kimimaro.skeletontricks
+from kimimaro.utility import moving_average
 
 def test_empty_image():
   labels = np.zeros( (256, 256, 256), dtype=bool)  
@@ -469,7 +470,37 @@ def test_cross_sectional_area():
   assert np.all(skel.cross_sectional_area == 9)
 
 
+def test_moving_average():
 
+  data = np.array([])
+  assert np.all(moving_average(data, 1) == data)
+  assert np.all(moving_average(data, 2) == data)
+
+  data = np.array([1,1,1,1,1,1,1,1,1,1,1])
+  assert np.all(moving_average(data, 1) == data)
+
+  data = np.array([1,1,1,1,1,1,1,1,1,1,1,1])
+  assert np.all(moving_average(data, 1) == data)
+
+  data = np.array([1,1,1,1,1,10,1,1,1,1,1])
+  assert np.all(moving_average(data, 1) == data)
+
+  data = np.array([1,1,1,1,1,1,1,1,1,1,1])
+  assert np.all(moving_average(data, 2) == data)
+
+  data = np.array([0,1,1,1,1,1,1,1,1,1,0])
+  ans = np.array([
+    0,0.5,1,1,1,1,1,1,1,1,0.5
+  ])
+  assert np.all(moving_average(data, 2) == ans)
+
+  data = np.array([0,1,1,1,1,1,1,1,1,1,0])
+  ans = np.array([
+    1/3,1/3,2/3,1,1,1,1,1,1,1,2/3
+  ])
+  res = moving_average(data, 3)
+  assert np.all(res == ans)
+  assert len(ans) == len(data)
 
 
 

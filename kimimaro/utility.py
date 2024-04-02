@@ -194,13 +194,17 @@ def moving_average(a:np.ndarray, n:int) -> np.ndarray:
     raise ValueError(f"Window size ({n}), must be >= 1.")
   elif n == 1:
     return a
-  mirror = (n - 1) / 2
-  extra = 0
-  if mirror != int(mirror):
-    extra = 1
-  mirror = int(mirror)
-  a = np.pad(a, [[mirror, mirror+extra],[0,0]], mode="symmetric")
+
+  if len(a) == 0:
+    return a
+
+  if a.ndim == 2:
+    a = np.pad(a, [[n, n],[0,0]], mode="symmetric")
+  else:
+    a = np.pad(a, [n, n], mode="symmetric")
+
   ret = np.cumsum(a, dtype=float, axis=0)
-  ret[n:] = ret[n:] - ret[:-n]
-  return ret[n - 1:] / n
+  ret = (ret[n:] - ret[:-n])[:-n]
+  ret /= float(n)
+  return ret
 
