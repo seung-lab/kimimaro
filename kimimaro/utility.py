@@ -154,7 +154,11 @@ def cross_sectional_area(
 
       normals = (path[1:] - path[:-1]).astype(np.float32)
       normals = np.concatenate([ normals, [normals[-1]] ])
+
+      # Running the filter in the forward and then backwards
+      # direction eliminates phase shift.
       normals = moving_average(normals, smoothing_window)
+      normals = moving_average(normals[::-1], smoothing_window)[::-1]
 
       for i in range(len(normals)):
         normal = normals[i,:]
