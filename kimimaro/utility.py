@@ -40,6 +40,16 @@ def find_objects(labels):
     all_slices = scipy.ndimage.find_objects(labels.T)
     return [ (slcs and slcs[::-1]) for slcs in all_slices ]    
 
+def add_property(skel, prop):
+  needs_prop = True
+  for skel_prop in skel.extra_attributes:
+    if skel_prop["id"] == prop["id"]:
+      needs_prop = False
+      break
+
+  if needs_prop:
+    skel.extra_attributes.append(prop)
+
 def cross_sectional_area(
   all_labels:np.ndarray, 
   skeletons:Union[Dict[int,Skeleton],List[Skeleton],Skeleton],
@@ -49,6 +59,7 @@ def cross_sectional_area(
   in_place:bool = False,
   fill_holes:bool = False,
   repair_contacts:bool = False,
+  visualize_section_planes:bool = False,
 ) -> Union[Dict[int,Skeleton],List[Skeleton],Skeleton]:
   """
   Given a set of skeletons, find the cross sectional area
@@ -79,6 +90,9 @@ def cross_sectional_area(
     that have a nonzero value for 
     skel.cross_sectional_area_contacts. This is intended
     to be used as a second pass after widening the image.
+
+  visualize_section_planes: For debugging, paint section planes
+    and display them using microviewer.
   """
   prop = {
     "id": "cross_sectional_area",
@@ -126,6 +140,10 @@ def cross_sectional_area(
     slices = roi.to_slices()
 
     binimg = np.asfortranarray(all_labels[slices] == label)
+
+    cross_sections = None
+    if visualize_section_planes:
+      cross_sections = np.zeros(binimg.shape, dtype=np.uint32, order="F")
 
     if fill_holes:
       binimg = fill_voids.fill(binimg, in_place=True)
@@ -177,16 +195,18 @@ def cross_sectional_area(
             normal, anisotropy,
             return_contact=True,
           )
+          if visualize_section_planes:
+            img = xs3d.cross_section(
+              binimg, vert, 
+              normal, anisotropy,
+            )
+            cross_sections[img > 0] = idx
 
-    needs_prop = True
-    for skel_prop in skel.extra_attributes:
-      if skel_prop["id"] == "cross_sectional_area":
-        needs_prop = False
-        break
+    if visualize_section_planes:
+      import microviewer
+      microviewer.view(cross_sections, seg=True)
 
-    if needs_prop:
-      skel.extra_attributes.append(prop)
-
+    add_property(skel, prop)
     skel.cross_sectional_area = areas
     skel.cross_sectional_area_contacts = contacts
 
