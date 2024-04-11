@@ -8,6 +8,7 @@ from cloudvolume import Skeleton, Bbox, Vec
 import kimimaro.skeletontricks
 
 import cc3d
+import dijkstra3d
 import fastremap
 import fill_voids
 import xs3d
@@ -39,6 +40,16 @@ def find_objects(labels):
   else:
     all_slices = scipy.ndimage.find_objects(labels.T)
     return [ (slcs and slcs[::-1]) for slcs in all_slices ]    
+
+def add_property(skel, prop):
+  needs_prop = True
+  for skel_prop in skel.extra_attributes:
+    if skel_prop["id"] == prop["id"]:
+      needs_prop = False
+      break
+
+  if needs_prop:
+    skel.extra_attributes.append(prop)
 
 def cross_sectional_area(
   all_labels:np.ndarray, 
@@ -191,6 +202,90 @@ def cross_sectional_area(
     skel.cross_sectional_area_contacts = contacts
 
   return skeletons
+
+def oversegment(
+  all_labels:np.ndarray, 
+  skeletons:Union[Dict[int,Skeleton],List[Skeleton],Skeleton],
+  anisotropy:np.ndarray = np.array([1,1,1], dtype=np.float32),
+  progress:bool = False,
+  fill_holes:bool = False,
+  in_place:bool = False,
+  downsample:int = 0,
+):
+  prop = {
+    "id": "segment",
+    "data_type": "uint64",
+    "num_components": 1,
+  }
+
+  iterator = skeletons
+  if type(skeletons) == dict:
+    iterator = skeletons.values()
+    total = len(skeletons)
+  elif type(skeletons) == Skeleton:
+    iterator = [ skeletons ]
+    total = 1
+  else:
+    total = len(skeletons)
+
+  if all_labels.dtype == bool:
+    remapping = { True: 1, False: 0, 1:1, 0:0 }
+  else:
+    all_labels, remapping = fastremap.renumber(all_labels, in_place=in_place)
+
+  all_slices = find_objects(all_labels)
+
+  all_features = np.zeros(all_labels.shape, dtype=np.uint64, order="F")
+
+  next_label = 0
+  for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
+    if all_labels.dtype == bool:
+      label = 1
+    else:
+      label = skel.id
+
+    if label == 0:
+      continue
+
+    label = remapping[label]
+    slices = all_slices[label - 1]
+    if slices is None:
+      continue
+
+    roi = Bbox.from_slices(slices)
+    if roi.volume() <= 1:
+      continue
+
+    binimg = np.asfortranarray(all_labels[slices] == label)
+    if fill_holes:
+      binimg = fill_voids.fill(binimg, in_place=True)
+
+    segment_skel = skel
+    if downsample > 0:
+      segment_skel = skel.downsample(downsample)
+
+    vertices = (segment_skel.vertices / anisotropy).round().astype(int)
+    vertices -= roi.minpt
+
+    field, feature_map = dijkstra3d.euclidean_distance_field(
+      binimg, vertices, 
+      anisotropy=anisotropy, 
+      return_feature_map=True
+    )
+    del field
+
+    add_property(skel, prop)
+
+    vertices = (skel.vertices / anisotropy).round().astype(int)
+    vertices -= roi.minpt
+
+    feature_map[binimg] += next_label
+    skel.segments = feature_map[vertices[:,0], vertices[:,1], vertices[:,2]]
+    next_label += vertices.size
+    all_features[roi.to_slices()] += feature_map
+    del feature_map
+
+  return all_features
 
 # From SO: https://stackoverflow.com/questions/14313510/how-to-calculate-rolling-moving-average-using-python-numpy-scipy
 def moving_average(a:np.ndarray, n:int, mode:str = "symmetric") -> np.ndarray:
