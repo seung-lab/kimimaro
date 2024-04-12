@@ -51,6 +51,54 @@ def add_property(skel, prop):
   if needs_prop:
     skel.extra_attributes.append(prop)
 
+def shape_iterator(all_labels, skeletons, fill_holes, in_place, progress, fn):
+  iterator = skeletons
+  if type(skeletons) == dict:
+    iterator = skeletons.values()
+    total = len(skeletons)
+  elif type(skeletons) == Skeleton:
+    iterator = [ skeletons ]
+    total = 1
+  else:
+    total = len(skeletons)
+
+  if all_labels.dtype == bool:
+    remapping = { True: 1, False: 0, 1:1, 0:0 }
+  else:
+    all_labels, remapping = fastremap.renumber(all_labels, in_place=in_place)
+
+  all_slices = find_objects(all_labels)
+
+  for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
+    if all_labels.dtype == bool:
+      label = 1
+    else:
+      label = skel.id
+
+    if label == 0:
+      continue
+
+    label = remapping[label]
+    slices = all_slices[label - 1]
+    if slices is None:
+      continue
+
+    roi = Bbox.from_slices(slices)
+    if roi.volume() <= 1:
+      continue
+
+    roi.grow(1)
+    roi.minpt = Vec.clamp(roi.minpt, Vec(0,0,0), roi.maxpt)
+    slices = roi.to_slices()
+
+    binimg = np.asfortranarray(all_labels[slices] == label)
+    if fill_holes:
+      binimg = fill_voids.fill(binimg, in_place=True)
+
+    fn(skel, binimg, roi)
+
+  return iterator
+
 def cross_sectional_area(
   all_labels:np.ndarray, 
   skeletons:Union[Dict[int,Skeleton],List[Skeleton],Skeleton],
@@ -97,50 +145,7 @@ def cross_sectional_area(
     "num_components": 1,
   }
 
-  iterator = skeletons
-  if type(skeletons) == dict:
-    iterator = skeletons.values()
-    total = len(skeletons)
-  elif type(skeletons) == Skeleton:
-    iterator = [ skeletons ]
-    total = 1
-  else:
-    total = len(skeletons)
-
-  if all_labels.dtype == bool:
-    remapping = { True: 1, False: 0, 1:1, 0:0 }
-  else:
-    all_labels, remapping = fastremap.renumber(all_labels, in_place=in_place)
-
-  all_slices = find_objects(all_labels)
-
-  for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
-    if all_labels.dtype == bool:
-      label = 1
-    else:
-      label = skel.id
-
-    if label == 0:
-      continue
-
-    label = remapping[label]
-    slices = all_slices[label - 1]
-    if slices is None:
-      continue
-
-    roi = Bbox.from_slices(slices)
-    if roi.volume() <= 1:
-      continue
-
-    roi.grow(1)
-    roi.minpt = Vec.clamp(roi.minpt, Vec(0,0,0), roi.maxpt)
-    slices = roi.to_slices()
-
-    binimg = np.asfortranarray(all_labels[slices] == label)
-
-    if fill_holes:
-      binimg = fill_voids.fill(binimg, in_place=True)
-
+  def cross_sectional_area_helper(skel, binimg, roi):
     all_verts = (skel.vertices / anisotropy).round().astype(int)
     all_verts -= roi.minpt
 
@@ -189,17 +194,16 @@ def cross_sectional_area(
             return_contact=True,
           )
 
-    needs_prop = True
-    for skel_prop in skel.extra_attributes:
-      if skel_prop["id"] == "cross_sectional_area":
-        needs_prop = False
-        break
-
-    if needs_prop:
-      skel.extra_attributes.append(prop)
+    add_property(skel, prop)
 
     skel.cross_sectional_area = areas
     skel.cross_sectional_area_contacts = contacts
+
+  shape_iterator(
+    all_labels, skeletons, 
+    fill_holes, in_place, progress, 
+    cross_sectional_area_helper
+  )
 
   return skeletons
 
@@ -211,54 +215,19 @@ def oversegment(
   fill_holes:bool = False,
   in_place:bool = False,
   downsample:int = 0,
-):
+) -> np.ndarray:
   prop = {
     "id": "segment",
     "data_type": "uint64",
     "num_components": 1,
   }
 
-  iterator = skeletons
-  if type(skeletons) == dict:
-    iterator = skeletons.values()
-    total = len(skeletons)
-  elif type(skeletons) == Skeleton:
-    iterator = [ skeletons ]
-    total = 1
-  else:
-    total = len(skeletons)
-
-  if all_labels.dtype == bool:
-    remapping = { True: 1, False: 0, 1:1, 0:0 }
-  else:
-    all_labels, remapping = fastremap.renumber(all_labels, in_place=in_place)
-
-  all_slices = find_objects(all_labels)
-
   all_features = np.zeros(all_labels.shape, dtype=np.uint64, order="F")
-
   next_label = 0
-  for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
-    if all_labels.dtype == bool:
-      label = 1
-    else:
-      label = skel.id
 
-    if label == 0:
-      continue
-
-    label = remapping[label]
-    slices = all_slices[label - 1]
-    if slices is None:
-      continue
-
-    roi = Bbox.from_slices(slices)
-    if roi.volume() <= 1:
-      continue
-
-    binimg = np.asfortranarray(all_labels[slices] == label)
-    if fill_holes:
-      binimg = fill_voids.fill(binimg, in_place=True)
+  def oversegment_helper(skel, binimg, roi):
+    nonlocal next_label
+    nonlocal all_features
 
     segment_skel = skel
     if downsample > 0:
@@ -281,9 +250,18 @@ def oversegment(
 
     feature_map[binimg] += next_label
     skel.segments = feature_map[vertices[:,0], vertices[:,1], vertices[:,2]]
-    next_label += vertices.size
+    next_label += vertices.shape[0]
     all_features[roi.to_slices()] += feature_map
-    del feature_map
+
+  # iterator is an iterable list of skeletons, not the shape iterator
+  iterator = shape_iterator(
+    all_labels, skeletons, fill_holes, in_place, progress, 
+    oversegment_helper
+  )
+
+  all_features, mapping = fastremap.renumber(all_features)
+  for skel in iterator:
+    skel.segments = fastremap.remap(skel.segments, mapping, in_place=True)
 
   return all_features
 
