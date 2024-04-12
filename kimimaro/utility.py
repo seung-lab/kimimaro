@@ -1,4 +1,6 @@
-from typing import Dict, Union, List
+from typing import Dict, Union, List, Tuple
+
+import copy
 
 import numpy as np
 import scipy.ndimage
@@ -215,12 +217,26 @@ def oversegment(
   fill_holes:bool = False,
   in_place:bool = False,
   downsample:int = 0,
-) -> np.ndarray:
+) -> Tuple[np.ndarray, Union[Dict[int,Skeleton],List[Skeleton],Skeleton]]:
+  """
+  Use skeletons to create an oversegmentation of a pre-existing set
+  of labels. This is useful for proofreading systems that work by merging
+  labels.
+
+  For each skeleton, get the feature map from its euclidean distance
+  field. The final image is the composite of all these feature maps
+  numbered from 1.
+
+  Each skeleton will have a new property skel.segments that associates
+  a label to each vertex.
+  """
   prop = {
-    "id": "segment",
+    "id": "segments",
     "data_type": "uint64",
     "num_components": 1,
   }
+
+  skeletons = copy.deepcopy(skeletons)
 
   all_features = np.zeros(all_labels.shape, dtype=np.uint64, order="F")
   next_label = 0
@@ -263,7 +279,7 @@ def oversegment(
   for skel in iterator:
     skel.segments = fastremap.remap(skel.segments, mapping, in_place=True)
 
-  return all_features
+  return all_features, skeletons
 
 # From SO: https://stackoverflow.com/questions/14313510/how-to-calculate-rolling-moving-average-using-python-numpy-scipy
 def moving_average(a:np.ndarray, n:int, mode:str = "symmetric") -> np.ndarray:
