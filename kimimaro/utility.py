@@ -110,6 +110,7 @@ def cross_sectional_area(
   in_place:bool = False,
   fill_holes:bool = False,
   repair_contacts:bool = False,
+  visualize_section_planes:bool = False,
 ) -> Union[Dict[int,Skeleton],List[Skeleton],Skeleton]:
   """
   Given a set of skeletons, find the cross sectional area
@@ -148,6 +149,11 @@ def cross_sectional_area(
   }
 
   def cross_sectional_area_helper(skel, binimg, roi):
+
+    cross_sections = None
+    if visualize_section_planes:
+      cross_sections = np.zeros(binimg.shape, dtype=np.uint32, order="F")
+
     all_verts = (skel.vertices / anisotropy).round().astype(int)
     all_verts -= roi.minpt
 
@@ -195,6 +201,16 @@ def cross_sectional_area(
             normal, anisotropy,
             return_contact=True,
           )
+          if visualize_section_planes:
+            img = xs3d.cross_section(
+              binimg, vert, 
+              normal, anisotropy,
+            )
+            cross_sections[img > 0] = idx
+
+    if visualize_section_planes:
+      import microviewer
+      microviewer.view(cross_sections, seg=True)
 
     add_property(skel, prop)
 
