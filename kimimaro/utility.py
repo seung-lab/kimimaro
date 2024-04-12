@@ -141,6 +141,9 @@ def cross_sectional_area(
     that have a nonzero value for 
     skel.cross_sectional_area_contacts. This is intended
     to be used as a second pass after widening the image.
+
+  visualize_section_planes: For debugging, paint section planes
+    and display them using microviewer.
   """
   prop = {
     "id": "cross_sectional_area",
@@ -149,7 +152,6 @@ def cross_sectional_area(
   }
 
   def cross_sectional_area_helper(skel, binimg, roi):
-
     cross_sections = None
     if visualize_section_planes:
       cross_sections = np.zeros(binimg.shape, dtype=np.uint32, order="F")
