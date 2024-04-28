@@ -1,4 +1,6 @@
-from typing import Dict, Union, List
+from typing import Dict, Union, List, Tuple
+
+import copy
 
 import numpy as np
 import scipy.ndimage
@@ -8,6 +10,7 @@ from cloudvolume import Skeleton, Bbox, Vec
 import kimimaro.skeletontricks
 
 import cc3d
+import dijkstra3d
 import fastremap
 import fill_voids
 import xs3d
@@ -49,6 +52,54 @@ def add_property(skel, prop):
 
   if needs_prop:
     skel.extra_attributes.append(prop)
+
+def shape_iterator(all_labels, skeletons, fill_holes, in_place, progress, fn):
+  iterator = skeletons
+  if type(skeletons) == dict:
+    iterator = skeletons.values()
+    total = len(skeletons)
+  elif type(skeletons) == Skeleton:
+    iterator = [ skeletons ]
+    total = 1
+  else:
+    total = len(skeletons)
+
+  if all_labels.dtype == bool:
+    remapping = { True: 1, False: 0, 1:1, 0:0 }
+  else:
+    all_labels, remapping = fastremap.renumber(all_labels, in_place=in_place)
+
+  all_slices = find_objects(all_labels)
+
+  for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
+    if all_labels.dtype == bool:
+      label = 1
+    else:
+      label = skel.id
+
+    if label == 0:
+      continue
+
+    label = remapping[label]
+    slices = all_slices[label - 1]
+    if slices is None:
+      continue
+
+    roi = Bbox.from_slices(slices)
+    if roi.volume() <= 1:
+      continue
+
+    roi.grow(1)
+    roi.minpt = Vec.clamp(roi.minpt, Vec(0,0,0), roi.maxpt)
+    slices = roi.to_slices()
+
+    binimg = np.asfortranarray(all_labels[slices] == label)
+    if fill_holes:
+      binimg = fill_voids.fill(binimg, in_place=True)
+
+    fn(skel, binimg, roi)
+
+  return iterator
 
 def cross_sectional_area(
   all_labels:np.ndarray, 
@@ -100,53 +151,10 @@ def cross_sectional_area(
     "num_components": 1,
   }
 
-  iterator = skeletons
-  if type(skeletons) == dict:
-    iterator = skeletons.values()
-    total = len(skeletons)
-  elif type(skeletons) == Skeleton:
-    iterator = [ skeletons ]
-    total = 1
-  else:
-    total = len(skeletons)
-
-  if all_labels.dtype == bool:
-    remapping = { True: 1, False: 0, 1:1, 0:0 }
-  else:
-    all_labels, remapping = fastremap.renumber(all_labels, in_place=in_place)
-
-  all_slices = find_objects(all_labels)
-
-  for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
-    if all_labels.dtype == bool:
-      label = 1
-    else:
-      label = skel.id
-
-    if label == 0:
-      continue
-
-    label = remapping[label]
-    slices = all_slices[label - 1]
-    if slices is None:
-      continue
-
-    roi = Bbox.from_slices(slices)
-    if roi.volume() <= 1:
-      continue
-
-    roi.grow(1)
-    roi.minpt = Vec.clamp(roi.minpt, Vec(0,0,0), roi.maxpt)
-    slices = roi.to_slices()
-
-    binimg = np.asfortranarray(all_labels[slices] == label)
-
+  def cross_sectional_area_helper(skel, binimg, roi):
     cross_sections = None
     if visualize_section_planes:
       cross_sections = np.zeros(binimg.shape, dtype=np.uint32, order="F")
-
-    if fill_holes:
-      binimg = fill_voids.fill(binimg, in_place=True)
 
     all_verts = (skel.vertices / anisotropy).round().astype(int)
     all_verts -= roi.minpt
@@ -207,10 +215,89 @@ def cross_sectional_area(
       microviewer.view(cross_sections, seg=True)
 
     add_property(skel, prop)
+
     skel.cross_sectional_area = areas
     skel.cross_sectional_area_contacts = contacts
 
+  shape_iterator(
+    all_labels, skeletons, 
+    fill_holes, in_place, progress, 
+    cross_sectional_area_helper
+  )
+
   return skeletons
+
+def oversegment(
+  all_labels:np.ndarray, 
+  skeletons:Union[Dict[int,Skeleton],List[Skeleton],Skeleton],
+  anisotropy:np.ndarray = np.array([1,1,1], dtype=np.float32),
+  progress:bool = False,
+  fill_holes:bool = False,
+  in_place:bool = False,
+  downsample:int = 0,
+) -> Tuple[np.ndarray, Union[Dict[int,Skeleton],List[Skeleton],Skeleton]]:
+  """
+  Use skeletons to create an oversegmentation of a pre-existing set
+  of labels. This is useful for proofreading systems that work by merging
+  labels.
+
+  For each skeleton, get the feature map from its euclidean distance
+  field. The final image is the composite of all these feature maps
+  numbered from 1.
+
+  Each skeleton will have a new property skel.segments that associates
+  a label to each vertex.
+  """
+  prop = {
+    "id": "segments",
+    "data_type": "uint64",
+    "num_components": 1,
+  }
+
+  skeletons = copy.deepcopy(skeletons)
+
+  all_features = np.zeros(all_labels.shape, dtype=np.uint64, order="F")
+  next_label = 0
+
+  def oversegment_helper(skel, binimg, roi):
+    nonlocal next_label
+    nonlocal all_features
+
+    segment_skel = skel
+    if downsample > 0:
+      segment_skel = skel.downsample(downsample)
+
+    vertices = (segment_skel.vertices / anisotropy).round().astype(int)
+    vertices -= roi.minpt
+
+    field, feature_map = dijkstra3d.euclidean_distance_field(
+      binimg, vertices, 
+      anisotropy=anisotropy, 
+      return_feature_map=True
+    )
+    del field
+
+    add_property(skel, prop)
+
+    vertices = (skel.vertices / anisotropy).round().astype(int)
+    vertices -= roi.minpt
+
+    feature_map[binimg] += next_label
+    skel.segments = feature_map[vertices[:,0], vertices[:,1], vertices[:,2]]
+    next_label += vertices.shape[0]
+    all_features[roi.to_slices()] += feature_map
+
+  # iterator is an iterable list of skeletons, not the shape iterator
+  iterator = shape_iterator(
+    all_labels, skeletons, fill_holes, in_place, progress, 
+    oversegment_helper
+  )
+
+  all_features, mapping = fastremap.renumber(all_features)
+  for skel in iterator:
+    skel.segments = fastremap.remap(skel.segments, mapping, in_place=True)
+
+  return all_features, skeletons
 
 # From SO: https://stackoverflow.com/questions/14313510/how-to-calculate-rolling-moving-average-using-python-numpy-scipy
 def moving_average(a:np.ndarray, n:int, mode:str = "symmetric") -> np.ndarray:

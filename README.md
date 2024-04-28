@@ -127,7 +127,7 @@ skel = kimimaro.join_close_components([skel1, skel2], radius=None) # no threshol
 extra_targets = kimimaro.synapses_to_targets(labels, synapses)
 
 
-# LISTING 3: Drawing a centerline between
+# LISTING 4: Drawing a centerline between
 #   preselected points on a binary image.
 #   This is a much simpler option for when
 #   you know exactly what you want, but may
@@ -138,6 +138,19 @@ skel = kimimaro.connect_points(
   start=(3, 215, 202), 
   end=(121, 426, 227),
   anisotropy=(32,32,40),
+)
+
+# LISTING 5: Using skeletons to oversegment existing
+#  segmentations for integration into proofreading systems 
+#  that on merging atomic labels. oversegmented_labels 
+#  is returned numbered from 1. skels is a copy returned 
+#  with the property skel.segments that associates a label
+#  to each vertex (labels will not be unique if downsampling 
+#  is used)
+oversegmented_labels, skels = kimimaro.oversegment(
+  labels, skels, 
+  anisotropy=(32,32,40), 
+  downsample=10,
 )
 ```
 
