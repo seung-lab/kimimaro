@@ -194,7 +194,7 @@ def cross_sectional_area(
         normal = normals[i,:]
         normal /= np.linalg.norm(normal)        
 
-      for i, vert in tqdm(enumerate(path), total=path.shape[0]):
+      for i, vert in enumerate(path):
         if np.any(vert < 0) or np.any(vert > shape):
           continue
 
