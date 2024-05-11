@@ -1,5 +1,6 @@
 from typing import Dict, Union, List, Tuple
 
+from collections import defaultdict
 import copy
 
 import numpy as np
@@ -168,6 +169,9 @@ def cross_sectional_area(
       areas = np.zeros([all_verts.shape[0]], dtype=np.float32)
       contacts = np.zeros([all_verts.shape[0]], dtype=np.uint8)
 
+    branch_pts = set(skel.branches())
+    branch_pt_vals = defaultdict(list)
+
     paths = skel.paths()
 
     normal = np.array([1,0,0], dtype=np.float32)
@@ -190,19 +194,25 @@ def cross_sectional_area(
         normal = normals[i,:]
         normal /= np.linalg.norm(normal)        
 
-      for i, vert in enumerate(path):
+      for i, vert in tqdm(enumerate(path), total=path.shape[0]):
         if np.any(vert < 0) or np.any(vert > shape):
           continue
 
         idx = mapping[tuple(vert)]
         normal = normals[i]
 
-        if areas[idx] == 0 or (repair_contacts and contacts[idx] > 0):
-          areas[idx], contacts[idx] = xs3d.cross_sectional_area(
+        if areas[idx] == 0 or idx in branch_pts or (repair_contacts and contacts[idx] > 0):
+          areas[idx], contact = xs3d.cross_sectional_area(
             binimg, vert, 
             normal, anisotropy,
             return_contact=True,
           )
+          if repair_contacts:
+            contacts[idx] = contact
+          else:
+            contacts[idx] |= contact # accumulate for branch points
+          if idx in branch_pts:
+            branch_pt_vals[idx].append(areas[idx])
           if visualize_section_planes:
             img = xs3d.cross_section(
               binimg, vert, 
@@ -213,6 +223,9 @@ def cross_sectional_area(
     if visualize_section_planes:
       import microviewer
       microviewer.view(cross_sections, seg=True)
+
+    for idx, vals in branch_pt_vals.items():
+      areas[idx] = sum(vals) / len(vals)
 
     add_property(skel, prop)
 
