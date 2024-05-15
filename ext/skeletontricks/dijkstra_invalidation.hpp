@@ -35,7 +35,6 @@
 #include <queue>
 #include <vector>
 
-#include "./hedly.h"
 #include "./libdivide.h"
 
 #define NHOOD_SIZE 26
@@ -205,17 +204,21 @@ inline void compute_neighborhood(
 class HeapDistanceNode {
 public:
   float dist;
+  uint64_t original_loc;
   uint64_t value;
   float max_dist;
 
   HeapDistanceNode() {
     dist = 0;
     value = 0;
+    original_loc = 0;
+    max_dist = 0;
   }
 
-  HeapDistanceNode (float d, uint64_t val, float mx_dist) {
+  HeapDistanceNode (float d, uint64_t o_loc, uint64_t val, float mx_dist) {
     dist = d;
     value = val;
+    original_loc = o_loc;
     max_dist = mx_dist;
   }
 
@@ -223,6 +226,7 @@ public:
     dist = h.dist;
     value = h.value;
     max_dist = h.max_dist;
+    original_loc = h.original_loc;
   }
 };
 
@@ -255,59 +259,50 @@ int64_t _roll_invalidation_ball(
 
   int neighborhood[NHOOD_SIZE] = {};
 
-  float neighbor_multiplier[NHOOD_SIZE] = { 
-    wx, wx, wy, wy, wz, wz, // axial directions (6)
-    
-    // square diagonals (12)
-    _s(wx, wy), _s(wx, wy), _s(wx, wy), _s(wx, wy),  
-    _s(wy, wz), _s(wy, wz), _s(wy, wz), _s(wy, wz),
-    _s(wx, wz), _s(wx, wz), _s(wx, wz), _s(wx, wz),
-
-    // cube diagonals (8)
-    _c(wx, wy, wz), _c(wx, wy, wz), _c(wx, wy, wz), _c(wx, wy, wz), 
-    _c(wx, wy, wz), _c(wx, wy, wz), _c(wx, wy, wz), _c(wx, wy, wz)
-  };
-
   std::priority_queue<
     HeapDistanceNode, std::vector<HeapDistanceNode>, HeapDistanceNodeCompare
   > queue;
 
   for (uint64_t i = 0; i < sources.size(); i++) {
-    queue.emplace(0.0, sources[i], max_distances[i]);
+    queue.emplace(0.0, sources[i], sources[i], max_distances[i]);
   }
 
   uint64_t loc;
-  float new_dist;
   uint64_t neighboridx;
 
-  uint64_t x, y, z;
+  int64_t x, y, z;
+  int64_t orig_x, orig_y, orig_z;
 
   int64_t invalidated = 0;
 
+  auto xyzfn = [=](uint64_t l, int64_t& x, int64_t& y, int64_t& z) {
+    if (power_of_two) {
+      z = l >> (xshift + yshift);
+      y = (l - (z << (xshift + yshift))) >> xshift;
+      x = l - ((y + (z << yshift)) << xshift);
+    }
+    else {
+      z = l / fast_sxy;
+      y = (l - (z * sxy)) / fast_sx;
+      x = l - sx * (y + z * sy);
+    }
+  };
+
   while (!queue.empty()) {
-    const float dist = queue.top().dist;
     const float max_dist = queue.top().max_dist;
+    const uint64_t original_loc = queue.top().original_loc;
     loc = queue.top().value;
     queue.pop();
 
-    if (!field[loc] || dist >= max_dist) {
+    if (!field[loc]) {
       continue;
     }
 
     field[loc] = 0;
     invalidated++;
 
-    if (power_of_two) {
-      z = loc >> (xshift + yshift);
-      y = (loc - (z << (xshift + yshift))) >> xshift;
-      x = loc - ((y + (z << yshift)) << xshift);
-    }
-    else {
-      z = loc / fast_sxy;
-      y = (loc - (z * sxy)) / fast_sx;
-      x = loc - sx * (y + z * sy);
-    }
-
+    xyzfn(loc, x, y, z);
+    xyzfn(original_loc, orig_x, orig_y, orig_z);
     compute_neighborhood(neighborhood, x, y, z, sx, sy, sz, connectivity, voxel_connectivity_graph);
 
     for (int i = 0; i < connectivity; i++) {
@@ -320,13 +315,15 @@ int64_t _roll_invalidation_ball(
         continue;
       }
 
-      new_dist = dist + neighbor_multiplier[i];
-      
-      // Visited nodes are negative and thus the current node
-      // will always be less than as field is filled with non-negative
-      // integers.
+      xyzfn(neighboridx, x, y, z);
+      float new_dist = _c(
+        wx * static_cast<float>(x - orig_x), 
+        wy * static_cast<float>(y - orig_y), 
+        wz * static_cast<float>(z - orig_z)
+      );
+
       if (new_dist < max_dist) { 
-        queue.emplace(new_dist, neighboridx, max_dist);
+        queue.emplace(new_dist, original_loc, neighboridx, max_dist);
       }
     }
   }

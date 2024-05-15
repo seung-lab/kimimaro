@@ -79,8 +79,7 @@ cdef extern from "skeletontricks.hpp" namespace "skeletontricks":
     int64_t sx, int64_t sy, int64_t sz,
     float wx, float wy, float wz,
     size_t* path, size_t path_size,
-    float scale, float constant, 
-    uint8_t mask_value
+    float scale, float constant
   )
 
   cdef vector[T] _find_cycle[T](T* edges, size_t Ne)
@@ -392,10 +391,11 @@ def roll_invalidation_ball_inside_component(
   max_distances = [ 
     (scale * DBF[x,y,z] + constant) for (x,y,z) in path 
   ]
+
   path = [ 
     coord[0] + sx * coord[1] + sxy * coord[2] 
     for coord in path if tuple(coord)
-  ]
+  ] 
   
   connectivity = 26
 
