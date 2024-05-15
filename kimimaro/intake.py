@@ -174,7 +174,7 @@ def skeletonize(
     )
 
   all_dbf = edtfn(cc_labels)
- 
+  
   if fix_avocados:
     cc_labels, all_dbf, remapping = engage_avocado_protection(
       cc_labels, all_dbf, remapping,

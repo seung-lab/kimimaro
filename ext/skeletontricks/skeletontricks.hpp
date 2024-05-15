@@ -42,7 +42,8 @@ size_t _roll_invalidation_cube(
   const int64_t sx, const int64_t sy, const int64_t sz,
   const float wx, const float wy, const float wz,
   size_t* path, const size_t path_size,
-  const float scale, const float constant) {
+  const float scale, const float constant
+) {
 
   if (path_size == 0) {
     return 0;
@@ -473,8 +474,6 @@ _extract_edges_from_binary_image(
 
   return edges;
 }
-
-
 
 };
 

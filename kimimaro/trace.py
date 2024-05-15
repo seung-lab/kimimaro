@@ -258,10 +258,15 @@ def compute_paths(
       )
 
     if valid_labels > 0:
-      invalidated, labels = kimimaro.skeletontricks.roll_invalidation_cube(
-        labels, DBF, path, scale, const, 
-        anisotropy=anisotropy, invalid_vertices=invalid_vertices,
-      )
+      # invalidated, labels = kimimaro.skeletontricks.roll_invalidation_cube(
+      #   labels, DBF, path, scale, const, 
+      #   anisotropy=anisotropy, invalid_vertices=invalid_vertices,
+      # )
+      invalidated, labels = kimimaro.skeletontricks.roll_invalidation_ball_inside_component(
+        labels, DBF, scale, const, 
+        anisotropy=anisotropy, path=path,
+        voxel_connectivity_graph=voxel_graph,
+      )      
       valid_labels -= invalidated
 
     for vertex in path:
