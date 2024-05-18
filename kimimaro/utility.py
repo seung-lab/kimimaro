@@ -20,12 +20,17 @@ def extract_skeleton_from_binary_image(image):
   verts, edges = kimimaro.skeletontricks.extract_edges_from_binary_image(image)
   return Skeleton(verts, edges)
 
-def compute_cc_labels(all_labels):
+def compute_cc_labels(all_labels, voxel_graph = None):
   tmp_labels = all_labels
   if np.dtype(all_labels.dtype).itemsize > 1:
     tmp_labels, remapping = fastremap.renumber(all_labels, in_place=False)
 
-  cc_labels = cc3d.connected_components(tmp_labels)
+  if voxel_graph is not None:
+    cc_labels = cc3d.color_connectivity_graph(voxel_graph, connectivity=26)
+    cc_labels *= all_labels > 0
+  else:
+    cc_labels = cc3d.connected_components(tmp_labels)
+  
   cc_labels = fastremap.refit(cc_labels)
 
   del tmp_labels

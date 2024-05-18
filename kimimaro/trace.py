@@ -111,8 +111,11 @@ def trace(
     if num_voxels_filled > 0:
       del DBF
       DBF = edt.edt(
-        labels, anisotropy=anisotropy, order='F',
-        black_border=np.all(labels)
+        labels, 
+        anisotropy=anisotropy, 
+        order='F',
+        black_border=np.all(labels),
+        voxel_graph=voxel_graph,
       )
     dbf_max = np.max(DBF) 
     soma_mode = dbf_max > soma_acceptance_threshold
@@ -125,7 +128,7 @@ def trace(
     root = find_soma_root(DBF, dbf_max)    
     soma_radius = dbf_max * soma_invalidation_scale + soma_invalidation_const
   elif root is None:
-    root = find_root(labels, anisotropy)
+    root = find_root(labels, anisotropy, voxel_graph)
   
   if root is None:
     return PrecomputedSkeleton()
@@ -155,11 +158,13 @@ def trace(
     parents = PDRF
 
   if soma_mode:
-    invalidated, labels = kimimaro.skeletontricks.roll_invalidation_ball(
-      labels, DBF, np.array([root], dtype=np.uint32),
+    invalidated, labels = kimimaro.skeletontricks.roll_invalidation_ball_inside_component(
+      labels, DBF, 
+      path=[root],
       scale=soma_invalidation_scale,
       const=soma_invalidation_const, 
-      anisotropy=anisotropy
+      anisotropy=anisotropy,
+      voxel_connectivity_graph=voxel_graph,
     )
   # This target is only valid if no 
   # invalidations have occured yet.
@@ -300,7 +305,7 @@ def find_soma_root(DBF, dbf_max):
 
   return tuple(coords[root].astype(np.uint32))
 
-def find_root(labels, anisotropy):
+def find_root(labels, anisotropy, voxel_graph):
   """
   "4.4 DAF:  Compute distance from any voxel field"
   Compute DAF, but we immediately convert to the PDRF
@@ -312,9 +317,10 @@ def find_root(labels, anisotropy):
     return None
 
   DAF, target = dijkstra3d.euclidean_distance_field(
-    np.asfortranarray(labels), any_voxel, 
+    labels, any_voxel, 
     anisotropy=anisotropy,
     return_max_location=True,
+    voxel_graph=voxel_graph,
   )
   return target
 

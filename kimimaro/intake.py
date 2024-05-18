@@ -155,7 +155,7 @@ def skeletonize(
   if minlabel == 0 and maxlabel == 0:
     return {}
 
-  cc_labels, remapping = compute_cc_labels(all_labels)
+  cc_labels, remapping = compute_cc_labels(all_labels, voxel_graph)
   del all_labels
 
   if fill_holes:

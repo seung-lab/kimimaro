@@ -402,7 +402,7 @@ def roll_invalidation_ball_inside_component(
   cdef uint32_t* vcg = NULL
   cdef cnp.ndarray[uint32_t, ndim=3] vcg_arr
 
-  if voxel_connectivity_graph:
+  if isinstance(voxel_connectivity_graph, np.ndarray):
     vcg_arr = voxel_connectivity_graph
     vcg = <uint32_t*>&vcg_arr[0,0,0]
 
