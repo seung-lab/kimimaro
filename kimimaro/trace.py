@@ -207,13 +207,9 @@ def compute_paths(
   in that we attempt to cull vertices within a radius of the
   root vertex.
   """
-  invalid_vertices = {}
   paths = []
   valid_labels = np.count_nonzero(labels)
   root = tuple(root)
-
-  if soma_mode:
-    invalid_vertices[root] = True
 
   if max_paths is None:
     max_paths = valid_labels
@@ -263,10 +259,6 @@ def compute_paths(
       )
 
     if valid_labels > 0:
-      # invalidated, labels = kimimaro.skeletontricks.roll_invalidation_cube(
-      #   labels, DBF, path, scale, const, 
-      #   anisotropy=anisotropy, invalid_vertices=invalid_vertices,
-      # )
       invalidated, labels = kimimaro.skeletontricks.roll_invalidation_ball_inside_component(
         labels, DBF, scale, const, 
         anisotropy=anisotropy, path=path,
@@ -275,7 +267,6 @@ def compute_paths(
       valid_labels -= invalidated
 
     for vertex in path:
-      invalid_vertices[tuple(vertex)] = True
       if fix_branching:
         parents[tuple(vertex)] = 0.0
 
