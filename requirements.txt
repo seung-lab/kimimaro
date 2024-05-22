@@ -1,5 +1,5 @@
 click
-connected-components-3d>=1.5.0
+connected-components-3d>=3.16.0
 cloud-volume>=0.57.6
 dijkstra3d>=1.15.0
 fill-voids>=2.0.0

@@ -5,7 +5,7 @@ procedure. The ones that didn't fit elsewhere have a home here.
 
 Author: William Silversmith
 Affiliation: Seung Lab, Princeton Neuroscience Institute
-Date: August 2018 - August 2021
+Date: August 2018 - May 2024
 
 *****************************************************************
 This file is part of Kimimaro.
@@ -61,6 +61,17 @@ ctypedef fused INTEGER:
   int32_t
   int64_t
   UINT
+
+cdef extern from "dijkstra_invalidation.hpp" namespace "dijkstra_invalidation":
+  cdef int64_t _roll_invalidation_ball(
+    uint8_t* field,
+    uint64_t sx, uint64_t sy, uint64_t sz, 
+    float wx, float wy, float wz, 
+    vector[uint64_t] sources,
+    vector[float] max_distances,
+    int connectivity,
+    uint32_t* voxel_connectivity_graph
+  )
 
 cdef extern from "skeletontricks.hpp" namespace "skeletontricks":
   cdef size_t _roll_invalidation_cube(
@@ -354,10 +365,61 @@ def find_target(
 
   return (mx, my, mz)
 
+@cython.boundscheck(False)
+@cython.wraparound(False)  # turn off negative index wrapping for entire function
+@cython.nonecheck(False)
+@cython.binding(True)
+def roll_invalidation_ball_inside_component(
+    cnp.ndarray[uint8_t, cast=True, ndim=3] labels, 
+    cnp.ndarray[float, ndim=3] DBF, 
+    float scale, 
+    float constant,
+    anisotropy,
+    path,
+    voxel_connectivity_graph = None,
+    connectivity = 26,
+):
+  cdef int64_t sx, sy, sz 
+  sx = labels.shape[0]
+  sy = labels.shape[1]
+  sz = labels.shape[2]
+
+  cdef size_t sxy = sx * sy
+
+  cdef float wx, wy, wz
+  (wx, wy, wz) = anisotropy
+
+  max_distances = [ 
+    (scale * DBF[x,y,z] + constant) for (x,y,z) in path 
+  ]
+
+  path = [ 
+    coord[0] + sx * coord[1] + sxy * coord[2] 
+    for coord in path if tuple(coord)
+  ]
+
+  cdef uint32_t* vcg = NULL
+  cdef cnp.ndarray[uint32_t, ndim=3] vcg_arr
+
+  if isinstance(voxel_connectivity_graph, np.ndarray):
+    vcg_arr = voxel_connectivity_graph
+    vcg = <uint32_t*>&vcg_arr[0,0,0]
+
+  invalidated = _roll_invalidation_ball(
+    <uint8_t*>&labels[0,0,0],
+    sx, sy, sz, 
+    wx, wy, wz,
+    path, max_distances,
+    connectivity, 
+    vcg
+  )
+
+  return (invalidated, labels)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
+@cython.binding(True)
 def roll_invalidation_ball(
     cnp.ndarray[uint8_t, cast=True, ndim=3] labels, 
     cnp.ndarray[float, ndim=3] DBF, 
@@ -366,11 +428,6 @@ def roll_invalidation_ball(
     invalid_vertices={},
   ):
   """
-  roll_invalidation_ball(
-    ndarray[uint8_t, cast=True, ndim=3] labels, ndarray[float, ndim=3] DBF, 
-    path, float scale, float const, anisotropy=(1,1,1), invalid_vertices={}
-  )
-
   Given an anisotropic binary image, its distance transform, and a path 
   traversing the binary image, erase the voxels surrounding the path
   in a sphere around each vertex on the path corresponding to the 
@@ -428,16 +485,12 @@ def roll_invalidation_ball(
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
+@cython.binding(True)
 def get_mapping(
     cnp.ndarray[INTEGER, ndim=3] orig_labels, 
     cnp.ndarray[UINT, ndim=3] cc_labels
   ):
   """
-  get_mapping(
-    ndarray[INTEGER, ndim=3] orig_labels, 
-    ndarray[UINT, ndim=3] cc_labels
-  )
-
   Given a set of possibly not connected labels 
   and an image containing their labeled connected components, 
   produce a dictionary containing the inverse of this mapping.
@@ -470,16 +523,12 @@ def get_mapping(
 
   return remap
 
+@cython.binding(True)
 def compute_centroids(
     cnp.ndarray[UINT, ndim=2] labels,
     float wx, float wy
   ):
   """
-  compute_centroids(
-    cnp.ndarray[UINT, ndim=2] labels,
-    float wx, float wy
-  )
-
   Compute the centroid for every label on a 2D image at once.
 
   Returns: { $segid: (x, y), ... }
@@ -537,18 +586,13 @@ def compute_centroids(
 
   return result
 
+@cython.binding(True)
 def find_border_targets(
     cnp.ndarray[float, ndim=2] dt,
     cnp.ndarray[UINT, ndim=2] cc_labels,
     float wx, float wy
   ):
   """
-  find_border_targets(
-    ndarray[float, ndim=2] dt, 
-    ndarray[UINT, ndim=2] cc_labels,
-    float wx, float wy
-  )
-
   Given a set of connected components that line within 
   a plane and their distance transform, return a map of
   label ID to the coordinate of its maximum distance 
@@ -717,6 +761,7 @@ cdef float distsq(
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 @cython.nonecheck(False)
+@cython.binding(True)
 def roll_invalidation_cube(
     cnp.ndarray[uint8_t, cast=True, ndim=3] labels, 
     cnp.ndarray[float, ndim=3] DBF, 
@@ -725,14 +770,6 @@ def roll_invalidation_cube(
     invalid_vertices={},
   ):
   """
-  roll_invalidation_cube(
-    ndarray[uint8_t, cast=True, ndim=3] labels, 
-    ndarray[float, ndim=3] DBF, 
-    path, float scale, float const,
-    anisotropy=(1,1,1),
-    invalid_vertices={},
-  )
-
   Given an anisotropic binary image, its distance transform, and a path 
   traversing the binary image, erase the voxels surrounding the path
   in a cube around each vertex. In contrast to `roll_invalidation_ball`,

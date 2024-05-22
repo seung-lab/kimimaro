@@ -155,7 +155,7 @@ def skeletonize(
   if minlabel == 0 and maxlabel == 0:
     return {}
 
-  cc_labels, remapping = compute_cc_labels(all_labels)
+  cc_labels, remapping = compute_cc_labels(all_labels, voxel_graph)
   del all_labels
 
   if fill_holes:
@@ -174,7 +174,7 @@ def skeletonize(
     )
 
   all_dbf = edtfn(cc_labels)
- 
+  
   if fix_avocados:
     cc_labels, all_dbf, remapping = engage_avocado_protection(
       cc_labels, all_dbf, remapping,
