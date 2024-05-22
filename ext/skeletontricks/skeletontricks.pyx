@@ -377,6 +377,7 @@ def roll_invalidation_ball_inside_component(
     anisotropy,
     path,
     voxel_connectivity_graph = None,
+    connectivity = 26,
 ):
   cdef int64_t sx, sy, sz 
   sx = labels.shape[0]
@@ -395,9 +396,7 @@ def roll_invalidation_ball_inside_component(
   path = [ 
     coord[0] + sx * coord[1] + sxy * coord[2] 
     for coord in path if tuple(coord)
-  ] 
-  
-  connectivity = 26
+  ]
 
   cdef uint32_t* vcg = NULL
   cdef cnp.ndarray[uint32_t, ndim=3] vcg_arr
