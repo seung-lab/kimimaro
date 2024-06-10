@@ -31,7 +31,7 @@ from scipy import ndimage
 
 import kimimaro.skeletontricks
 
-from cloudvolume import PrecomputedSkeleton, view
+from cloudvolume import PrecomputedSkeleton
 from cloudvolume.lib import save_images, mkdir
 
 def trace(
