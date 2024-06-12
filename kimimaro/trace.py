@@ -160,10 +160,10 @@ def trace(
   if soma_mode:
     invalidated, labels = kimimaro.skeletontricks.roll_invalidation_ball_inside_component(
       labels, DBF, 
-      path=[root],
-      scale=soma_invalidation_scale,
-      const=soma_invalidation_const, 
-      anisotropy=anisotropy,
+      soma_invalidation_scale,
+      soma_invalidation_const, 
+      anisotropy,
+      [root],
       voxel_connectivity_graph=voxel_graph,
     )
   # This target is only valid if no 
@@ -261,7 +261,7 @@ def compute_paths(
     if valid_labels > 0:
       invalidated, labels = kimimaro.skeletontricks.roll_invalidation_ball_inside_component(
         labels, DBF, scale, const, 
-        anisotropy=anisotropy, path=path,
+        anisotropy, path,
         voxel_connectivity_graph=voxel_graph,
       )      
       valid_labels -= invalidated
