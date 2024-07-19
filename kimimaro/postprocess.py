@@ -108,7 +108,7 @@ def join_close_components(skeletons, radius=None):
     N = len(skels)
 
     radii_matrix = np.full( (N, N), np.inf, dtype=np.float32 )
-    index_matrix = np.full( (N, N, 2), -1, dtype=np.uint32 )
+    index_matrix = np.full( (N, N, 2), np.iinfo(np.uint32).max, dtype=np.uint32 )
 
     for i in range(N):
       for j in range(i + 1, N):  # compute upper triangle only
