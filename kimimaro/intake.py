@@ -648,7 +648,7 @@ def engage_avocado_protection_single_pass(
       changed.add(fruit)
       binimg |= (cc_labels[slc] == fruit)
 
-    fruit = np.cast[cc_labels.dtype](fruit)
+    fruit = np.asarray(fruit, dtype=cc_labels.dtype)
     binimg, N = fill_voids.fill(binimg, in_place=True, return_fill_count=True)
     cc_labels[slc] *= ~binimg
     cc_labels[slc] += fruit * binimg
