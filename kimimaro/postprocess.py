@@ -107,15 +107,11 @@ def join_close_components(skeletons, radius=None):
   while len(skels) > 1:
     N = len(skels)
 
-    radii_matrix = np.zeros( (N, N), dtype=np.float32 ) + np.inf
-    index_matrix = np.zeros( (N, N, 2), dtype=np.uint32 ) + -1
+    radii_matrix = np.full( (N, N), np.inf, dtype=np.float32 )
+    index_matrix = np.full( (N, N, 2), -1, dtype=np.uint32 )
 
-    for i in range(len(skels)):
-      for j in range(len(skels)):
-        if i == j:
-          continue 
-        elif radii_matrix[i,j] != np.inf:
-          continue
+    for i in range(N):
+      for j in range(i + 1, N):  # compute upper triangle only
 
         s1, s2 = skels[i], skels[j]
         dist_matrix = scipy.spatial.distance.cdist(s1.vertices, s2.vertices)

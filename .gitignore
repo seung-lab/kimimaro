@@ -106,4 +106,7 @@ venv.bak/
 test.py
 .DS_Store
 
+# Itelli J
+.idea/
+
 ext/skeletontricks/skeletontricks.cpp
