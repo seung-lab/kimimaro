@@ -86,6 +86,9 @@ def shape_iterator(all_labels, skeletons, fill_holes, in_place, progress, fn):
     if label == 0:
       continue
 
+    if label not in remapping:
+      continue
+
     label = remapping[label]
     slices = all_slices[label - 1]
     if slices is None:
@@ -242,6 +245,12 @@ def cross_sectional_area(
     fill_holes, in_place, progress, 
     cross_sectional_area_helper
   )
+
+  for skel in skeletons.values():
+    if not hasattr(skel, "cross_sectional_area"):
+      skel.cross_sectional_area = np.full(len(skel.vertices), -1, dtype=np.float32, order="F")
+    if not hasattr(skel, "cross_sectional_area_contacts"):
+      skel.cross_sectional_area_contacts = np.zeros(len(skel.vertices), dtype=np.uint8, order="F")
 
   return skeletons
 
