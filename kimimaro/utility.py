@@ -249,7 +249,14 @@ def cross_sectional_area(
     cross_sectional_area_helper
   )
 
-  for skel in skeletons.values():
+  if isinstance(skeletons, Skeleton):
+    skelitr = [ skeletons ]
+  elif isinstance(skeletons, dict):
+    skelitr = skeletons.values()
+  else:
+    skelitr = iter(skeletons)
+
+  for skel in skelitr:
     add_property(skel, xs_prop)
     add_property(skel, xs_contact_prop)
 
