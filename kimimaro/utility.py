@@ -154,10 +154,15 @@ def cross_sectional_area(
   visualize_section_planes: For debugging, paint section planes
     and display them using microviewer.
   """
-  prop = {
+  xs_prop = {
     "id": "cross_sectional_area",
     "data_type": "float32",
     "num_components": 1,
+  }
+  xs_contact_prop = {
+    "id": "cross_sectional_area_contacts",
+    "data_type": "uint8",
+    "num_components": 1,  
   }
 
   def cross_sectional_area_helper(skel, binimg, roi):
@@ -235,8 +240,6 @@ def cross_sectional_area(
     for idx, vals in branch_pt_vals.items():
       areas[idx] = sum(vals) / len(vals)
 
-    add_property(skel, prop)
-
     skel.cross_sectional_area = areas
     skel.cross_sectional_area_contacts = contacts
 
@@ -247,6 +250,9 @@ def cross_sectional_area(
   )
 
   for skel in skeletons.values():
+    add_property(skel, xs_prop)
+    add_property(skel, xs_contact_prop)
+
     if not hasattr(skel, "cross_sectional_area"):
       skel.cross_sectional_area = np.full(len(skel.vertices), -1, dtype=np.float32, order="F")
     if not hasattr(skel, "cross_sectional_area_contacts"):
