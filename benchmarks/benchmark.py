@@ -1,8 +1,9 @@
 import time
 import numpy as np
 import kimimaro
+import crackle
 
-labels = np.load("connectomics.npy")
+labels = crackle.load("connectomics.npy.ckl.gz")
 
 s = time.time()
 skels = kimimaro.skeletonize(
