@@ -8,6 +8,11 @@ import kimimaro.intake
 import kimimaro.skeletontricks
 from kimimaro.utility import moving_average
 
+@pytest.fixture
+def connectomics_data():
+  import crackle
+  return crackle.load("benchmarks/connectomics.npy.ckl.gz")
+
 def test_empty_image():
   labels = np.zeros( (256, 256, 256), dtype=bool)  
   skels = kimimaro.skeletonize(labels, fix_borders=True)
@@ -502,7 +507,8 @@ def test_moving_average():
   assert np.all(res == ans)
   assert len(ans) == len(data)
 
-
+def test_no_fix_branching(connectomics_data):
+  kimimaro.skeletonize(connectomics_data[:,:,100], fix_branching=False)
 
 
 
