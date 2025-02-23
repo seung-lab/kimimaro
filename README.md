@@ -265,7 +265,6 @@ The actual chunk size used will be `min(parallel_chunk_size, len(cc_labels) // p
 ### Performance Tips
 
 - If you only need a few labels skeletonized, pass in `object_ids` to bypass processing all the others. If `object_ids` contains only a single label, the masking operation will run faster.
-- You may save on peak memory usage by using a `cc_safety_factor` < 1, only if you are sure the connected components algorithm will generate many fewer labels than there are pixels in your image.
 - Larger TEASAR parameters scale and const require processing larger invalidation regions per path.
 - Set `pdrf_exponent` to a small power of two (e.g. 1, 2, 4, 8, 16) for a small speedup.
 - If you are willing to sacrifice the improved branching behavior, you can set `fix_branching=False` for a moderate 1.1x to 1.5x speedup (assuming your TEASAR parameters and data allow branching).
@@ -394,25 +393,6 @@ We apply a series of filters and pick the point based on the first filter it pas
 5. The previously found maxima.
 
 It is important that filter #1 be based on the shape of the label so that kinks are minimimized for convex hulls. For example, originally we used only filters two thru five, but this caused skeletons for neurites located away from the center of a chunk to suddenly jink towards the center of the chunk at chunk boundaries.
-
-### Rolling Invalidation Cube
-
-The original TEASAR paper calls for a "rolling invalidation ball" that erases foreground voxels in step 6(iii). A naive implementation of this ball is very expensive as each voxel in the path requires its own ball, and many of these voxels overlap. In some cases, it is possible that the whole volume will need to be pointlessly reevaluated for every voxel along the path from root to target. While it's possible to special case the worst case, in the more common general case, a large amount of duplicate effort is expended.
-
-Therefore, we applied an algorithm using topological cues to perform the invalidation operation in linear time. For simplicity of implmentation, we substituted a cube shape instead of a sphere. The function name `roll_invalidation_cube` is intended to evoke this awkwardness, though it hasn't appeared to have been  important.  
-
-The two-pass algorithm is as follows. Given a binary image *I*, a skeleton *S*, and a set of vertices *V*:
-
-1. Let *B<sub>v</sub>* be the set of bounding boxes that inscribe the spheres indicated by the TEASAR paper.
-2. Allocate a 3D signed integer array, *T*, the size and dimension of *I* representing the topology. *T* is initially set to all zeros.
-3. For each *B<sub>v</sub>*:
-  1. Set T(p) += 1 for all points *p* on *B<sub>v</sub>*'s left boundary along the x-axis.
-  2. Set T(p) -= 1 for all points *p* on *B<sub>v</sub>*'s right boundary along the x-axis.
-4. Compute the bounding box *B<sub>global</sub>* that inscribes the union of all *B<sub>v</sub>*.
-5. A point *p* travels along the x-axis for each row of *B<sub>global</sub>* starting on the YZ plane. 
-  1. Set integer *coloring* = 0
-  2. At each index, *coloring* += *T*(p)
-  3. If *coloring* > 0 or *T*(p) is non-zero (we're on the leaving edge), we are inside an invalidation cube and start converting foreground voxels into background voxels.
 
 ## Related Projects
 
