@@ -152,7 +152,7 @@ def trace(
   # pointers from each voxel to its parent. Then we can rapidly
   # compute multiple paths by simply hopping pointers using path_from_parents
   if not fix_branching:
-    parents = dijkstra3d.parental_field(PDRF, root, voxel_graph)
+    parents = dijkstra3d.parental_field(PDRF, root, voxel_graph=voxel_graph)
     del PDRF
   else:
     parents = PDRF
