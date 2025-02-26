@@ -35,6 +35,9 @@ jobs:
           CIBW_BEFORE_BUILD: pip install numpy setuptools wheel cython 
           CIBW_ARCHS_MACOS: "x86_64 arm64"
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload built wheels
+        uses: actions/upload-artifact@v4
         with:
+          name: built-wheels-${{ matrix.os }}-${{ matrix.arch }}
           path: ./wheelhouse/*.whl
+          if-no-files-found: warn
