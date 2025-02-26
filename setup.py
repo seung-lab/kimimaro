@@ -20,7 +20,7 @@ def read(fname):
 
 setuptools.setup(
   name="kimimaro",
-  version="4.1.2",
+  version="5.0.0",
   setup_requires=["numpy", "cython"],
   install_requires=[
     "click",
@@ -40,7 +40,7 @@ setuptools.setup(
   extras_require={
     'tif': [ 'tifffile' ],
   },
-  python_requires=">=3.8.0,<4.0.0",
+  python_requires=">=3.9.0,<4.0.0",
   ext_modules=[
     setuptools.Extension(
       'kimimaro.skeletontricks',

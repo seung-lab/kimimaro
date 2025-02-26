@@ -6,7 +6,7 @@ on:
     tags:
       - '*'
 env:
-  CIBW_SKIP: pp* *-musllinux*
+  CIBW_SKIP: pp* *-musllinux* cp36* cp37* cp38*
 
 jobs:
   build_wheels:
