@@ -9,6 +9,7 @@ numpy>=1.16.1
 osteoid
 pathos
 posix_ipc
+psutil
 scipy>=1.1.0
 tqdm
 xs3d>=1.2.0,<2
