@@ -1,10 +1,10 @@
 import os
 
-import cloudvolume
-from cloudvolume import Skeleton
+import microviewer
 from cloudvolume.lib import mkdir
 import click
 import numpy as np
+from osteoid import Skeleton
 
 import kimimaro
 import fastremap
@@ -189,7 +189,7 @@ def view(filename, port):
     skel.viewer()
   elif ext == ".npy":
     labels = np.load(filename)
-    cloudvolume.view(labels, segmentation=True, port=port)
+    microviewer.view(labels, segmentation=True, port=port)
   else:
     print("kimimaro: {filename} was not a .swc or .npy file.")
 

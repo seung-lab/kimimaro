@@ -3,7 +3,7 @@ Skeletonization algorithm based on TEASAR (Sato et al. 2000).
 
 Authors: Alex Bae and Will Silversmith
 Affiliation: Seung Lab, Princeton Neuroscience Institue
-Date: June 2018 - August 2021
+Date: June 2018 - Februrary 2025
 
 This file is part of Kimimaro.
 
@@ -31,8 +31,7 @@ from scipy import ndimage
 
 import kimimaro.skeletontricks
 
-from cloudvolume import PrecomputedSkeleton
-from cloudvolume.lib import save_images, mkdir
+from osteoid import Skeleton
 
 def trace(
     labels, DBF, 
@@ -131,7 +130,7 @@ def trace(
     root = find_root(labels, anisotropy, voxel_graph)
   
   if root is None:
-    return PrecomputedSkeleton()
+    return Skeleton()
  
   free_space_radius = 0 if not soma_mode else DBF[root]
   # DBF: Distance to Boundary Field
@@ -184,8 +183,8 @@ def trace(
     max_paths, voxel_graph
   )
 
-  skel = PrecomputedSkeleton.simple_merge(
-    [ PrecomputedSkeleton.from_path(path) for path in paths if len(path) > 0 ]
+  skel = Skeleton.simple_merge(
+    [ Skeleton.from_path(path) for path in paths if len(path) > 0 ]
   ).consolidate()
 
   verts = skel.vertices.flatten().astype(np.uint32)
@@ -385,27 +384,8 @@ def point_to_point(
   del DAF
 
   path = dijkstra3d.dijkstra(PDRF, end, start)
-  skel = PrecomputedSkeleton.from_path(path)
+  skel = Skeleton.from_path(path)
 
   verts = skel.vertices.flatten().astype(np.uint32)
   skel.radii = DBF[verts[::3], verts[1::3], verts[2::3]]
   return skel
-
-def xy_path_projection(paths, labels, N=0):
-  """Used for debugging paths."""
-  if type(paths) != list:
-    paths = [ paths ]
-
-  projection = np.zeros( (labels.shape[0], labels.shape[1] ), dtype=np.uint8)
-  outline = labels.any(axis=-1).astype(np.uint8) * 77
-  outline = outline.reshape( (labels.shape[0], labels.shape[1] ) )
-  projection += outline
-  for path in paths:
-    for coord in path:
-      projection[coord[0], coord[1]] = 255
-
-  projection = Image.fromarray(projection.T, 'L')
-  N = str(N).zfill(3)
-  mkdir('./saved_images/projections')
-  projection.save('./saved_images/projections/{}.png'.format(N), 'PNG')
-

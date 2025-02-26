@@ -7,7 +7,9 @@ import numpy as np
 import scipy.ndimage
 from tqdm import tqdm
 
-from cloudvolume import Skeleton, Bbox, Vec
+from osteoid import Skeleton
+from osteoid.lib import Bbox, Vec
+
 import kimimaro.skeletontricks
 
 import cc3d
@@ -64,7 +66,7 @@ def shape_iterator(all_labels, skeletons, fill_holes, in_place, progress, fn):
   if type(skeletons) == dict:
     iterator = skeletons.values()
     total = len(skeletons)
-  elif type(skeletons) == Skeleton:
+  elif hasattr(skeletons, "vertices"):
     iterator = [ skeletons ]
     total = 1
   else:
@@ -249,7 +251,7 @@ def cross_sectional_area(
     cross_sectional_area_helper
   )
 
-  if isinstance(skeletons, Skeleton):
+  if hasattr(skeletons, "vertices"):
     skelitr = [ skeletons ]
   elif isinstance(skeletons, dict):
     skelitr = skeletons.values()

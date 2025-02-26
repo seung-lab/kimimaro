@@ -27,8 +27,8 @@ import pathos.pools
 import scipy.spatial
 from tqdm import tqdm
 
-import cloudvolume
-from cloudvolume import CloudVolume, PrecomputedSkeleton, Bbox
+from osteoid import Skeleton
+from osteoid.lib import Bbox
 import cloudvolume.sharedmemory as shm
 
 import cc3d # connected components
@@ -139,7 +139,7 @@ def skeletonize(
       chunk size is set higher than num tasks // parallel, that number
       is used instead.
 
-  Returns: { $segid: cloudvolume.PrecomputedSkeleton, ... }
+  Returns: { $segid: osteoid.Skeleton, ... }
   """
 
   anisotropy = np.array(anisotropy, dtype=np.float32)
@@ -539,7 +539,7 @@ def compute_border_targets(cc_labels, anisotropy):
 def merge(skeletons):
   merged_skels = {}
   for segid, skels in skeletons.items():
-    skel = PrecomputedSkeleton.simple_merge(skels)
+    skel = Skeleton.simple_merge(skels)
     merged_skels[segid] = skel.consolidate()
 
   return merged_skels
