@@ -87,7 +87,7 @@ skels = kimimaro.skeletonize(
 #            adjacent or overlapping images.
 
 import kimimaro
-from cloudvolume import Skeleton
+from osteoid import Skeleton
 
 skels = ... # a set of skeletons produced from the same label id
 skel = Skeleton.simple_merge(skels).consolidate()

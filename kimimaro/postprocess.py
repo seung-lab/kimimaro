@@ -34,7 +34,7 @@ from scipy.sparse.csgraph import dijkstra
 import scipy.sparse.csgraph as csgraph
 import scipy.spatial.distance
 
-from cloudvolume import Skeleton, Bbox
+from osteoid import Skeleton, Bbox
 
 import kimimaro.skeletontricks
 
@@ -90,7 +90,9 @@ def join_close_components(skeletons, radius=None):
   if radius is not None and radius <= 0:
     raise ValueError("radius must be greater than zero: " + str(radius))
 
-  if isinstance(skeletons, Skeleton):
+  try:
+    iter(skeletons)
+  except TypeError:
     skeletons = [ skeletons ]
 
   skels = []

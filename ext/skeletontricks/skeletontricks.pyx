@@ -45,8 +45,7 @@ import numpy as np
 
 from collections import defaultdict
 
-cdef extern from "math.h":
-  float INFINITY
+cdef float INFINITY = float('inf')
 
 ctypedef fused UINT:
   uint8_t
@@ -191,7 +190,7 @@ def inf2zero(cnp.ndarray[float, cast=True, ndim=3] field):
   for z in range(0, sz):
     for y in range(0, sy):
       for x in range(0, sx):
-        if (field[x,y,z] == INFINITY):
+        if field[x,y,z] == INFINITY:
           field[x,y,z] = 0
 
   return field

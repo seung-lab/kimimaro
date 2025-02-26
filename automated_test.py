@@ -2,7 +2,7 @@ import pytest
 
 import edt
 import numpy as np
-from cloudvolume import *
+from osteoid import Skeleton
 
 import kimimaro.intake
 import kimimaro.skeletontricks

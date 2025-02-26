@@ -2,12 +2,14 @@ from typing import Dict, Union, List, Tuple
 
 from collections import defaultdict
 import copy
+import os
 
 import numpy as np
 import scipy.ndimage
 from tqdm import tqdm
 
-from cloudvolume import Skeleton, Bbox, Vec
+from osteoid import Skeleton, Bbox, Vec
+
 import kimimaro.skeletontricks
 
 import cc3d
@@ -15,6 +17,25 @@ import dijkstra3d
 import fastremap
 import fill_voids
 import xs3d
+
+def toabs(path):
+  path = os.path.expanduser(path)
+  return os.path.abspath(path)
+
+def mkdir(path):
+  path = toabs(path)
+
+  try:
+    if path != '' and not os.path.exists(path):
+      os.makedirs(path)
+  except OSError as e:
+    if e.errno == 17: # File Exists
+      time.sleep(0.1)
+      return mkdir(path)
+    else:
+      raise
+
+  return path
 
 def extract_skeleton_from_binary_image(image):
   verts, edges = kimimaro.skeletontricks.extract_edges_from_binary_image(image)
@@ -64,7 +85,7 @@ def shape_iterator(all_labels, skeletons, fill_holes, in_place, progress, fn):
   if type(skeletons) == dict:
     iterator = skeletons.values()
     total = len(skeletons)
-  elif type(skeletons) == Skeleton:
+  elif hasattr(skeletons, "vertices"):
     iterator = [ skeletons ]
     total = 1
   else:
@@ -249,7 +270,7 @@ def cross_sectional_area(
     cross_sectional_area_helper
   )
 
-  if isinstance(skeletons, Skeleton):
+  if hasattr(skeletons, "vertices"):
     skelitr = [ skeletons ]
   elif isinstance(skeletons, dict):
     skelitr = skeletons.values()

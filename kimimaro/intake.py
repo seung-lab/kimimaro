@@ -27,9 +27,7 @@ import pathos.pools
 import scipy.spatial
 from tqdm import tqdm
 
-import cloudvolume
-from cloudvolume import CloudVolume, PrecomputedSkeleton, Bbox
-import cloudvolume.sharedmemory as shm
+from osteoid import Skeleton, Bbox
 
 import cc3d # connected components
 import edt # euclidean distance transform
@@ -39,6 +37,7 @@ import fill_voids
 import kimimaro.skeletontricks
 import kimimaro.trace
 
+from . import sharedmemory as shm
 from .utility import compute_cc_labels, find_objects
 
 class DimensionError(Exception):
@@ -139,7 +138,7 @@ def skeletonize(
       chunk size is set higher than num tasks // parallel, that number
       is used instead.
 
-  Returns: { $segid: cloudvolume.PrecomputedSkeleton, ... }
+  Returns: { $segid: osteoid.Skeleton, ... }
   """
 
   anisotropy = np.array(anisotropy, dtype=np.float32)
@@ -539,7 +538,7 @@ def compute_border_targets(cc_labels, anisotropy):
 def merge(skeletons):
   merged_skels = {}
   for segid, skels in skeletons.items():
-    skel = PrecomputedSkeleton.simple_merge(skels)
+    skel = Skeleton.simple_merge(skels)
     merged_skels[segid] = skel.consolidate()
 
   return merged_skels
