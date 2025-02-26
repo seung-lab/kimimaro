@@ -2,13 +2,13 @@ from typing import Dict, Union, List, Tuple
 
 from collections import defaultdict
 import copy
+import os
 
 import numpy as np
 import scipy.ndimage
 from tqdm import tqdm
 
-from osteoid import Skeleton
-from osteoid.lib import Bbox, Vec
+from osteoid import Skeleton, Bbox, Vec
 
 import kimimaro.skeletontricks
 
@@ -17,6 +17,25 @@ import dijkstra3d
 import fastremap
 import fill_voids
 import xs3d
+
+def toabs(path):
+  path = os.path.expanduser(path)
+  return os.path.abspath(path)
+
+def mkdir(path):
+  path = toabs(path)
+
+  try:
+    if path != '' and not os.path.exists(path):
+      os.makedirs(path)
+  except OSError as e:
+    if e.errno == 17: # File Exists
+      time.sleep(0.1)
+      return mkdir(path)
+    else:
+      raise
+
+  return path
 
 def extract_skeleton_from_binary_image(image):
   verts, edges = kimimaro.skeletontricks.extract_edges_from_binary_image(image)

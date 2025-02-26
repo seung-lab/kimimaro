@@ -1,2 +1,3 @@
 pytest
+cloud-volume
 crackle-codec

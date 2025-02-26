@@ -27,9 +27,7 @@ import pathos.pools
 import scipy.spatial
 from tqdm import tqdm
 
-from osteoid import Skeleton
-from osteoid.lib import Bbox
-import cloudvolume.sharedmemory as shm
+from osteoid import Skeleton, Bbox
 
 import cc3d # connected components
 import edt # euclidean distance transform
@@ -39,6 +37,7 @@ import fill_voids
 import kimimaro.skeletontricks
 import kimimaro.trace
 
+from . import sharedmemory as shm
 from .utility import compute_cc_labels, find_objects
 
 class DimensionError(Exception):

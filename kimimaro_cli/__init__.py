@@ -1,12 +1,12 @@
 import os
 
 import microviewer
-from cloudvolume.lib import mkdir
 import click
 import numpy as np
 from osteoid import Skeleton
 
 import kimimaro
+from kimimaro.utility import mkdir
 import fastremap
 from tqdm import tqdm
 

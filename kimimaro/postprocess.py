@@ -34,8 +34,7 @@ from scipy.sparse.csgraph import dijkstra
 import scipy.sparse.csgraph as csgraph
 import scipy.spatial.distance
 
-from osteoid import Skeleton
-from osteoid.lib import Bbox
+from osteoid import Skeleton, Bbox
 
 import kimimaro.skeletontricks
 
