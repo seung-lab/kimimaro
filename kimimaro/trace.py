@@ -112,7 +112,6 @@ def trace(
       DBF = edt.edt(
         labels, 
         anisotropy=anisotropy, 
-        order='F',
         black_border=np.all(labels),
         voxel_graph=voxel_graph,
       )
@@ -370,7 +369,6 @@ def point_to_point(
     binary_img, 
     anisotropy=anisotropy,
     black_border=True,
-    order='F',
   )
   dbf_max = np.max(DBF)
 

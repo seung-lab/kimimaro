@@ -167,7 +167,6 @@ def skeletonize(
     return edt.edt(labels, 
       anisotropy=anisotropy,
       black_border=(minlabel == maxlabel),
-      order='F',
       parallel=parallel,
       voxel_graph=voxel_graph,
     )
