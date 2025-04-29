@@ -63,7 +63,7 @@ size_t _roll_invalidation_cube(
   int64_t global_minz = sz;
   int64_t global_maxz = 0;
 
-  int16_t* topology = new int16_t[voxels]();
+  std::vector<int16_t> topology(voxels);
   
   const bool power_of_two = !((sx & (sx - 1)) || (sy & (sy - 1))); 
   const int xshift = std::log2(sx); // must use log2 here, not lg/lg2 to avoid fp errors
@@ -130,8 +130,6 @@ size_t _roll_invalidation_cube(
       }
     }
   }
-
-  free(topology);
 
   return invalidated;
 }
