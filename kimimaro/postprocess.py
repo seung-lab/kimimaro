@@ -520,7 +520,9 @@ def _remove_loops(skeleton):
       branch_cycle_points = nodes[branch_cycle,:]
 
       centroid = np.mean(branch_cycle_points, axis=0)
-      dist = np.sum((nodes - centroid) ** 2, 1)
+      dist = (nodes - centroid)
+      dist *= dist
+      dist = np.sum(dist, axis=1)
       intersect_node = np.argmin(dist)
       intersect_point = nodes[intersect_node,:]
 
