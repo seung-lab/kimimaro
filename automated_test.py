@@ -5,6 +5,7 @@ import numpy as np
 from osteoid import Skeleton
 
 import kimimaro.intake
+import kimimaro.post
 import kimimaro.skeletontricks
 from kimimaro.utility import moving_average
 
@@ -511,6 +512,25 @@ def test_no_fix_branching(connectomics_data):
   kimimaro.skeletonize(connectomics_data[:,:,100], fix_branching=False)
 
 
+def test_remove_row():
+  arr = np.array([
+    [0,1],
+    [1,2],
+    [2,1],
+    [2,2],
+    [2,3],
+    [3,4],
+  ])
 
+  result = kimimaro.post.remove_row(arr, np.array([[1,2]]))
 
+  assert np.all(result == np.array([[0,1],[2,2],[2,3],[3,4]]))
+
+  arr = np.array([
+    []
+  ])
+
+  result = kimimaro.post.remove_row(arr, np.array([[1,2]]))
+
+  assert np.all(result == np.array([]))
 
