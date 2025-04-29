@@ -520,7 +520,9 @@ def _remove_loops(skeleton):
       branch_cycle_points = nodes[branch_cycle,:]
 
       centroid = np.mean(branch_cycle_points, axis=0)
-      dist = np.sum((nodes - centroid) ** 2, 1)
+      dist = (nodes - centroid)
+      dist *= dist
+      dist = np.sum(dist, axis=1)
       intersect_node = np.argmin(dist)
       intersect_point = nodes[intersect_node,:]
 
@@ -564,6 +566,9 @@ def path2edge(path):
 
 def remove_row(array, rows2remove): 
   array = np.sort(array, axis=1)  
+  if array.size == 0:
+    return array.astype(np.int32, copy=False)
+
   rows2remove = np.sort(rows2remove, axis=1)  
 
   for i in range(rows2remove.shape[0]):  
@@ -571,8 +576,7 @@ def remove_row(array, rows2remove):
     if np.sum(idx == -1) == 0: 
       array = np.delete(array, idx, axis=0) 
   
-  return array.astype(np.int32)
-
+  return array.astype(np.int32, copy=False)
 
 def find_row(array, row): 
   """ 
@@ -580,22 +584,9 @@ def find_row(array, row):
   row: row to find  
    Returns: row indices 
   """ 
-  row = np.array(row) 
-  if array.shape[1] != row.size: 
-    raise ValueError("Dimensions do not match!")  
-    
-  NDIM = array.shape[1] 
-  valid = np.zeros(array.shape, dtype=bool) 
-  for i in range(NDIM):  
-    valid[:,i] = array[:,i] == row[i] 
-  
-  row_loc = np.zeros([ array.shape[0], 1 ])  
-  if NDIM == 2:  
-    row_loc = valid[:,0] * valid[:,1] 
-  elif NDIM == 3: 
-    row_loc = valid[:,0] * valid[:,1] * valid[:,2]  
-  
-  idx = np.where(row_loc==1)[0]  
-  if len(idx) == 0: 
-    idx = -1  
-  return idx 
+  matches = (array[:,0] == row[0])
+  matches &= (array[:,1] == row[1])
+  idx = np.where(matches)
+  if len(idx) == 0:
+    return -1
+  return idx[0]

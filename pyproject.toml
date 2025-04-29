@@ -1,0 +1,86 @@
+[build-system]
+requires = [
+    "setuptools>=61.0.0",
+    "wheel",
+    "cython",
+    "numpy>=1.16.1"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kimimaro"
+version = "5.0.0"
+authors = [
+    {name = "William Silversmith", email = "ws9@princeton.edu"},
+    {name = "Alex Bae"},
+    {name = "Forrest Collman"},
+    {name = "Peter Li"}
+]
+description = "Skeletonize densely labeled image volumes."
+readme = "README.md"
+requires-python = ">=3.9.0,<4.0.0"
+license = {text = "GPL-3.0-or-later"}
+keywords = [
+    "volumetric-data",
+    "numpy",
+    "teasar",
+    "skeletonization",
+    "centerline",
+    "medial-axis-transform",
+    "centerline-extraction",
+    "computer-vision-algorithms",
+    "connectomics",
+    "image-processing",
+    "biomedical-image-processing",
+    "voxel"
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows :: Windows 10"
+]
+
+dependencies = [
+    "click",
+    "connected-components-3d>=3.16.0",
+    "dijkstra3d>=1.15.0",
+    "fill-voids>=2.0.0",
+    "edt>=2.1.0",
+    "fastremap>=1.10.2",
+    "networkx",
+    "numpy>=1.16.1",
+    "osteoid",
+    "pathos",
+    "pytest",
+    "scipy>=1.1.0",
+    "tqdm",
+    "xs3d>=1.2.0,<2"
+]
+
+[project.optional-dependencies]
+tif = ["tifffile"]
+
+[project.urls]
+Homepage = "https://github.com/seung-lab/kimimaro/"
+
+[project.scripts]
+kimimaro = "kimimaro_cli:main"
+
+[tool.setuptools]
+packages = ["kimimaro"]
+include-package-data = true
+
+[tool.setuptools.package-dir]
+kimimaro = "kimimaro"
+

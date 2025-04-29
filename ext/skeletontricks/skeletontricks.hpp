@@ -17,7 +17,7 @@
  * 
  * Author: William Silversmith
  * Affiliation: Seung Lab, Princeton University
- * Date: September 2018 - February 2020
+ * Date: September 2018 - April 2025
  */
 
 #include <algorithm>
@@ -29,8 +29,9 @@
 #include <stack>
 #include <unordered_map>
 #include <string>
-#include <set>
 #include <utility>
+
+#include "unordered_dense.hpp"
 
 #ifndef SKELETONTRICKS_HPP
 #define SKELETONTRICKS_HPP
@@ -62,7 +63,7 @@ size_t _roll_invalidation_cube(
   int64_t global_minz = sz;
   int64_t global_maxz = 0;
 
-  int16_t* topology = new int16_t[voxels]();
+  std::vector<int16_t> topology(voxels);
   
   const bool power_of_two = !((sx & (sx - 1)) || (sy & (sy - 1))); 
   const int xshift = std::log2(sx); // must use log2 here, not lg/lg2 to avoid fp errors
@@ -130,8 +131,6 @@ size_t _roll_invalidation_cube(
     }
   }
 
-  free(topology);
-
   return invalidated;
 }
 
@@ -194,7 +193,7 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
 
   size_t Nv = max(edges, Ne * 2) + 1; // +1 to ensure zero is counted
 
-  std::vector< std::set<T> > index(Nv);
+  std::vector< ankerl::unordered_dense::set<T> > index(Nv);
   index.reserve(Nv);
 
   // NB: consolidate handles the trivial loops (e1 == e2)
