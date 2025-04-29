@@ -28,7 +28,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install cython numpy setuptools wheel
         pip install -r requirements.txt -r requirements-dev.txt 
-        pip install -e .
+        pip install .
     - name: Test with pytest
       run: |
         python -m pytest -v -x automated_test.py
