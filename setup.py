@@ -48,7 +48,7 @@ setuptools.setup(
       language='c++',
       include_dirs=[ str(NumpyImport()) ],
       extra_compile_args=[
-        '-std=c++11', '-O3', '-ffast-math'
+        '-std=c++17', '-O3', '-ffast-math'
       ]
     ),
   ],
