@@ -451,10 +451,10 @@ def _remove_loops(skeleton):
     edges_cycle = np.array(edges_cycle, dtype=np.uint32)
     edges_cycle = np.sort(edges_cycle, axis=1)
 
-    nodes_cycle = np.unique(edges_cycle)
+    nodes_cycle = fastremap.unique(edges_cycle)
     nodes_cycle = nodes_cycle.astype(np.int32)
     
-    unique_nodes, unique_counts = np.unique(edges, return_counts=True)
+    unique_nodes, unique_counts = fastremap.unique(edges, return_counts=True)
     branch_nodes = unique_nodes[ unique_counts >= 3 ]
 
     # branch cycles are cycle nodes that coincide with a branch point
