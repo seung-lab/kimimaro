@@ -32,4 +32,5 @@ jobs:
         pip install dist/*.whl
     - name: Test with pytest
       run: |
+        python setup.py develop
         python -m pytest -v -x automated_test.py
