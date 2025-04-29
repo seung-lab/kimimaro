@@ -64,6 +64,7 @@ dependencies = [
     "pathos",
     "pytest",
     "scipy>=1.1.0",
+    "tqdm",
     "xs3d>=1.2.0,<2"
 ]
 
