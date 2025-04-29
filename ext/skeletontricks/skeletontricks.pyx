@@ -43,6 +43,8 @@ from libcpp.utility cimport pair as cpp_pair
 cimport numpy as cnp
 import numpy as np
 
+cnp.import_array()
+
 from collections import defaultdict
 
 cdef float INFINITY = float('inf')
