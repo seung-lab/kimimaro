@@ -573,7 +573,7 @@ def remove_row(array, rows2remove):
     if np.sum(idx == -1) == 0: 
       array = np.delete(array, idx, axis=0) 
   
-  return array.astype(np.int32)
+  return array.astype(np.int32, copy=False)
 
 
 def find_row(array, row): 
