@@ -23,9 +23,11 @@ Fig. 1: A Densely Labeled Volume Skeletonized with Kimimaro
 
 If a binary is available for your platform:
 
-```
-pip install numpy
-pip install kimimaro
+```bash
+pip install kimimaro 
+# installs additional libraries to accelerate some
+# operations like join_close_components
+pip install "kimimaro[accel]"
 ```
 
 Otherwise, you'll also need a C++ compiler:
