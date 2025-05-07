@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kimimaro"
-version = "5.1.0"
+version = "5.2.0"
 authors = [
     {name = "William Silversmith", email = "ws9@princeton.edu"},
     {name = "Alex Bae"},
