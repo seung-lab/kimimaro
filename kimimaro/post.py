@@ -169,11 +169,6 @@ def join_close_components(
   while len(skels) > 1:
     N = len(skels)
 
-    tree = KDTree(skels[0].vertices)
-    for j in range(1,N):
-      compute_nearest(tree, 0, j)
-    del tree
-    
     if np.all(radii_matrix) == np.inf:
       break
 
@@ -193,6 +188,14 @@ def join_close_components(
     skels[j] = None
     skels = [ fused ] + [ _ for _ in skels if _ is not None ]
 
+    combined_row_r = np.minimum(radii_matrix[i,:], radii_matrix[j,:])
+    combined_row_r = np.delete(combined_row_r, i)
+    combined_row_r = np.delete(combined_row_r, j-1)
+
+    combined_row_i = np.minimum(index_matrix[i,:], index_matrix[j,:])
+    combined_row_i = np.delete(combined_row_i, i)
+    combined_row_i = np.delete(combined_row_i, j-1)
+
     radii_matrix = symmetric_delete(radii_matrix, i)
     radii_matrix = symmetric_delete(radii_matrix, j - 1)
     
@@ -201,6 +204,8 @@ def join_close_components(
     radii_matrix2[1:,1:] = radii_matrix
     radii_matrix = radii_matrix2
     del radii_matrix2
+    radii_matrix[0,1:] = combined_row_r
+    radii_matrix[1:,0] = combined_row_r
 
     index_matrix = symmetric_delete(index_matrix, i)
     index_matrix = symmetric_delete(index_matrix, j - 1)
@@ -209,6 +214,9 @@ def join_close_components(
     index_matrix2[1:,1:] = index_matrix
     index_matrix = index_matrix2
     del index_matrix2
+
+    index_matrix[0,1:] = combined_row_i
+    index_matrix[1:,0] = combined_row_i
 
   return Skeleton.simple_merge(skels).consolidate()
 
