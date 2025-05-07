@@ -376,7 +376,7 @@ def test_join_close_components_simple():
 
   assert len(skel.components()) == 2
 
-  res = kimimaro.join_close_components(skel, radius=None)
+  res = kimimaro.join_close_components(skel, radius=np.inf)
   assert len(res.components()) == 1
 
   res = kimimaro.join_close_components(skel, radius=9)
@@ -399,7 +399,7 @@ def test_join_close_components_complex():
 
   assert len(skel.components()) == 4
 
-  res = kimimaro.join_close_components(skel, radius=None)
+  res = kimimaro.join_close_components(skel, radius=np.inf)
   assert len(res.components()) == 1
 
   assert np.all(res.edges == [[0,1], [0,3], [1,2], [3,4], [4,5], [5,6], [6,7]])

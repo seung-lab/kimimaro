@@ -21,6 +21,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 """
+from typing import Sequence
 
 from collections import defaultdict
 
@@ -76,7 +77,10 @@ def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
   skeleton.id = label
   return skeleton.consolidate()
 
-def join_close_components(skeletons, radius=None):
+def join_close_components(
+  skeletons:Sequence[Skeleton], 
+  radius:float = np.inf,
+) -> Skeleton:
   """
   Given a set of skeletons which may contain multiple connected components,
   attempt to connect each component to the nearest other component via the
@@ -87,6 +91,9 @@ def join_close_components(skeletons, radius=None):
 
   Returns: Skeleton
   """
+  if radius is None:
+    radis = np.inf
+
   if radius is not None and radius <= 0:
     raise ValueError("radius must be greater than zero: " + str(radius))
 
@@ -106,28 +113,75 @@ def join_close_components(skeletons, radius=None):
   elif len(skels) == 0:
     return Skeleton()
 
+  N = len(skels)
+  radii_matrix = np.full( (N, N), np.inf, dtype=np.float32 )
+  index_matrix = np.full( (N, N, 2), np.iinfo(np.uint32).max, dtype=np.uint32 )
+
+  def compute_nearest(tree, i, j):
+    s1, s2 = skels[i], skels[j]
+    r, idx = tree.query(
+      s2.vertices, 
+      k=1, 
+      p=2, # euclidean distance, L2 norm
+      distance_upper_bound=(radius + 0.000001), # < bound, so +epsilon
+      workers=1,
+    )
+    idx_s2 = np.argmin(r)
+    idx_s1 = idx[idx_s2]
+
+    radii_matrix[i,j] = r[idx_s2]
+    radii_matrix[j,i] = r[idx_s2]
+
+    index_matrix[i,j] = ( idx_s1, idx_s2 )
+    index_matrix[j,i] = index_matrix[j,i]
+
+  def symmetric_delete(matrix, k):
+    matrix = np.delete(matrix, i, axis=0)
+    return np.delete(matrix, i, axis=1)
+
+  for i in range(N):
+    tree = spatial.cKDTree(skels[i].vertices)
+    for j in range(i + 1, N):  # compute upper triangle only
+      compute_nearest(tree, i, j)
+
+  N = len(skels)
+  radii_matrix = np.full( (N, N), np.inf, dtype=np.float32 )
+  index_matrix = np.full( (N, N, 2), np.iinfo(np.uint32).max, dtype=np.uint32 )
+
+  for i in range(N):
+    tree = spatial.cKDTree(skels[i].vertices)
+    for j in range(i + 1, N):  # compute upper triangle only
+
+      s1, s2 = skels[i], skels[j]
+      r, idx = tree.query(
+        s2.vertices, 
+        k=1, 
+        p=2, # euclidean distance, L2 norm
+        distance_upper_bound=(radius + 0.000001), # < bound, so +epsilon
+        workers=1
+      )
+      idx_s2 = np.argmin(r)
+      idx_s1 = idx[idx_s2]
+
+      radii_matrix[i,j] = r[idx_s2]
+      radii_matrix[j,i] = r[idx_s2]
+
+      index_matrix[i,j] = ( idx_s1, idx_s2 )
+      index_matrix[j,i] = index_matrix[j,i]
+
   while len(skels) > 1:
     N = len(skels)
 
-    radii_matrix = np.full( (N, N), np.inf, dtype=np.float32 )
-    index_matrix = np.full( (N, N, 2), np.iinfo(np.uint32).max, dtype=np.uint32 )
-
-    for i in range(N):
-      for j in range(i + 1, N):  # compute upper triangle only
-
-        s1, s2 = skels[i], skels[j]
-        dist_matrix = scipy.spatial.distance.cdist(s1.vertices, s2.vertices)
-        radii_matrix[i,j] = np.min(dist_matrix)
-        radii_matrix[j,i] = radii_matrix[i,j]
-
-        index_matrix[i,j] = np.unravel_index( np.argmin(dist_matrix), dist_matrix.shape )
-        index_matrix[j,i] = index_matrix[i,j]
-
+    tree = spatial.cKDTree(skels[0].vertices)
+    for j in range(1,N):
+      compute_nearest(tree, 0, j)
+    del tree
+    
     if np.all(radii_matrix) == np.inf:
       break
 
     min_radius = np.min(radii_matrix)
-    if radius is not None and min_radius > radius:
+    if min_radius > radius:
       break
 
     i, j = np.unravel_index( np.argmin(radii_matrix), radii_matrix.shape )
@@ -140,7 +194,24 @@ def join_close_components(skeletons, radius=None):
     ])
     skels[i] = None
     skels[j] = None
-    skels = [ _ for _ in skels if _ is not None ] + [ fused ]
+    skels = [ fused ] + [ _ for _ in skels if _ is not None ]
+
+    radii_matrix = symmetric_delete(radii_matrix, i)
+    radii_matrix = symmetric_delete(radii_matrix, j - 1)
+    
+    N = len(skels)
+    radii_matrix2 = np.full((N,N), np.inf, dtype=np.float32)
+    radii_matrix2[1:,1:] = radii_matrix
+    radii_matrix = radii_matrix2
+    del radii_matrix2
+
+    index_matrix = symmetric_delete(index_matrix, i)
+    index_matrix = symmetric_delete(index_matrix, j - 1)
+    
+    index_matrix2 = np.full((N,N,2), np.iinfo(np.uint32).max, dtype=np.uint32 )
+    index_matrix2[1:,1:] = index_matrix
+    index_matrix = index_matrix2
+    del index_matrix2
 
   return Skeleton.simple_merge(skels).consolidate()
 
