@@ -91,6 +91,11 @@ def join_close_components(
 
   Returns: Skeleton
   """
+  try:
+    from pykdtree.kdtree import KDTree
+  except ImportError:
+    from scipy.spatial import cKDTree as KDTree
+
   if radius is None:
     radis = np.inf
 
@@ -122,9 +127,7 @@ def join_close_components(
     r, idx = tree.query(
       s2.vertices, 
       k=1, 
-      p=2, # euclidean distance, L2 norm
       distance_upper_bound=(radius + 0.000001), # < bound, so +epsilon
-      workers=1,
     )
     idx_s2 = np.argmin(r)
     idx_s1 = idx[idx_s2]
@@ -140,14 +143,14 @@ def join_close_components(
     return np.delete(matrix, k, axis=1)
 
   for i in range(N):
-    tree = spatial.cKDTree(skels[i].vertices)
+    tree = KDTree(skels[i].vertices)
     for j in range(i + 1, N):  # compute upper triangle only
       compute_nearest(tree, i, j)
 
   while len(skels) > 1:
     N = len(skels)
 
-    tree = spatial.cKDTree(skels[0].vertices)
+    tree = KDTree(skels[0].vertices)
     for j in range(1,N):
       compute_nearest(tree, 0, j)
     del tree
