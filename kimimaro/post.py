@@ -77,7 +77,7 @@ def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
 
   skeleton = remove_dust(skeleton, dust_threshold) 
   skeleton = remove_loops(skeleton)
-  skeleton = connect_pieces(skeleton)
+  skeleton = join_close_components(skeleton, restrict_using_radius=True)
   skeleton = remove_ticks(skeleton, tick_threshold)
   skeleton.id = label
   return skeleton.consolidate()
@@ -85,6 +85,7 @@ def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
 def join_close_components(
   skeletons:Sequence[Skeleton], 
   radius:float = np.inf,
+  restrict_by_radius:bool = False,
 ) -> Skeleton:
   """
   Given a set of skeletons which may contain multiple connected components,
@@ -92,7 +93,11 @@ def join_close_components(
   nearest two vertices. Repeat until no components remain or no points closer
   than `radius` are available.
 
-  radius: float in same units as skeletons
+  radius: in same units as skeletons, don't join pieces 
+    further away than this.
+  restrict_by_radius: If the skeletons have a radius property,
+    don't join pieces if the neighboring nodes are further away
+    than r1 + r2.
 
   Returns: Skeleton
   """
@@ -122,6 +127,9 @@ def join_close_components(
   radii_matrix = np.full( (N, N), np.inf, dtype=np.float32 )
   index_matrix = np.full( (N, N, 2), np.iinfo(np.uint32).max, dtype=np.uint32 )
 
+  if restrict_by_radius:
+    radius = 2 * np.max([ np.max(s.radii) for s in skels ])
+
   def compute_nearest(tree, i, j):
     s1, s2 = skels[i], skels[j]
     r, idx = tree.query(
@@ -132,8 +140,19 @@ def join_close_components(
     idx_s2 = np.argmin(r)
     idx_s1 = idx[idx_s2]
 
-    radii_matrix[i,j] = r[idx_s2]
-    radii_matrix[j,i] = r[idx_s2]
+    local_radius = r[idx_s2]
+
+    if (
+      restrict_by_radius
+      and not np.isinf(local_radius)
+      and hasattr(s1, "radii")
+      and hasattr(s2, "radii")
+      and local_radius > (s1.radii[idx_s1] + s2.radii[idx_s2])
+    ):
+      local_radius = np.inf
+
+    radii_matrix[i,j] = local_radius
+    radii_matrix[j,i] = local_radius
 
     index_matrix[i,j] = ( idx_s1, idx_s2 )
     index_matrix[j,i] = index_matrix[j,i]
@@ -159,7 +178,7 @@ def join_close_components(
       break
 
     min_radius = np.min(radii_matrix)
-    if min_radius > radius:
+    if np.isinf(min_radius) or min_radius > radius:
       break
 
     i, j = np.unravel_index( np.argmin(radii_matrix), radii_matrix.shape )
@@ -195,29 +214,6 @@ def join_close_components(
 
 ## Implementation Details Below
 
-def combination_pairs(n):
-  pairs = np.array([])
-
-  for i in range(n):
-    for j in range(n-i-1):
-      pairs = np.concatenate((pairs, np.array([i, i+j+1 ])))
-
-  pairs = np.reshape(pairs,[ pairs.shape[0] // 2, 2 ])
-  return pairs.astype(np.uint16)
-
-def find_connected(nodes, edges):
-  s = nodes.shape[0] 
-  nodes = fastremap.unique(edges).astype(np.uint32, copy=False)
-
-  conn_mat = lil_matrix((s, s), dtype=bool)
-  conn_mat[edges[:,0], edges[:,1]] = 1
-
-  n, l = csgraph.connected_components(conn_mat, directed=False)
-  
-  l_nodes = l[nodes]
-  l_list = fastremap.unique(l_nodes)
-  return [ l == i for i in l_list  ]
-
 def remove_dust(skeleton, dust_threshold):
   """Dust threshold in physical cable length."""
   
@@ -230,47 +226,6 @@ def remove_dust(skeleton, dust_threshold):
       skels.append(skel)
 
   return Skeleton.simple_merge(skels)
-
-def connect_pieces(skeleton):
-  if skeleton.empty():
-    return skeleton
-
-  nodes = skeleton.vertices
-  edges = skeleton.edges
-  radii = skeleton.radii
-
-  all_connected = True
-  while all_connected:
-    connected = find_connected(nodes, edges)
-    pairs = combination_pairs(len(connected))
-
-    all_connected = False
-    for i in range(pairs.shape[0]):
-      path_piece = connected[pairs[i,0]]
-      nodes_piece = nodes[path_piece].astype(np.float32)
-      nodes_piece_idx = np.where(path_piece)[0]
-
-      path_tree = connected[pairs[i,1]]
-      nodes_tree = nodes[path_tree]
-      nodes_tree_idx = np.where(path_tree)[0]
-      tree = KDTree(nodes_tree)
-
-      (dist, idx) = tree.query(nodes_piece)
-      min_dist = np.min(dist)
-
-      min_dist_idx = int(np.where(dist == min_dist)[0][0])
-      start_idx = nodes_piece_idx[min_dist_idx]
-      end_idx = nodes_tree_idx[idx[min_dist_idx]]
-
-      # test if line between points exits object
-      if (radii[start_idx] + radii[end_idx]) >= min_dist:
-        new_edge = np.array([[ start_idx, end_idx ]])
-        edges = np.concatenate((edges, new_edge), axis=0)
-        all_connected = True
-        break
-
-  skeleton.edges = edges
-  return skeleton
 
 def remove_ticks(skeleton, threshold):
   """
