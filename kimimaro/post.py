@@ -77,7 +77,7 @@ def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
   skeleton.id = label
   return skeleton.consolidate()
 
-def join_close_components(skeletons:Sequence[Skeleton], radius:float = np.inf):
+def join_close_components(skeletons:Sequence[Skeleton], radius:float = np.inf) -> Skeleton:
   """
   Given a set of skeletons which may contain multiple connected components,
   attempt to connect each component to the nearest other component via the
