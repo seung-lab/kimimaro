@@ -35,6 +35,11 @@ from scipy.sparse.csgraph import dijkstra
 import scipy.sparse.csgraph as csgraph
 import scipy.spatial.distance
 
+try:
+  from pykdtree.kdtree import KDTree
+except ImportError:
+  from scipy.spatial import cKDTree as KDTree
+
 from osteoid import Skeleton, Bbox
 
 import kimimaro.skeletontricks
@@ -91,11 +96,6 @@ def join_close_components(
 
   Returns: Skeleton
   """
-  try:
-    from pykdtree.kdtree import KDTree
-  except ImportError:
-    from scipy.spatial import cKDTree as KDTree
-
   if radius is None:
     radis = np.inf
 
@@ -253,7 +253,7 @@ def connect_pieces(skeleton):
       path_tree = connected[pairs[i,1]]
       nodes_tree = nodes[path_tree]
       nodes_tree_idx = np.where(path_tree)[0]
-      tree = spatial.cKDTree(nodes_tree)
+      tree = KDTree(nodes_tree)
 
       (dist, idx) = tree.query(nodes_piece)
       min_dist = np.min(dist)
