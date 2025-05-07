@@ -136,8 +136,8 @@ def join_close_components(
     index_matrix[j,i] = index_matrix[j,i]
 
   def symmetric_delete(matrix, k):
-    matrix = np.delete(matrix, i, axis=0)
-    return np.delete(matrix, i, axis=1)
+    matrix = np.delete(matrix, k, axis=0)
+    return np.delete(matrix, k, axis=1)
 
   for i in range(N):
     tree = spatial.cKDTree(skels[i].vertices)
