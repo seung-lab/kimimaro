@@ -108,32 +108,54 @@ def join_close_components(skeletons, radius=None):
 
   radius = radius if radius is not None else np.inf
 
+  N = len(skels)
+  radii_matrix = np.full( (N, N), np.inf, dtype=np.float32 )
+  index_matrix = np.full( (N, N, 2), np.iinfo(np.uint32).max, dtype=np.uint32 )
+
+  for i in range(N):
+    tree = spatial.cKDTree(skels[i].vertices)
+    for j in range(i + 1, N):  # compute upper triangle only
+
+      s1, s2 = skels[i], skels[j]
+      r, idx = tree.query(
+        s2.vertices, 
+        k=1, 
+        p=2, # euclidean distance, L2 norm
+        distance_upper_bound=(radius + 0.000001), # < bound, so +epsilon
+        workers=1
+      )
+      idx_s2 = np.argmin(r)
+      idx_s1 = idx[idx_s2]
+
+      radii_matrix[i,j] = r[idx_s2]
+      radii_matrix[j,i] = r[idx_s2]
+
+      index_matrix[i,j] = ( idx_s1, idx_s2 )
+      index_matrix[j,i] = index_matrix[j,i]
+
   while len(skels) > 1:
     N = len(skels)
+    print(N)
 
-    radii_matrix = np.full( (N, N), np.inf, dtype=np.float32 )
-    index_matrix = np.full( (N, N, 2), np.iinfo(np.uint32).max, dtype=np.uint32 )
+    tree = spatial.cKDTree(skels[0].vertices)
+    i = 0
+    for j in range(1,N):
+      s1, s2 = skels[i], skels[j]
+      r, idx = tree.query(
+        s2.vertices, 
+        k=1, 
+        p=2, # euclidean distance, L2 norm
+        distance_upper_bound=(radius + 0.000001), # < bound, so +epsilon
+        workers=1
+      )
+      idx_s2 = np.argmin(r)
+      idx_s1 = idx[idx_s2]
 
-    for i in range(N):
-      tree = spatial.cKDTree(skels[i].vertices)
-      for j in range(i + 1, N):  # compute upper triangle only
+      radii_matrix[i,j] = r[idx_s2]
+      radii_matrix[j,i] = r[idx_s2]
 
-        s1, s2 = skels[i], skels[j]
-        r, idx = tree.query(
-          s2.vertices, 
-          k=1, 
-          p=2, # euclidean distance, L2 norm
-          distance_upper_bound=(radius + 0.000001), # < bound, so +epsilon
-          workers=-1
-        )
-        idx_s2 = np.argmin(r)
-        idx_s1 = idx[idx_s2]
-
-        radii_matrix[i,j] = r[idx_s2]
-        radii_matrix[j,i] = r[idx_s2]
-
-        index_matrix[i,j] = ( idx_s1, idx_s2 )
-        index_matrix[j,i] = index_matrix[j,i]
+      index_matrix[i,j] = ( idx_s1, idx_s2 )
+      index_matrix[j,i] = index_matrix[j,i]
 
     if np.all(radii_matrix) == np.inf:
       break
@@ -152,7 +174,26 @@ def join_close_components(skeletons, radius=None):
     ])
     skels[i] = None
     skels[j] = None
-    skels = [ _ for _ in skels if _ is not None ] + [ fused ]
+    skels = [ fused ] + [ _ for _ in skels if _ is not None ]
+
+    radii_matrix = np.delete(radii_matrix, i, axis=0)
+    radii_matrix = np.delete(radii_matrix, i, axis=1)
+    radii_matrix = np.delete(radii_matrix, j - 1, axis=0)
+    radii_matrix = np.delete(radii_matrix, j - 1, axis=1)
+    
+    N = len(skels)
+    radii_matrix2 = np.full((N,N), np.inf, dtype=np.float32)
+    radii_matrix2[1:,1:] = radii_matrix
+    radii_matrix = radii_matrix2
+
+    index_matrix = np.delete(index_matrix, i, axis=0)
+    index_matrix = np.delete(index_matrix, i, axis=1)
+    index_matrix = np.delete(index_matrix, j - 1, axis=0)
+    index_matrix = np.delete(index_matrix, j - 1, axis=1)
+    
+    index_matrix2 = np.full((N,N,2), np.iinfo(np.uint32).max, dtype=np.uint32 )
+    index_matrix2[1:,1:] = index_matrix
+    index_matrix = index_matrix2
 
   return Skeleton.simple_merge(skels).consolidate()
 
