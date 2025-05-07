@@ -112,49 +112,35 @@ def join_close_components(skeletons, radius=None):
   radii_matrix = np.full( (N, N), np.inf, dtype=np.float32 )
   index_matrix = np.full( (N, N, 2), np.iinfo(np.uint32).max, dtype=np.uint32 )
 
+  def compute_nearest(tree, i, j):
+    s1, s2 = skels[i], skels[j]
+    r, idx = tree.query(
+      s2.vertices, 
+      k=1, 
+      p=2, # euclidean distance, L2 norm
+      distance_upper_bound=(radius + 0.000001), # < bound, so +epsilon
+      workers=1
+    )
+    idx_s2 = np.argmin(r)
+    idx_s1 = idx[idx_s2]
+
+    radii_matrix[i,j] = r[idx_s2]
+    radii_matrix[j,i] = r[idx_s2]
+
+    index_matrix[i,j] = ( idx_s1, idx_s2 )
+    index_matrix[j,i] = index_matrix[j,i]
+
   for i in range(N):
     tree = spatial.cKDTree(skels[i].vertices)
     for j in range(i + 1, N):  # compute upper triangle only
-
-      s1, s2 = skels[i], skels[j]
-      r, idx = tree.query(
-        s2.vertices, 
-        k=1, 
-        p=2, # euclidean distance, L2 norm
-        distance_upper_bound=(radius + 0.000001), # < bound, so +epsilon
-        workers=1
-      )
-      idx_s2 = np.argmin(r)
-      idx_s1 = idx[idx_s2]
-
-      radii_matrix[i,j] = r[idx_s2]
-      radii_matrix[j,i] = r[idx_s2]
-
-      index_matrix[i,j] = ( idx_s1, idx_s2 )
-      index_matrix[j,i] = index_matrix[j,i]
+      compute_nearest(tree, i, j)
 
   while len(skels) > 1:
     N = len(skels)
 
     tree = spatial.cKDTree(skels[0].vertices)
-    i = 0
     for j in range(1,N):
-      s1, s2 = skels[i], skels[j]
-      r, idx = tree.query(
-        s2.vertices, 
-        k=1, 
-        p=2, # euclidean distance, L2 norm
-        distance_upper_bound=(radius + 0.000001), # < bound, so +epsilon
-        workers=1
-      )
-      idx_s2 = np.argmin(r)
-      idx_s1 = idx[idx_s2]
-
-      radii_matrix[i,j] = r[idx_s2]
-      radii_matrix[j,i] = r[idx_s2]
-
-      index_matrix[i,j] = ( idx_s1, idx_s2 )
-      index_matrix[j,i] = index_matrix[j,i]
+      compute_nearest(tree, 0, j)
 
     if np.all(radii_matrix) == np.inf:
       break
