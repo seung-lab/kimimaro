@@ -147,7 +147,8 @@ def join_close_components(skeletons:Sequence[Skeleton], radius:float = np.inf):
     tree = spatial.cKDTree(skels[0].vertices)
     for j in range(1,N):
       compute_nearest(tree, 0, j)
-
+    del tree
+    
     if np.all(radii_matrix) == np.inf:
       break
 
@@ -184,7 +185,6 @@ def join_close_components(skeletons:Sequence[Skeleton], radius:float = np.inf):
     index_matrix = index_matrix2
     del index_matrix2
 
-  del tree
   return Skeleton.simple_merge(skels).consolidate()
 
 ## Implementation Details Below
