@@ -70,6 +70,8 @@ dependencies = [
 
 [project.optional-dependencies]
 tif = ["tifffile"]
+accel = ["pykdtree"]
+all = ["tifffile", "pykdtree"]
 
 [project.urls]
 Homepage = "https://github.com/seung-lab/kimimaro/"
