@@ -130,6 +130,10 @@ def join_close_components(skeletons, radius=None):
     index_matrix[i,j] = ( idx_s1, idx_s2 )
     index_matrix[j,i] = index_matrix[j,i]
 
+  def symmetric_delete(matrix, k):
+    matrix = np.delete(matrix, i, axis=0)
+    return np.delete(matrix, i, axis=1)
+
   for i in range(N):
     tree = spatial.cKDTree(skels[i].vertices)
     for j in range(i + 1, N):  # compute upper triangle only
@@ -161,24 +165,22 @@ def join_close_components(skeletons, radius=None):
     skels[j] = None
     skels = [ fused ] + [ _ for _ in skels if _ is not None ]
 
-    radii_matrix = np.delete(radii_matrix, i, axis=0)
-    radii_matrix = np.delete(radii_matrix, i, axis=1)
-    radii_matrix = np.delete(radii_matrix, j - 1, axis=0)
-    radii_matrix = np.delete(radii_matrix, j - 1, axis=1)
+    radii_matrix = symmetric_delete(radii_matrix, i)
+    radii_matrix = symmetric_delete(radii_matrix, j - 1)
     
     N = len(skels)
     radii_matrix2 = np.full((N,N), np.inf, dtype=np.float32)
     radii_matrix2[1:,1:] = radii_matrix
     radii_matrix = radii_matrix2
+    del radii_matrix2
 
-    index_matrix = np.delete(index_matrix, i, axis=0)
-    index_matrix = np.delete(index_matrix, i, axis=1)
-    index_matrix = np.delete(index_matrix, j - 1, axis=0)
-    index_matrix = np.delete(index_matrix, j - 1, axis=1)
+    index_matrix = symmetric_delete(index_matrix, i)
+    index_matrix = symmetric_delete(index_matrix, j - 1)
     
     index_matrix2 = np.full((N,N,2), np.iinfo(np.uint32).max, dtype=np.uint32 )
     index_matrix2[1:,1:] = index_matrix
     index_matrix = index_matrix2
+    del index_matrix2
 
   return Skeleton.simple_merge(skels).consolidate()
 
