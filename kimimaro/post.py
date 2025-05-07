@@ -165,14 +165,9 @@ def join_close_components(
     tree = KDTree(skels[i].vertices)
     for j in range(i + 1, N):  # compute upper triangle only
       compute_nearest(tree, i, j)
+    del tree
 
   while len(skels) > 1:
-    N = len(skels)
-
-    tree = KDTree(skels[0].vertices)
-    for j in range(1,N):
-      compute_nearest(tree, 0, j)
-    del tree
     
     if np.all(radii_matrix) == np.inf:
       break
@@ -209,6 +204,11 @@ def join_close_components(
     index_matrix2[1:,1:] = index_matrix
     index_matrix = index_matrix2
     del index_matrix2
+
+    tree = KDTree(skels[0].vertices)
+    for j in range(1,N):
+      compute_nearest(tree, 0, j)
+    del tree
 
   return Skeleton.simple_merge(skels).consolidate()
 
