@@ -184,17 +184,32 @@ def join_close_components(
       fused.edges,
       [[ index_matrix[i,j,0], index_matrix[i,j,1] + s1.vertices.shape[0] ]]
     ])
+    index_matrix[:,j,1] += s1.vertices.shape[0]
+    index_matrix[j,:,0] += s1.vertices.shape[0]
+
     skels[i] = None
     skels[j] = None
     skels = [ fused ] + [ _ for _ in skels if _ is not None ]
 
-    combined_row_r = np.minimum(radii_matrix[i,:], radii_matrix[j,:])
-    combined_row_r = np.delete(combined_row_r, i)
-    combined_row_r = np.delete(combined_row_r, j-1)
+    i_row = radii_matrix[i,:]
+    j_row = radii_matrix[j,:]
 
-    combined_row_i = np.minimum(index_matrix[i,:], index_matrix[j,:])
-    combined_row_i = np.delete(combined_row_i, i)
-    combined_row_i = np.delete(combined_row_i, j-1)
+    combined_row_radius = np.zeros(i_row.size, dtype=radii_matrix.dtype)
+    combined_row_index = np.zeros([i_row.size, 2], dtype=index_matrix.dtype)
+
+    for k in range(i_row.size):
+      if radii_matrix[i,k] < radii_matrix[j,k]:
+        combined_row_radius[k] = radii_matrix[i,k]
+        combined_row_index[k] = index_matrix[i,k]
+      else:
+        combined_row_radius[k] = radii_matrix[j,k]
+        combined_row_index[k] = index_matrix[j,k]
+
+    combined_row_radius = np.delete(combined_row_radius, i)
+    combined_row_radius = np.delete(combined_row_radius, j-1)
+
+    combined_row_index = np.delete(combined_row_index, i, axis=0)
+    combined_row_index = np.delete(combined_row_index, j-1, axis=0)
 
     radii_matrix = symmetric_delete(radii_matrix, i)
     radii_matrix = symmetric_delete(radii_matrix, j - 1)
@@ -204,8 +219,8 @@ def join_close_components(
     radii_matrix2[1:,1:] = radii_matrix
     radii_matrix = radii_matrix2
     del radii_matrix2
-    radii_matrix[0,1:] = combined_row_r
-    radii_matrix[1:,0] = combined_row_r
+    radii_matrix[0,1:] = combined_row_radius
+    radii_matrix[1:,0] = combined_row_radius
 
     index_matrix = symmetric_delete(index_matrix, i)
     index_matrix = symmetric_delete(index_matrix, j - 1)
@@ -215,8 +230,8 @@ def join_close_components(
     index_matrix = index_matrix2
     del index_matrix2
 
-    index_matrix[0,1:] = combined_row_i
-    index_matrix[1:,0] = combined_row_i
+    index_matrix[0,1:] = combined_row_index
+    index_matrix[1:,0] = combined_row_index
 
   return Skeleton.simple_merge(skels).consolidate()
 
