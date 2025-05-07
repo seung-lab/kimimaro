@@ -106,6 +106,8 @@ def join_close_components(skeletons, radius=None):
   elif len(skels) == 0:
     return Skeleton()
 
+  radius = radius if radius is not None else np.inf
+
   while len(skels) > 1:
     N = len(skels)
 
@@ -113,21 +115,31 @@ def join_close_components(skeletons, radius=None):
     index_matrix = np.full( (N, N, 2), np.iinfo(np.uint32).max, dtype=np.uint32 )
 
     for i in range(N):
+      tree = spatial.cKDTree(skels[i].vertices)
       for j in range(i + 1, N):  # compute upper triangle only
 
         s1, s2 = skels[i], skels[j]
-        dist_matrix = scipy.spatial.distance.cdist(s1.vertices, s2.vertices)
-        radii_matrix[i,j] = np.min(dist_matrix)
-        radii_matrix[j,i] = radii_matrix[i,j]
+        r, idx = tree.query(
+          s2.vertices, 
+          k=1, 
+          p=2, # euclidean distance, L2 norm
+          distance_upper_bound=(radius + 0.000001), # < bound, so +epsilon
+          workers=-1
+        )
+        idx_s2 = np.argmin(r)
+        idx_s1 = idx[idx_s2]
 
-        index_matrix[i,j] = np.unravel_index( np.argmin(dist_matrix), dist_matrix.shape )
-        index_matrix[j,i] = index_matrix[i,j]
+        radii_matrix[i,j] = r[idx_s2]
+        radii_matrix[j,i] = r[idx_s2]
+
+        index_matrix[i,j] = ( idx_s1, idx_s2 )
+        index_matrix[j,i] = index_matrix[j,i]
 
     if np.all(radii_matrix) == np.inf:
       break
 
     min_radius = np.min(radii_matrix)
-    if radius is not None and min_radius > radius:
+    if min_radius > radius:
       break
 
     i, j = np.unravel_index( np.argmin(radii_matrix), radii_matrix.shape )
