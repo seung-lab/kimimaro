@@ -184,6 +184,7 @@ def join_close_components(skeletons:Sequence[Skeleton], radius:float = np.inf):
     index_matrix = index_matrix2
     del index_matrix2
 
+  del tree
   return Skeleton.simple_merge(skels).consolidate()
 
 ## Implementation Details Below
