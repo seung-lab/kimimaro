@@ -404,6 +404,40 @@ def test_join_close_components_complex():
 
   assert np.all(res.edges == [[0,1], [0,3], [1,2], [3,4], [4,5], [5,6], [6,7]])
 
+def test_join_close_components_by_radius():
+  skel = Skeleton([ 
+      (0,0,0), (1,0,0), (5,0,0), (11, 0, 0)
+    ], 
+    edges=[ (0,1), (2,3) ],
+    radii=[ 100, 100, 100, 100 ],
+    vertex_types=[ 0, 1, 2, 3 ],
+    segid=1337,
+  )
+
+  res = kimimaro.join_close_components(skel, restrict_by_radius=False)
+  assert len(res.components()) == 1
+  assert np.all(res.edges == [[0,1], [1,2], [2,3]])
+
+  res = kimimaro.join_close_components(skel, restrict_by_radius=True)
+  assert len(res.components()) == 1
+  assert np.all(res.edges == [[0,1], [1,2], [2,3]])
+
+  skel.radii = np.array([1,1,1,1], dtype=np.float32)
+  res = kimimaro.join_close_components(skel, restrict_by_radius=True)
+  assert len(res.components()) == 2
+  assert np.all(res.edges == [[0,1], [2,3]])
+
+  skel.radii = np.array([1,0.9,3,1], dtype=np.float32)
+  res = kimimaro.join_close_components(skel, restrict_by_radius=True)
+  assert len(res.components()) == 2
+  assert np.all(res.edges == [[0,1], [2,3]])
+
+  skel.radii = np.array([1,1,3,1], dtype=np.float32)
+  res = kimimaro.join_close_components(skel, restrict_by_radius=True)
+  assert len(res.components()) == 1
+  assert np.all(res.edges == [[0,1], [1,2], [2,3]])
+
+
 def test_fill_all_holes():
   labels = np.zeros((64, 32, 32), dtype=np.uint32)
 
