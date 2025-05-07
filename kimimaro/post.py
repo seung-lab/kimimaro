@@ -21,6 +21,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 """
+from typing import Sequence
 
 from collections import defaultdict
 
@@ -76,7 +77,7 @@ def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
   skeleton.id = label
   return skeleton.consolidate()
 
-def join_close_components(skeletons, radius=None):
+def join_close_components(skeletons:Sequence[Skeleton], radius:float = np.inf):
   """
   Given a set of skeletons which may contain multiple connected components,
   attempt to connect each component to the nearest other component via the
@@ -87,6 +88,9 @@ def join_close_components(skeletons, radius=None):
 
   Returns: Skeleton
   """
+  if radius is None:
+    radis = np.inf
+
   if radius is not None and radius <= 0:
     raise ValueError("radius must be greater than zero: " + str(radius))
 
@@ -105,8 +109,6 @@ def join_close_components(skeletons, radius=None):
     return skels[0]
   elif len(skels) == 0:
     return Skeleton()
-
-  radius = radius if radius is not None else np.inf
 
   N = len(skels)
   radii_matrix = np.full( (N, N), np.inf, dtype=np.float32 )
