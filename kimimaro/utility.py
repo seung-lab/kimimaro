@@ -141,6 +141,7 @@ def cross_sectional_area(
   fill_holes:bool = False,
   repair_contacts:bool = False,
   visualize_section_planes:bool = False,
+  step:int = 1,
 ) -> Union[Dict[int,Skeleton],List[Skeleton],Skeleton]:
   """
   Given a set of skeletons, find the cross sectional area
@@ -174,7 +175,24 @@ def cross_sectional_area(
 
   visualize_section_planes: For debugging, paint section planes
     and display them using microviewer.
+
+  step: when > 1, skip (step-1) vertices. At the time this of this
+    writing (May 2025), xs3d takes 50-250msec to evaluate in a 512^3, 
+    so providing a factor like step=10 provides a way making scalable 
+    deployment feasible. If xs3d or hardware is improved, this option
+    will be obsolete. 
+      example calculation: 
+      250msec x 100,000 vertices = 25000 sec = 6.9 hrs
+      A neuron I recently examined had over 300,000 vertices across 
+      the entire dataset.
+      Kimimaro's benchmark task produced 622,293 vertices over 2124 objects 
+      using reasonable parameters. This would represent
+      an estimated total time between 8.6 core-hours and 43.2 core-hours
+      compared with the few minutes it took to produce the skeletons.
   """
+  assert step > 0
+  assert smoothing_window > 0
+
   xs_prop = {
     "id": "cross_sectional_area",
     "data_type": "float32",
@@ -228,7 +246,17 @@ def cross_sectional_area(
         normal = normals[i,:]
         normal /= np.linalg.norm(normal)        
 
+      end_i = len(path) - 1
+      ct = 0
+
       for i, vert in enumerate(path):
+        ct += 1
+
+        if ct < step and not (i == 0 or i == end_i):
+          continue
+        elif ct == step:
+          ct = 0
+
         if np.any(vert < 0) or np.any(vert > shape):
           continue
 
