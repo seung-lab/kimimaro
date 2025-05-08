@@ -7,7 +7,7 @@ from osteoid import Skeleton
 import kimimaro.intake
 import kimimaro.post
 import kimimaro.skeletontricks
-from kimimaro.utility import moving_average
+from kimimaro.utility import moving_average, cross_sectional_area
 
 @pytest.fixture
 def connectomics_data():
@@ -567,4 +567,29 @@ def test_remove_row():
   result = kimimaro.post.remove_row(arr, np.array([[1,2]]))
 
   assert np.all(result == np.array([]))
+
+def test_cross_sectional_area():
+  labels = np.ones([100,100,100], dtype=np.uint8)
+  skel = kimimaro.skeletonize(labels, teasar_params={
+    "pdrf_exponent": 16,
+
+  })[1]
+
+  xsa_1 = cross_sectional_area(labels, skel, step=1).cross_sectional_area
+  xsa_10 = cross_sectional_area(labels, skel, step=10).cross_sectional_area
+
+  assert np.all(xsa_1[xsa_10 == 0] != xsa_10[xsa_10 == 0])
+  assert np.all(xsa_1[xsa_10 > 0] == xsa_10[xsa_10 > 0])
+  assert np.any(xsa_1 == 10000)
+
+  terminals = skel.terminals()
+  assert np.all(xsa_10[terminals] > 0)
+  assert np.all(xsa_10[terminals] > 0)
+
+  try:
+    cross_sectional_area(labels, skel, step=-1)
+  except AssertionError:
+    pass
+  
+
 
