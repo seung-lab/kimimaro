@@ -168,7 +168,7 @@ def to_image(src, format):
     elif format == "tiff":
       try:
         import tifffile
-        tifffile.imwrite(f"{basename}.tiff", binimg, photometric='minisblack')
+        tifffile.imwrite(f"{basename}.tiff", image, photometric='minisblack')
       except ImportError:
         print("kimimaro: tifffile not installed. Run pip install tifffile.")
         return
