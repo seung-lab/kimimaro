@@ -177,6 +177,7 @@ def to_image(src, format):
         tifffile.imwrite(f"{basename}.tiff", 
                          image.astype(np.float32), 
                          photometric='minisblack',
+                         metadata={'axes': 'ZYX'},
                          imagej=True)
       except ImportError:
         print("kimimaro: tifffile not installed. Run pip install tifffile.")
