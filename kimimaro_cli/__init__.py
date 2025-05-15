@@ -155,11 +155,17 @@ def to_image(src, format):
     ymin, ymax = fastremap.minmax(skel.vertices[:,1])
     zmin, zmax = fastremap.minmax(skel.vertices[:,2])
 
-    image = np.zeros((xmax-xmin, ymax-ymin, zmax-zmin), dtype=np.bool, order='F')
-    minpt = np.array([xmin,ymin,zmin])
+    image = np.zeros((int(zmax-zmin), int(ymax-ymin), int(xmax-xmin)), dtype=np.bool, order='F')
+    
+    minpt = np.array([int(xmin),int(ymin),int(zmin)])
     drawpts = skel.vertices - minpt
-
-    image[drawpts] = True
+    drawpts = np.asfortranarray(drawpts, dtype=np.int32)
+    
+    for i in range(len(drawpts)):
+      try:
+        image[drawpts[i,2], drawpts[i,1], drawpts[i,0]] = True
+      except IndexError:
+        continue
 
     basename, ext = os.path.splitext(srcpath)
 
@@ -168,7 +174,10 @@ def to_image(src, format):
     elif format == "tiff":
       try:
         import tifffile
-        tifffile.imwrite(f"{basename}.tiff", image, photometric='minisblack')
+        tifffile.imwrite(f"{basename}.tiff", 
+                         image.astype(np.float32), 
+                         photometric='minisblack',
+                         imagej=True)
       except ImportError:
         print("kimimaro: tifffile not installed. Run pip install tifffile.")
         return
