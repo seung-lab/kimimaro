@@ -77,7 +77,7 @@ def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
 
   skeleton = remove_dust(skeleton, dust_threshold) 
   skeleton = remove_loops(skeleton)
-  skeleton = join_close_components(skeleton, restrict_using_radius=True)
+  skeleton = join_close_components(skeleton, restrict_by_radius=True)
   skeleton = remove_ticks(skeleton, tick_threshold)
   skeleton.id = label
   return skeleton.consolidate()
