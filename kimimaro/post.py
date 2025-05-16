@@ -46,7 +46,11 @@ import kimimaro.skeletontricks
 
 ## Public API of Module
 
-def postprocess(skeleton, dust_threshold=1500, tick_threshold=3000):
+def postprocess(
+  skeleton:Skeleton, 
+  dust_threshold:float = 1500.0, 
+  tick_threshold:float = 3000.0,
+) -> Skeleton:
   """
   Postprocessing of a skeleton enables aggregation of adjacent
   or overlapping skeletonized image chunks to be fused into a
