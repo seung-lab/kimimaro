@@ -591,5 +591,27 @@ def test_cross_sectional_area():
   except AssertionError:
     pass
   
+def test_postprocess():
+  skel = Skeleton([ 
+      (0,0,0), (1,0,0),    (4,0,0), (6,0,0),        (20,0,0), (21, 0, 0),
+      
+
+      (0,0,5), 
+      (0,0,10),
+    ], 
+    edges=[ (0,1), (2,3), (4,5), (6,7), (0,7), (1,6) ],
+  )
+
+  res_skel = kimimaro.post.postprocess(skel, dust_threshold=0, tick_threshold=0)
+
+  ans = Skeleton([ 
+      (4,0,0), (6,0,0),        (20,0,0), (21, 0, 0),
+    ], 
+    edges=[ (0,1), (2,3) ],
+  )
+
+  assert Skeleton.equivalent(res_skel, ans)
+
+
 
 
