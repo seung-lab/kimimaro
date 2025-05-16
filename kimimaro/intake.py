@@ -47,7 +47,7 @@ DEFAULT_TEASAR_PARAMS = {
   "scale": 1.5, 
   "const": 300,
   "pdrf_scale": 100000,
-  "pdrf_exponent": 4,
+  "pdrf_exponent": 8,
   "soma_acceptance_threshold": 3500,
   "soma_detection_threshold": 750,
   "soma_invalidation_const": 300,
