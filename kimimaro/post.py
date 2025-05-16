@@ -129,6 +129,7 @@ def join_close_components(
 
   if restrict_by_radius:
     radius = 2 * np.max([ np.max(s.radii) for s in skels ])
+    radius = max(radius, 0)
 
   def compute_nearest(tree, i, j):
     s1, s2 = skels[i], skels[j]
