@@ -155,17 +155,15 @@ def to_image(src, format):
     ymin, ymax = fastremap.minmax(skel.vertices[:,1])
     zmin, zmax = fastremap.minmax(skel.vertices[:,2])
 
-    image = np.zeros((int(zmax-zmin), int(ymax-ymin), int(xmax-xmin)), dtype=np.bool, order='F')
+    image = np.zeros((int(zmax-zmin), int(ymax-ymin), int(xmax-xmin)), dtype=bool, order='F')
     
     minpt = np.array([int(xmin),int(ymin),int(zmin)])
     drawpts = skel.vertices - minpt
     drawpts = np.asfortranarray(drawpts, dtype=np.int32)
     
-    for i in range(len(drawpts)):
-      try:
-        image[drawpts[i,2], drawpts[i,1], drawpts[i,0]] = True
-      except IndexError:
-        continue
+    image[np.where((drawpts[:, 0] >= xmin) & (drawpts[:, 0] < xmax) & 
+                   (drawpts[:, 1] >= ymin) & (drawpts[:, 1] < ymax) & 
+                   (drawpts[:, 2] >= zmin) & (drawpts[:, 2] < zmax))] = True
 
     basename, ext = os.path.splitext(srcpath)
 
@@ -175,7 +173,7 @@ def to_image(src, format):
       try:
         import tifffile
         tifffile.imwrite(f"{basename}.tiff", 
-                         image.astype(np.float32), 
+                         image.astype(np.float32, copy=False), 
                          photometric='minisblack',
                          metadata={'axes': 'ZYX'},
                          imagej=True)
