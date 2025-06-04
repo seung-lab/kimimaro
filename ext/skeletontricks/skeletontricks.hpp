@@ -28,6 +28,7 @@
 #include <vector>
 #include <stack>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 #include <utility>
 
@@ -425,7 +426,7 @@ struct pair_hash {
   }
 };
 
-std::unordered_map<std::pair<uint64_t, uint64_t>, pair_hash> 
+std::unordered_set<std::pair<uint64_t, uint64_t>, pair_hash> 
 _extract_edges_from_binary_image(
   const uint8_t* image,
   const uint64_t sx, const uint64_t sy, const uint64_t sz,
@@ -434,7 +435,7 @@ _extract_edges_from_binary_image(
 
   const uint64_t sxy = sx * sy;
 
-  std::unordered_map<std::pair<uint64_t, uint64_t>, pair_hash> edges;
+  std::unordered_set<std::pair<uint64_t, uint64_t>, pair_hash> edges;
   edges.reserve(sx * sy * sz / 100);
 
   int neighborhood[13];
