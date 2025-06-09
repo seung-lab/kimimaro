@@ -80,9 +80,10 @@ Homepage = "https://github.com/seung-lab/kimimaro/"
 kimimaro = "kimimaro_cli:main"
 
 [tool.setuptools]
-packages = ["kimimaro"]
+packages = ["kimimaro", "kimimaro_cli"]
 include-package-data = true
 
 [tool.setuptools.package-dir]
 kimimaro = "kimimaro"
+kimimaro_cli = "kimimaro_cli"
 
