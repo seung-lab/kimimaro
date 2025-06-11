@@ -28,6 +28,12 @@ pip install kimimaro
 # installs additional libraries to accelerate some
 # operations like join_close_components
 pip install "kimimaro[accel]"
+# Makes the kimimaro view command work
+pip install "kimimaro[view]"
+# Enables TIFF generation on the CLI
+pip install "kimimaro[tif]"
+# Install all optional dependencies
+pip install "kimimaro[all]"
 ```
 
 Otherwise, you'll also need a C++ compiler:

@@ -71,7 +71,8 @@ dependencies = [
 [project.optional-dependencies]
 tif = ["tifffile"]
 accel = ["pykdtree"]
-all = ["tifffile", "pykdtree"]
+view = ["microviewer[ckl,objects]"]
+all = ["tifffile", "pykdtree", "microviewer[ckl,objects]"]
 
 [project.urls]
 Homepage = "https://github.com/seung-lab/kimimaro/"
