@@ -198,11 +198,11 @@ def view(filename, port, color_by):
     microviewer.objects([ skel ], skeleton_color_by=color_by)
   elif ext == ".npy":
     labels = np.load(filename)
-    microviewer.view(labels, segmentation=True, port=port)
+    microviewer.view(labels, seg=True, port=port)
   elif ext == ".ckl":
     import crackle
     labels = crackle.load(filename)
-    microviewer.view(labels, segmentation=True, port=port)
+    microviewer.view(labels, seg=True, port=port)
   else:
     print("kimimaro: {filename} was not a .swc, .npy, or .ckl file.")
 
