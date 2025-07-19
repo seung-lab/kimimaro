@@ -98,36 +98,40 @@ def shape_iterator(all_labels, skeletons, fill_holes, in_place, progress, fn):
 
   all_slices = find_objects(all_labels)
 
-  for skel in tqdm(iterator, desc="Labels", disable=(not progress), total=total):
-    if all_labels.dtype == bool:
-      label = 1
-    else:
-      label = skel.id
 
-    if label == 0:
-      continue
+  with tqdm(iterator, desc="Labels", disable=(not progress), total=total) as pbar:
+    for skel in pbar:
+      if all_labels.dtype == bool:
+        label = 1
+      else:
+        label = skel.id
 
-    if label not in remapping:
-      continue
+      pbar.set_postfix(label=str(label))
 
-    label = remapping[label]
-    slices = all_slices[label - 1]
-    if slices is None:
-      continue
+      if label == 0:
+        continue
 
-    roi = Bbox.from_slices(slices)
-    if roi.volume() <= 1:
-      continue
+      if label not in remapping:
+        continue
 
-    roi.grow(1)
-    roi.minpt = Vec.clamp(roi.minpt, Vec(0,0,0), roi.maxpt)
-    slices = roi.to_slices()
+      label = remapping[label]
+      slices = all_slices[label - 1]
+      if slices is None:
+        continue
 
-    binimg = np.asfortranarray(all_labels[slices] == label)
-    if fill_holes:
-      binimg = fill_voids.fill(binimg, in_place=True)
+      roi = Bbox.from_slices(slices)
+      if roi.volume() <= 1:
+        continue
 
-    fn(skel, binimg, roi)
+      roi.grow(1)
+      roi.minpt = Vec.clamp(roi.minpt, Vec(0,0,0), roi.maxpt)
+      slices = roi.to_slices()
+
+      binimg = np.asfortranarray(all_labels[slices] == label)
+      if fill_holes:
+        binimg = fill_voids.fill(binimg, in_place=True)
+
+      fn(skel, binimg, roi)
 
   return iterator
 

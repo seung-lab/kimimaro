@@ -412,67 +412,72 @@ def skeletonize_subset(
   ):
 
   skeletons = defaultdict(list)
-  for segid in tqdm(cc_segids, disable=(not progress), desc="Skeletonizing Labels"):
-    # Crop DBF to ROI
-    slices = all_slices[segid - 1]
-    if slices is None:
-      continue
 
-    roi = Bbox.from_slices(slices)
-    if roi.volume() <= 1:
-      continue
+  with tqdm(cc_segids, disable=(not progress), desc="Skeletonizing Labels") as pbar:
+    for segid in pbar:
 
-    labels = cc_labels[slices]
-    labels = (labels == segid)
-    dbf = (labels * all_dbf[slices]).astype(np.float32)
-    cropped_voxel_graph = (voxel_graph[slices] if voxel_graph is not None else None)
+      pbar.set_postfix(label=str(remapping[segid]))
 
-    manual_targets_before = []
-    manual_targets_after = []
-    root = None 
+      # Crop DBF to ROI
+      slices = all_slices[segid - 1]
+      if slices is None:
+        continue
 
-    def translate_to_roi(targets):
-      targets = np.array(targets)
-      targets -= roi.minpt.astype(np.uint32)
-      return targets.tolist()      
+      roi = Bbox.from_slices(slices)
+      if roi.volume() <= 1:
+        continue
 
-    # We only source a predetermined root from 
-    # border_targets because we understand that it's
-    # located at a reasonable place at the edge of the
-    # shape. In theory, extra targets can be positioned
-    # anywhere within the shape or off the shape, making it 
-    # a dicey proposition. 
-    if len(border_targets[segid]) > 0:
-      manual_targets_before = translate_to_roi(border_targets[segid])
-      root = manual_targets_before.pop()
+      labels = cc_labels[slices]
+      labels = (labels == segid)
+      dbf = (labels * all_dbf[slices]).astype(np.float32)
+      cropped_voxel_graph = (voxel_graph[slices] if voxel_graph is not None else None)
 
-    if segid in extra_targets_before and len(extra_targets_before[segid]) > 0:
-      manual_targets_before.extend( translate_to_roi(extra_targets_before[segid]) )
+      manual_targets_before = []
+      manual_targets_after = []
+      root = None 
 
-    if segid in extra_targets_after and len(extra_targets_after[segid]) > 0:
-      manual_targets_after.extend( translate_to_roi(extra_targets_after[segid]) )
+      def translate_to_roi(targets):
+        targets = np.array(targets)
+        targets -= roi.minpt.astype(np.uint32)
+        return targets.tolist()      
 
-    skeleton = kimimaro.trace.trace(
-      labels, 
-      dbf, 
-      anisotropy=anisotropy, 
-      fix_branching=fix_branching, 
-      manual_targets_before=manual_targets_before,
-      manual_targets_after=manual_targets_after,
-      root=root,
-      voxel_graph=cropped_voxel_graph,
-      **teasar_params
-    )
+      # We only source a predetermined root from 
+      # border_targets because we understand that it's
+      # located at a reasonable place at the edge of the
+      # shape. In theory, extra targets can be positioned
+      # anywhere within the shape or off the shape, making it 
+      # a dicey proposition. 
+      if len(border_targets[segid]) > 0:
+        manual_targets_before = translate_to_roi(border_targets[segid])
+        root = manual_targets_before.pop()
 
-    if skeleton.empty():
-      continue
+      if segid in extra_targets_before and len(extra_targets_before[segid]) > 0:
+        manual_targets_before.extend( translate_to_roi(extra_targets_before[segid]) )
 
-    skeleton.vertices += roi.minpt
+      if segid in extra_targets_after and len(extra_targets_after[segid]) > 0:
+        manual_targets_after.extend( translate_to_roi(extra_targets_after[segid]) )
 
-    orig_segid = remapping[segid]
-    skeleton.id = orig_segid
-    skeleton.vertices *= anisotropy
-    skeletons[orig_segid].append(skeleton)
+      skeleton = kimimaro.trace.trace(
+        labels, 
+        dbf, 
+        anisotropy=anisotropy, 
+        fix_branching=fix_branching, 
+        manual_targets_before=manual_targets_before,
+        manual_targets_after=manual_targets_after,
+        root=root,
+        voxel_graph=cropped_voxel_graph,
+        **teasar_params
+      )
+
+      if skeleton.empty():
+        continue
+
+      skeleton.vertices += roi.minpt
+
+      orig_segid = remapping[segid]
+      skeleton.id = orig_segid
+      skeleton.vertices *= anisotropy
+      skeletons[orig_segid].append(skeleton)
 
   return merge(skeletons)
 
