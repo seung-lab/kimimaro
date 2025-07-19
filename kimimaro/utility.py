@@ -349,6 +349,18 @@ def oversegment(
 
   skeletons = copy.deepcopy(skeletons)
 
+  # Initialize segments attribute for all skeletons
+  if hasattr(skeletons, "vertices"):
+    skeleton_list = [skeletons]
+  elif isinstance(skeletons, dict):
+    skeleton_list = list(skeletons.values())
+  else:
+    skeleton_list = skeletons
+    
+  for skel in skeleton_list:
+    if not hasattr(skel, 'segments'):
+      skel.segments = np.zeros(len(skel.vertices), dtype=np.uint64)
+
   all_features = np.zeros(all_labels.shape, dtype=np.uint64, order="F")
   next_label = 0
 

@@ -1,6 +1,5 @@
 import os
 
-import microviewer
 import click
 import numpy as np
 from osteoid import Skeleton
@@ -186,20 +185,26 @@ def to_image(src, format):
 @main.command()
 @click.argument("filename")
 @click.option('--port', type=int, default=8080, help="Which port to run the microviewer on for npy files.", show_default=True)
-def view(filename, port):
+@click.option('--color-by', type=str, default='r', help="For skeleton visualization. r = radius, c = components, x = cross sectional area (if available).", show_default=True)
+def view(filename, port, color_by):
   """Visualize a .swc or .npy file."""
+  import microviewer
+
   basename, ext = os.path.splitext(filename)
 
   if ext == ".swc":
     with open(filename, "rt") as swc:
       skel = Skeleton.from_swc(swc.read())
-
-    skel.viewer()
+    microviewer.objects([ skel ], skeleton_color_by=color_by)
   elif ext == ".npy":
     labels = np.load(filename)
-    microviewer.view(labels, segmentation=True, port=port)
+    microviewer.view(labels, seg=True, port=port)
+  elif ext == ".ckl":
+    import crackle
+    labels = crackle.load(filename)
+    microviewer.view(labels, seg=True, port=port)
   else:
-    print("kimimaro: {filename} was not a .swc or .npy file.")
+    print("kimimaro: {filename} was not a .swc, .npy, or .ckl file.")
 
 @main.command()
 def license():

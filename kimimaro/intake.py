@@ -329,6 +329,10 @@ def skeletonize_parallel(
     prevsigint = signal.getsignal(signal.SIGINT)
     prevsigterm = signal.getsignal(signal.SIGTERM)
     
+    # Don't fork, spawn entirely new processes. This
+    # avoids accidental deadlocks.
+    mp.set_start_method("spawn", force=True)
+    
     executor = pathos.pools.ProcessPool(parallel)
 
     def cleanup(signum, frame):
