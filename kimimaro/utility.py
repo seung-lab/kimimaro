@@ -246,9 +246,7 @@ def cross_sectional_area(
       normals = moving_average(normals, smoothing_window)
       normals = moving_average(normals[::-1], smoothing_window)[::-1]
 
-      for i in range(len(normals)):
-        normal = normals[i,:]
-        normal /= np.linalg.norm(normal)        
+      normals /= np.linalg.norm(normals, axis=1, keepdims=True)   
 
       end_i = len(path) - 1
       ct = 0
