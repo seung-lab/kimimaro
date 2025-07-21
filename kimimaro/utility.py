@@ -209,6 +209,9 @@ def cross_sectional_area(
   }
 
   def cross_sectional_area_helper(skel, binimg, roi):
+
+    xs3d.set_shape(binimg)
+
     cross_sections = None
     if visualize_section_planes:
       cross_sections = np.zeros(binimg.shape, dtype=np.uint32, order="F")
@@ -272,6 +275,7 @@ def cross_sectional_area(
             binimg, vert, 
             normal, anisotropy,
             return_contact=True,
+            use_persistent_data=True,
           )
           if repair_contacts:
             contacts[idx] = contact
@@ -296,11 +300,14 @@ def cross_sectional_area(
     skel.cross_sectional_area = areas
     skel.cross_sectional_area_contacts = contacts
 
-  shape_iterator(
-    all_labels, skeletons, 
-    fill_holes, in_place, progress, 
-    cross_sectional_area_helper
-  )
+  try:
+    shape_iterator(
+      all_labels, skeletons, 
+      fill_holes, in_place, progress, 
+      cross_sectional_area_helper
+    )
+  finally:
+    xs3d.clear_shape()
 
   if hasattr(skeletons, "vertices"):
     skelitr = [ skeletons ]
