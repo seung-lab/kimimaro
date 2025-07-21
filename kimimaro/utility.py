@@ -259,7 +259,14 @@ def cross_sectional_area(
         elif ct == step:
           ct = 0
 
-        if np.any(vert < 0) or np.any(vert > shape):
+        if ( 
+             (vert[0] < 0) 
+          or (vert[0] >= shape[0])
+          or (vert[1] < 0) 
+          or (vert[1] >= shape[1])
+          or (vert[2] < 0) 
+          or (vert[2] >= shape[2])
+        ):
           continue
 
         idx = mapping[tuple(vert)]
