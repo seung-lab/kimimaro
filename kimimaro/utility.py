@@ -180,19 +180,16 @@ def cross_sectional_area(
   visualize_section_planes: For debugging, paint section planes
     and display them using microviewer.
 
-  step: when > 1, skip (step-1) vertices. At the time this of this
-    writing (May 2025), xs3d takes 50-250msec to evaluate in a 512^3, 
-    so providing a factor like step=10 provides a way making scalable 
-    deployment feasible. If xs3d or hardware is improved, this option
-    will be obsolete. 
+  step: when > 1, skip (step-1) vertices. This can be used to
+    go faster. These days, evaluating a single vertex takes 
+    between a few hundred microseconds to a few thousand microseconds.
       example calculation: 
-      250msec x 100,000 vertices = 25000 sec = 6.9 hrs
+      1 msec x 100,000 vertices = 100 sec
       A neuron I recently examined had over 300,000 vertices across 
       the entire dataset.
-      Kimimaro's benchmark task produced 622,293 vertices over 2124 objects 
-      using reasonable parameters. This would represent
-      an estimated total time between 8.6 core-hours and 43.2 core-hours
-      compared with the few minutes it took to produce the skeletons.
+      Kimimaro's benchmark task produced 622,293 vertices over 1667 objects 
+      using reasonable parameters and took a little over 4 minutes on an M3 
+      processor (or about 2.5 msec/vertex). The most expensive shape was the soma.
   """
   assert step > 0
   assert smoothing_window > 0
@@ -277,6 +274,7 @@ def cross_sectional_area(
             binimg, vert, 
             normal, anisotropy,
             return_contact=True,
+            use_persistent_data=True,
           )
           if repair_contacts:
             contacts[idx] = contact
@@ -301,11 +299,15 @@ def cross_sectional_area(
     skel.cross_sectional_area = areas
     skel.cross_sectional_area_contacts = contacts
 
-  shape_iterator(
-    all_labels, skeletons, 
-    fill_holes, in_place, progress, 
-    cross_sectional_area_helper
-  )
+  try:
+    xs3d.set_shape(all_labels)
+    shape_iterator(
+      all_labels, skeletons, 
+      fill_holes, in_place, progress, 
+      cross_sectional_area_helper
+    )
+  finally:
+    xs3d.clear_shape()
 
   if hasattr(skeletons, "vertices"):
     skelitr = [ skeletons ]
