@@ -51,7 +51,9 @@ Fig. 2: Memory Usage on a 512x512x512 Densely Labeled Volume (`connectomics.npy`
 
 Figure 2 shows the memory usage and processessing time (~390 seconds, about 6.5 minutes) required when Kimimaro 1.4.0 was applied to a 512x512x512 cutout, *labels*, from a connectomics dataset, `connectomics.npy` containing 2124 connected components. The different sections of the algorithm are depicted. Grossly, the preamble runs for about half a minute, skeletonization for about six minutes, and finalization within seconds. The peak memory usage was about 4.5 GB. The code below was used to process *labels*. The processing of the glia was truncated in due to a combination of *fix_borders* and max_paths.  
 
-Kimimaro has come a long way. Version 0.2.1 took over 15 minutes and had a Preamble run time twice as long on the same dataset.    
+Kimimaro has come a long way. Version 0.2.1 took over 15 minutes and had a Preamble run time twice as long on the same dataset.
+
+On a Macbook Pro M3, the same settings now complete in 94 seconds (1.6 minutes) on version 5.4.0. With xs3d 1.11.0, cross section analysis takes 215 seconds (3.6 minutes).
 
 ### Python Interface
 
