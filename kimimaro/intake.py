@@ -14,7 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 """
-
+from typing import Optional, Iterable
 from collections import defaultdict
 from functools import partial
 import gc
@@ -23,6 +23,7 @@ import signal
 import uuid
 
 import numpy as np
+import numpy.typing as npt
 import pathos.pools
 import scipy.spatial
 from tqdm import tqdm
@@ -55,13 +56,31 @@ DEFAULT_TEASAR_PARAMS = {
 }
 
 def skeletonize(
-  all_labels, teasar_params=DEFAULT_TEASAR_PARAMS, anisotropy=(1,1,1),
-  object_ids=None, dust_threshold=1000, 
-  progress=True, fix_branching=True, in_place=False, 
-  fix_borders=True, parallel=1, parallel_chunk_size=100,
-  extra_targets_before=[], extra_targets_after=[],
-  fill_holes=False, fix_avocados=False,
-  voxel_graph=None
+  all_labels:npt.NDArray[np.unsignedinteger],
+  teasar_params:Optional[dict] = None, 
+  anisotropy:tuple[float,float,float] = (1,1,1),
+  object_ids:Optional[Iterable[int]] = None,
+  dust_threshold:int = 1000, 
+  progress:bool = True, 
+  fix_branching:bool = True,
+  in_place:bool = False, 
+  fix_borders:bool = True,
+  parallel:int = 1,
+  parallel_chunk_size:int = 100,
+  extra_targets_before:list[tuple[int,int,int]] = [],
+  extra_targets_after:list[tuple[int,int,int]] = [],
+  fill_holes:bool = False, 
+  fix_avocados:bool = False,
+  voxel_graph:Optional[npt.NDArray[np.uint8]] = None,
+
+  scale:float = 1.5,
+  const:float = 300,
+  pdrf_scale:float = 100000.0,
+  pdrf_exponent:float = 8.0,
+  soma_acceptance_threshold:float = 3500,
+  soma_detection_threshold:float = 750,
+  soma_invalidation_const:float = 300,
+  soma_invalidation_scale:float = 2,
 ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -72,7 +91,8 @@ def skeletonize(
   Optional:
     anisotropy: the physical dimensions of each axis (e.g. 4nm x 4nm x 40nm)
     object_ids: If not none, zero out all labels other than those specified here.
-    teasar_params: {
+
+    TEASAR PARAMS:
       scale: during the "rolling ball" invalidation phase, multiply 
           the DBF value by this.
       const: during the "rolling ball" invalidation phase, this 
@@ -87,7 +107,7 @@ def skeletonize(
       soma_invalidation_const: the 'const' factor used in the one time soma root invalidation (default 0)
                              (units in chosen physical units (i.e. nm))
       max_paths: max paths to trace on a single object. Moves onto the next object after this point.
-    }
+
     dust_threshold: don't bother skeletonizing connected components smaller than
       this many voxels.
     fill_holes: preemptively run a void filling algorithm on all connected
@@ -140,8 +160,19 @@ def skeletonize(
 
   Returns: { $segid: osteoid.Skeleton, ... }
   """
+  if teasar_params is None:
+    teasar_params = {
+      "scale": scale, 
+      "const": const,
+      "pdrf_scale": pdrf_scale,
+      "pdrf_exponent": pdrf_exponent,
+      "soma_acceptance_threshold": soma_acceptance_threshold,
+      "soma_detection_threshold": soma_detection_threshold,
+      "soma_invalidation_const": soma_invalidation_const,
+      "soma_invalidation_scale": soma_invalidation_scale,
+    }
 
-  anisotropy = np.array(anisotropy, dtype=np.float32)
+  anisotropy = np.asarray(anisotropy, dtype=np.float32)
 
   all_labels = format_labels(all_labels, in_place=in_place)
   all_labels = apply_object_mask(all_labels, object_ids)
