@@ -62,9 +62,11 @@ On a Macbook Pro M3, the same settings now complete in 94 seconds (1.6 minutes) 
 
 import kimimaro
 
-# Run lzma -d connectomics.npy.lzma on the command line to 
-# obtain this 512 MB segmentation volume. Details below.
-labels = np.load("connectomics.npy") 
+# To obtain this 512 MB segmentation sample volume:
+# pip install crackle-codec 
+
+import crackle
+labels = crackle.load("benchmarks/connectomics.npy.ckl.gz") 
 
 skels = kimimaro.skeletonize(
   labels, 
