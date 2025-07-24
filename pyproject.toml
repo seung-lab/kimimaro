@@ -69,10 +69,41 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-tif = ["tifffile"]
-accel = ["pykdtree"]
-view = ["microviewer[ckl,objects]"]
-all = ["tifffile", "pykdtree", "microviewer[ckl,objects]"]
+accel = [
+    "pykdtree",
+]
+view = [ 
+    "microviewer",
+    "crackle-codec",
+    "vtk",
+]
+tif = [ 
+    "tifffile",
+]
+nii = [
+    "nibabel",
+]
+nrrd = [
+    "pynrrd",
+]
+ckl = [
+    "crackle-codec",
+]
+all_formats = [
+    "tifffile",
+    "nibabel",
+    "pynrrd",
+    "crackle-codec",
+]
+all = [ 
+    "tifffile",
+    "nibabel",
+    "pynrrd",
+    "crackle-codec",
+    "microviewer",
+    "vtk",
+    "pykdtree",
+]
 
 [project.urls]
 Homepage = "https://github.com/seung-lab/kimimaro/"

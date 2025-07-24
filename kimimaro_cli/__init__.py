@@ -9,6 +9,8 @@ from kimimaro.utility import mkdir
 import fastremap
 from tqdm import tqdm
 
+from . import codecs
+
 class Tuple3(click.ParamType):
   """A command line option type consisting of 3 comma-separated integers."""
   name = 'tuple3'
@@ -72,7 +74,7 @@ def forge(
 ):
   """Skeletonize an input image and write out SWCs."""
   
-  labels = np.load(src)
+  labels = codecs.load(src)
 
   skels = kimimaro.skeletonize(
     labels,
@@ -118,21 +120,12 @@ def from_image(src):
   """Convert a binary image that has already been skeletonized by a thinning algorithm into an swc."""
 
   for srcpath in tqdm(src):
-    basename, ext = os.path.splitext(srcpath)
-    if ext == ".npy":
-      image = np.load(srcpath)
-    elif ext in (".tif", ".tiff"):
-      try:
-        import tifffile
-      except ImportError:
-        print("kimimaro: tifffile not installed. Run pip install tifffile.")
-        return
-      image = tifffile.imread(srcpath)
-    else:
-      print(f"Unsupported image format {ext}. Only npy and tiff are supported.")
+    try:
+      image = codecs.load(srcpath)
+    except ImportError:
+      print(f"kimimaro: {srcpath} format not installed.")
       return
 
-    image = np.asfortranarray(image)
     skel = kimimaro.extract_skeleton_from_binary_image(image)
 
     with open(f"{basename}.swc", "wt") as f:
