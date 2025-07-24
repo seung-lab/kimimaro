@@ -32,6 +32,8 @@ pip install "kimimaro[accel]"
 pip install "kimimaro[view]"
 # Enables TIFF generation on the CLI
 pip install "kimimaro[tif]"
+# Enables reading NIBABEL, NRRD, TIFF, CRACKLE on the CLI
+pip install "kimimaro[all_formats]"
 # Install all optional dependencies
 pip install "kimimaro[all]"
 ```
