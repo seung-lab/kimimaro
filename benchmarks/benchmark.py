@@ -42,7 +42,7 @@ print(time.time() - s)
 #   skels = pickle.load(f)
 
 s = time.time()
-skels = kimimaro.utils.cross_sectional_area(
+skels = kimimaro.cross_sectional_area(
   labels, skels,
   anisotropy=(16,16,40),
   smoothing_window=7,
