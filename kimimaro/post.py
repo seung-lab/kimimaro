@@ -106,7 +106,7 @@ def join_close_components(
   Returns: Skeleton
   """
   if radius is None:
-    radis = np.inf
+    radius = np.inf
 
   if radius is not None and radius <= 0:
     raise ValueError("radius must be greater than zero: " + str(radius))
