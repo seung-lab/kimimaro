@@ -49,7 +49,7 @@ def main():
 @click.option('--scale', type=float, default=4, help="Adds multiple of boundary distance to invalidation zone. (You should set this!)", show_default=True)
 @click.option('--const', type=float, default=10, help="Adds constant physical distance to invalidation zone. (You should set this!)", show_default=True)
 @click.option('--pdrf-scale', type=int, default=1e5, help="Constant multiplier of penalty field.", show_default=True)
-@click.option('--pdrf-exponent', type=int, default=8, help="Exponent of penalty field. Powers of two are faster. Too big can cause floating point errors.", show_default=True)
+@click.option('--pdrf-exponent', type=int, default=4, help="Exponent of penalty field. Powers of two are faster. Too big can cause floating point errors.", show_default=True)
 @click.option('--soma-detect', type=float, default=750, help="Perform more expensive check for somas for distance to boundary values above this threshold. e.g. 750 nm", show_default=True)
 @click.option('--soma-accept', type=float, default=1100, help="Distance to boundary values above this threshold trigger special soma processing. e.g. 750 nm", show_default=True)
 @click.option('--soma-scale', type=float, default=2, help="Adds multiple of boundary distance to invalidation zone around a soma. (You should set this!)", show_default=True)
