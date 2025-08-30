@@ -458,7 +458,7 @@ def _remove_loops(skeleton):
     edges_cycle = path2edge(cycle_path)
 
     edges_cycle = np.array(edges_cycle, dtype=np.uint32)
-    edges_cycle = np.sort(edges_cycle, axis=1)
+    edges_cycle = edges_cycle.sort(axis=1, kind='quicksort')
 
     nodes_cycle = fastremap.unique(edges_cycle)
     nodes_cycle = nodes_cycle.astype(np.int32)
@@ -506,7 +506,7 @@ def _remove_loops(skeleton):
         path = np.concatenate((path[pos[1]:], path[:pos[0]+1]), 0)
 
       edge_path = path2edge(path)
-      edge_path = np.sort(edge_path, axis=1)
+      edge_path = edge_path.sort(axis=1, kind='quicksort')
 
       row_valid = np.ones(edges_cycle.shape[0])
       for i in range(edge_path.shape[0]):
@@ -574,11 +574,11 @@ def path2edge(path):
   return edges
 
 def remove_row(array, rows2remove): 
-  array = np.sort(array, axis=1)  
+  array = array.sort(axis=1, kind='quicksort')
   if array.size == 0:
     return array.astype(np.int32, copy=False)
 
-  rows2remove = np.sort(rows2remove, axis=1)  
+  rows2remove = rows2remove.sort(axis=1, kind='quicksort')
 
   for i in range(rows2remove.shape[0]):  
     idx = find_row(array,rows2remove[i,:])  
