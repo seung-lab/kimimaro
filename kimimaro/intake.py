@@ -213,35 +213,39 @@ def skeletonize(
     cc_shm_location = 'kimimaro-shm-cc-labels-' + suffix
     vg_shm_location = 'kimimaro-shm-voxel-graph-' + suffix
 
-    dbf_mmap, all_dbf_shm = shm.ndarray( all_dbf.shape, all_dbf.dtype, dbf_shm_location, order='F')
-    all_dbf_shm[:] = all_dbf 
-    del all_dbf 
+    try:
+      dbf_mmap, all_dbf_shm = shm.ndarray( all_dbf.shape, all_dbf.dtype, dbf_shm_location, order='F')
+      all_dbf_shm[:] = all_dbf 
+      del all_dbf 
 
-    cc_mmap, cc_labels_shm = shm.ndarray( cc_labels.shape, cc_labels.dtype, cc_shm_location, order='F')    
-    cc_labels_shm[:] = cc_labels 
-    del cc_labels
+      cc_mmap, cc_labels_shm = shm.ndarray( cc_labels.shape, cc_labels.dtype, cc_shm_location, order='F')    
+      cc_labels_shm[:] = cc_labels 
+      del cc_labels
 
-    voxel_graph_shm = None
-    vg_mmap = None
-    if voxel_graph is not None:
-      vg_mmap, voxel_graph_shm = shm.ndarray( voxel_graph.shape, voxel_graph.dtype, vg_shm_location, order='F')    
-      voxel_graph_shm[:] = voxel_graph
-      del voxel_graph
+      voxel_graph_shm = None
+      vg_mmap = None
+      if voxel_graph is not None:
+        vg_mmap, voxel_graph_shm = shm.ndarray( voxel_graph.shape, voxel_graph.dtype, vg_shm_location, order='F')    
+        voxel_graph_shm[:] = voxel_graph
+        del voxel_graph
 
-    skeletons = skeletonize_parallel(      
-      all_dbf_shm, dbf_shm_location, 
-      cc_labels_shm, cc_shm_location, remapping, 
-      voxel_graph_shm, vg_shm_location,
-      teasar_params, anisotropy, all_slices, 
-      border_targets, extra_targets_before, extra_targets_after,
-      progress, fix_borders, fix_branching, 
-      cc_segids, parallel, parallel_chunk_size
-    )
-
-    dbf_mmap.close()
-    cc_mmap.close()
-    if vg_mmap:
-      vg_mmap.close()
+      skeletons = skeletonize_parallel(      
+        all_dbf_shm, dbf_shm_location, 
+        cc_labels_shm, cc_shm_location, remapping, 
+        voxel_graph_shm, vg_shm_location,
+        teasar_params, anisotropy, all_slices, 
+        border_targets, extra_targets_before, extra_targets_after,
+        progress, fix_borders, fix_branching, 
+        cc_segids, parallel, parallel_chunk_size
+      )
+    finally:
+      dbf_mmap.close()
+      cc_mmap.close()
+      shm.unlink(dbf_shm_location)
+      shm.unlink(cc_shm_location)
+      if vg_mmap:
+        vg_mmap.close()
+        shm.unlink(vg_shm_location)
 
     return skeletons
 
