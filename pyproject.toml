@@ -9,12 +9,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kimimaro"
-version = "5.4.1"
+version = "5.4.2"
 authors = [
     {name = "William Silversmith", email = "ws9@princeton.edu"},
     {name = "Alex Bae"},
     {name = "Forrest Collman"},
-    {name = "Peter Li"}
+    {name = "Peter Li"},
+    {name = "Nina Shamsi"}
 ]
 description = "Skeletonize densely labeled image volumes."
 readme = "README.md"
