@@ -381,17 +381,6 @@ def cross_sectional_area(
   assert step > 0
   assert smoothing_window > 0
 
-  xs_prop = {
-    "id": "cross_sectional_area",
-    "data_type": "float32",
-    "num_components": 1,
-  }
-  xs_contact_prop = {
-    "id": "cross_sectional_area_contacts",
-    "data_type": "uint8",
-    "num_components": 1,  
-  }
-
   def cross_sectional_area_helper(skel, binimg, roi):
     cross_sections = None
     if visualize_section_planes:
@@ -511,8 +500,8 @@ def cross_sectional_area(
     skelitr = iter(skeletons)
 
   for skel in skelitr:
-    add_property(skel, xs_prop)
-    add_property(skel, xs_contact_prop)
+    add_property(skel, XS_PROP)
+    add_property(skel, XS_CONTACT_PROP)
 
     if not hasattr(skel, "cross_sectional_area"):
       skel.cross_sectional_area = np.full(len(skel.vertices), -1, dtype=np.float32, order="F")
