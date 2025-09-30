@@ -9,6 +9,8 @@ from kimimaro.utility import mkdir
 import fastremap
 from tqdm import tqdm
 
+from . import codecs
+
 class Tuple3(click.ParamType):
   """A command line option type consisting of 3 comma-separated integers."""
   name = 'tuple3'
@@ -47,7 +49,7 @@ def main():
 @click.option('--scale', type=float, default=4, help="Adds multiple of boundary distance to invalidation zone. (You should set this!)", show_default=True)
 @click.option('--const', type=float, default=10, help="Adds constant physical distance to invalidation zone. (You should set this!)", show_default=True)
 @click.option('--pdrf-scale', type=int, default=1e5, help="Constant multiplier of penalty field.", show_default=True)
-@click.option('--pdrf-exponent', type=int, default=8, help="Exponent of penalty field. Powers of two are faster. Too big can cause floating point errors.", show_default=True)
+@click.option('--pdrf-exponent', type=int, default=4, help="Exponent of penalty field. Powers of two are faster. Too big can cause floating point errors.", show_default=True)
 @click.option('--soma-detect', type=float, default=750, help="Perform more expensive check for somas for distance to boundary values above this threshold. e.g. 750 nm", show_default=True)
 @click.option('--soma-accept', type=float, default=1100, help="Distance to boundary values above this threshold trigger special soma processing. e.g. 750 nm", show_default=True)
 @click.option('--soma-scale', type=float, default=2, help="Adds multiple of boundary distance to invalidation zone around a soma. (You should set this!)", show_default=True)
@@ -72,7 +74,7 @@ def forge(
 ):
   """Skeletonize an input image and write out SWCs."""
   
-  labels = np.load(src)
+  labels = codecs.load(src)
 
   skels = kimimaro.skeletonize(
     labels,
@@ -118,21 +120,12 @@ def from_image(src):
   """Convert a binary image that has already been skeletonized by a thinning algorithm into an swc."""
 
   for srcpath in tqdm(src):
-    basename, ext = os.path.splitext(srcpath)
-    if ext == ".npy":
-      image = np.load(srcpath)
-    elif ext in (".tif", ".tiff"):
-      try:
-        import tifffile
-      except ImportError:
-        print("kimimaro: tifffile not installed. Run pip install tifffile.")
-        return
-      image = tifffile.imread(srcpath)
-    else:
-      print(f"Unsupported image format {ext}. Only npy and tiff are supported.")
+    try:
+      image = codecs.load(srcpath)
+    except ImportError:
+      print(f"kimimaro: {srcpath} format not installed.")
       return
 
-    image = np.asfortranarray(image)
     skel = kimimaro.extract_skeleton_from_binary_image(image)
 
     with open(f"{basename}.swc", "wt") as f:

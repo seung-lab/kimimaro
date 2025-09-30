@@ -215,6 +215,8 @@ def cross_sectional_area(
 
     mapping = { tuple(v): i for i, v in enumerate(all_verts) }
 
+    visited = np.zeros([ all_verts.shape[0] ], dtype=bool)
+
     if repair_contacts:
       areas = skel.cross_sectional_area
       contacts = skel.cross_sectional_area_contacts
@@ -269,7 +271,12 @@ def cross_sectional_area(
         idx = mapping[tuple(vert)]
         normal = normals[i]
 
-        if areas[idx] == 0 or idx in branch_pts or (repair_contacts and contacts[idx] > 0):
+        if (
+          areas[idx] == 0 
+          or (idx in branch_pts) 
+          or (repair_contacts and contacts[idx] > 0 and not visited[idx])
+        ):
+          visited[idx] = True
           areas[idx], contact = xs3d.cross_sectional_area(
             binimg, vert, 
             normal, anisotropy,

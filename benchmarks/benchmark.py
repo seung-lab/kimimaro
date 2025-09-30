@@ -2,6 +2,7 @@ import time
 import numpy as np
 import kimimaro
 import crackle
+import pickle
 
 labels = crackle.load("connectomics.npy.ckl.gz")
 
@@ -33,3 +34,19 @@ skels = kimimaro.skeletonize(
   # parallel_chunk_size=100, # how many skeletons to process before updating progress bar
 )
 print(time.time() - s)
+
+# with open("skels.pkl", "wb") as f:
+#   pickle.dump(skels, f)
+
+# with open("skels.pkl", "rb") as f:
+#   skels = pickle.load(f)
+
+s = time.time()
+skels = kimimaro.cross_sectional_area(
+  labels, skels,
+  anisotropy=(16,16,40),
+  smoothing_window=7,
+  progress=True,
+  step=1,
+)
+print(f"{time.time() - s:.3f}s")
