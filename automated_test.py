@@ -125,7 +125,7 @@ def test_fix_borders_z():
       'pdrf_exponent': 4,
       'pdrf_scale': 100000,
     }, 
-    anisotropy=(1,1,1),
+    anisotropy=(40,32,20),
     object_ids=None, 
     dust_threshold=1000, 
     progress=True, 
@@ -136,10 +136,13 @@ def test_fix_borders_z():
 
   skel = skels[128]
 
+  assert skel.space == 'physical'
+  skel = skel.voxel_space()
+
   assert np.all(skel.vertices[:,0] == 129)
   assert np.all(skel.vertices[:,1] == 129)
   assert np.all(skel.vertices[:,2] == np.arange(256))
-  assert skel.space == 'physical'
+  assert skel.space == 'voxel'
 
 def test_fix_borders_x():
   labels = np.zeros((256, 256, 256), dtype=np.uint8)
