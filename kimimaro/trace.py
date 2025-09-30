@@ -188,6 +188,11 @@ def trace(
 
   verts = skel.vertices.flatten().astype(np.uint32)
   skel.radii = DBF[verts[::3], verts[1::3], verts[2::3]]
+  skel.transform = np.array([
+    [anisotropy[0], 0, 0, 0],
+    [0, anisotropy[1], 0, 0],
+    [0, 0, anisotropy[2], 0],
+  ], dtype=np.float32)
 
   return skel
 

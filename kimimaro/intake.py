@@ -293,6 +293,7 @@ def connect_points(
     pdrf_scale=pdrf_scale, pdrf_exponent=pdrf_exponent,
   )
   skel.vertices *= anisotropy
+  skel.space = 'physical'
   return skel
 
 def format_labels(labels, in_place):
@@ -485,6 +486,7 @@ def skeletonize_subset(
       orig_segid = remapping[segid]
       skeleton.id = orig_segid
       skeleton.vertices *= anisotropy
+      skeleton.space = 'physical'
       skeletons[orig_segid].append(skeleton)
 
   return merge(skeletons)
