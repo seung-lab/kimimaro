@@ -70,6 +70,7 @@ def test_square(fill_holes):
   assert skel.vertices.shape[0] == 1000
   assert skel.edges.shape[0] == 999
   assert abs(skel.cable_length() - 999 * np.sqrt(2)) < 0.001
+  assert skel.space == 'physical'
 
   labels = np.ones( (1000, 1000), dtype=np.uint8)
   labels[0,0] = 0
@@ -83,6 +84,7 @@ def test_square(fill_holes):
   assert skel.vertices.shape[0] == 1000
   assert skel.edges.shape[0] == 999
   assert abs(skel.cable_length() - 999 * np.sqrt(2)) < 0.001
+  assert skel.space == 'physical'
 
 def test_cube():
   labels = np.ones( (128, 128, 128), dtype=np.uint8)
@@ -97,8 +99,8 @@ def test_cube():
   assert skel.vertices.shape[0] == 128
   assert skel.edges.shape[0] == 127
   assert abs(skel.cable_length() - 127 * np.sqrt(3)) < 0.001
+  assert skel.space == 'physical'
 
-  
 def test_find_border_targets():
   labels = np.zeros( (257, 257), dtype=np.uint8)
   labels[1:-1,1:-1] = 1 
@@ -123,7 +125,7 @@ def test_fix_borders_z():
       'pdrf_exponent': 4,
       'pdrf_scale': 100000,
     }, 
-    anisotropy=(1,1,1),
+    anisotropy=(40,32,20),
     object_ids=None, 
     dust_threshold=1000, 
     progress=True, 
@@ -134,9 +136,13 @@ def test_fix_borders_z():
 
   skel = skels[128]
 
+  assert skel.space == 'physical'
+  skel = skel.voxel_space()
+
   assert np.all(skel.vertices[:,0] == 129)
   assert np.all(skel.vertices[:,1] == 129)
   assert np.all(skel.vertices[:,2] == np.arange(256))
+  assert skel.space == 'voxel'
 
 def test_fix_borders_x():
   labels = np.zeros((256, 256, 256), dtype=np.uint8)
