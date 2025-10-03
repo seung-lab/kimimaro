@@ -520,6 +520,13 @@ def apply_object_mask(all_labels, object_ids):
   if object_ids is None:
     return all_labels
 
+  if isinstance(all_labels, CrackleArray):
+    mask = all_labels.labels()
+    mask = { u: 0 for u in mask }
+    for segid in object_ids:
+      mask[segid] = segid
+    return all_labels.remap(mask).condense()
+
   if len(object_ids) == 1:
     all_labels = kimimaro.skeletontricks.zero_out_all_except(all_labels, object_ids[0]) # faster
   else:
