@@ -23,7 +23,7 @@ def load(filename):
 
   if ext == ".ckl":
     import crackle
-    image = crackle.load(filename)
+    image = crackle.aload(filename)
   elif ext == ".npy":
     if filename.endswith(".gz"):
       with gzip.GzipFile(filename, "rb") as f:
