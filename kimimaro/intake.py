@@ -30,6 +30,7 @@ from tqdm import tqdm
 from osteoid import Skeleton, Bbox
 
 import cc3d # connected components
+from crackle import CrackleArray
 import edt # euclidean distance transform
 import fastremap
 import fill_voids
@@ -149,13 +150,20 @@ def skeletonize(
   if all_labels.size <= dust_threshold:
     return {}
   
-  minlabel, maxlabel = fastremap.minmax(all_labels)
+  if isinstance(all_labels, CrackleArray):
+    minlabel = all_labels.min()
+    maxlabel = all_labels.max()
+  else:
+    minlabel, maxlabel = fastremap.minmax(all_labels)
 
   if minlabel == 0 and maxlabel == 0:
     return {}
 
   cc_labels, remapping = compute_cc_labels(all_labels, voxel_graph)
   del all_labels
+
+  if isinstance(cc_labels, CrackleArray) and (fill_holes or voxel_graph or fix_avocados):
+    cc_labels = cc_labels.numpy()
 
   if fill_holes:
     cc_labels = fill_all_holes(cc_labels, progress)
@@ -164,6 +172,9 @@ def skeletonize(
   extra_targets_after = points_to_labels(extra_targets_after, cc_labels)
 
   def edtfn(labels):
+    if isinstance(labels, CrackleArray):
+      labels = labels[:]
+
     return edt.edt(labels, 
       anisotropy=anisotropy,
       black_border=(minlabel == maxlabel),
@@ -181,8 +192,13 @@ def skeletonize(
       progress=progress,
     )
 
-  cc_segids, pxct = fastremap.unique(cc_labels, return_counts=True)
-  cc_segids = [ sid for sid, ct in zip(cc_segids, pxct) if ct > dust_threshold and sid != 0 ]
+  if isinstance(cc_labels, CrackleArray):
+    cc_ct_iterator = cc_labels.voxel_counts().items()
+  else:
+    cc_segids, pxct = fastremap.unique(cc_labels, return_counts=True)
+    cc_ct_iterator = zip(cc_segids, pxct)
+  
+  cc_segids = [ sid for sid, ct in cc_ct_iterator if ct > dust_threshold and sid != 0 ]
 
   all_slices = find_objects(cc_labels)
 
@@ -297,6 +313,9 @@ def connect_points(
   return skel
 
 def format_labels(labels, in_place):
+  if isinstance(labels, CrackleArray):
+    return labels
+
   if in_place:
     labels = fastremap.asfortranarray(labels)
   else:
@@ -436,8 +455,13 @@ def skeletonize_subset(
       if roi.volume() <= 1:
         continue
 
-      labels = cc_labels[slices]
-      labels = (labels == segid)
+      if isinstance(cc_labels, CrackleArray):
+        labels = cc_labels.decompress(label=segid)
+        labels = np.asfortranarray(labels[slices])
+      else:
+        labels = cc_labels[slices]
+        labels = (labels == segid)
+
       dbf = (labels * all_dbf[slices]).astype(np.float32, copy=False)
       cropped_voxel_graph = (voxel_graph[slices] if voxel_graph is not None else None)
 
@@ -511,6 +535,9 @@ def points_to_labels(pts, cc_labels):
 
 def compute_border_targets(cc_labels, anisotropy):
   sx, sy, sz = cc_labels.shape
+
+  if isinstance(cc_labels, CrackleArray):
+    cc_labels = cc_labels.numpy()
 
   planes = (
     ( cc_labels[:,:,0], (0, 1), lambda x,y: (x, y, 0) ),     # top xy

@@ -289,7 +289,7 @@ def find_soma_root(DBF, dbf_max):
   """
   maxima = (DBF == dbf_max)
   com = ndimage.measurements.center_of_mass(maxima)
-  com = np.array(com, dtype=np.float32)
+  com = np.asarray(com, dtype=np.float32)
   
   coords = np.where(maxima)
   coords = np.vstack( coords ).T
