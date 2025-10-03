@@ -235,7 +235,7 @@ def skeletonize(
       del all_dbf 
 
       cc_mmap, cc_labels_shm = shm.ndarray( cc_labels.shape, cc_labels.dtype, cc_shm_location, order='F')    
-      cc_labels_shm[:] = cc_labels 
+      cc_labels_shm[:] = cc_labels[:]
       del cc_labels
 
       voxel_graph_shm = None
