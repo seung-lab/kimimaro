@@ -456,8 +456,9 @@ def skeletonize_subset(
         continue
 
       if isinstance(cc_labels, CrackleArray):
-        labels = cc_labels.decompress(label=segid)
-        labels = np.asfortranarray(labels[slices])
+        labels = cc_labels.decompress(label=segid, crop=True)
+        label_slcs = (slices[0], slices[1], slice(None))
+        labels = np.asfortranarray(labels[label_slcs])
       else:
         labels = cc_labels[slices]
         labels = (labels == segid)
