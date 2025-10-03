@@ -87,20 +87,15 @@ nii = [
 nrrd = [
     "pynrrd",
 ]
-ckl = [
-    "crackle-codec",
-]
 all_formats = [
     "tifffile",
     "nibabel",
     "pynrrd",
-    "crackle-codec",
 ]
 all = [ 
     "tifffile",
     "nibabel",
     "pynrrd",
-    "crackle-codec",
     "microviewer",
     "vtk",
     "pykdtree",

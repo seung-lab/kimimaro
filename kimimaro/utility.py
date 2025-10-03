@@ -14,6 +14,7 @@ from osteoid import Skeleton, Bbox, Vec
 import kimimaro.skeletontricks
 
 import cc3d
+from crackle import CrackleArray
 import dijkstra3d
 import fastremap
 import fill_voids
@@ -55,6 +56,16 @@ def extract_skeleton_from_binary_image(image):
   return Skeleton(verts, edges)
 
 def compute_cc_labels(all_labels, voxel_graph = None):
+  if isinstance(all_labels, CrackleArray):
+    if voxel_graph is not None:
+      all_labels = all_labels[:]
+    else:
+      return all_labels.connected_components(
+        connectivity=26,
+        memory_target=int(500e6), 
+        return_mapping=True,
+      )
+
   tmp_labels = all_labels
   if np.dtype(all_labels.dtype).itemsize > 1:
     tmp_labels, remapping = fastremap.renumber(all_labels, in_place=False)
@@ -77,6 +88,13 @@ def find_objects(labels):
   ordered arrays, so we just do it that way and convert
   the results if it's in F order.
   """
+  if isinstance(labels, CrackleArray):
+    bbxes = labels.bounding_boxes()
+    bbxes.pop(0)
+    result = list(bbxes.items())
+    result.sort(key=lambda x: x[0])
+    return [ x[1] for x in result ]
+
   if labels.flags['C_CONTIGUOUS']:
     return scipy.ndimage.find_objects(labels)
   else:
@@ -484,11 +502,22 @@ def cross_sectional_area(
 
   try:
     xs3d.set_shape(all_labels)
-    shape_iterator(
-      all_labels, skeletons, 
-      fill_holes, in_place, progress, 
-      cross_sectional_area_helper
-    )
+    if isinstance(all_labels, CrackleArray):
+      bboxes = all_labels.bounding_boxes()
+      iterator = tqdm(
+        all_labels.each(crop=True, labels=list(skeletons.keys())),
+        disable=(not progress),
+        desc="Cross Section Analysis Paths"
+      )
+      for label, binimg in iterator:
+        slc = Bbox.from_slices(bboxes[label])
+        cross_sectional_area_helper(skeletons[label], binimg, slc)
+    else:
+      shape_iterator(
+        all_labels, skeletons, 
+        fill_holes, in_place, progress, 
+        cross_sectional_area_helper
+      )
   finally:
     xs3d.clear_shape()
 
