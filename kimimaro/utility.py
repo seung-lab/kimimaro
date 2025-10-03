@@ -502,11 +502,19 @@ def cross_sectional_area(
 
   try:
     xs3d.set_shape(all_labels)
-    shape_iterator(
-      all_labels, skeletons, 
-      fill_holes, in_place, progress, 
-      cross_sectional_area_helper
-    )
+    if isinstance(all_labels, CrackleArray):
+      bboxes = all_labels.bounding_boxes()
+      for label, binimg in tqdm(all_labels.each(crop=True), disable=(not progress), desc="Cross Section Analysis Paths"):
+        if label not in skeletons:
+          continue
+        slc = Bbox.from_slices(bboxes[label])
+        cross_sectional_area_helper(skeletons[label], binimg, slc)
+    else:
+      shape_iterator(
+        all_labels, skeletons, 
+        fill_holes, in_place, progress, 
+        cross_sectional_area_helper
+      )
   finally:
     xs3d.clear_shape()
 
