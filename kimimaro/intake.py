@@ -259,7 +259,7 @@ def skeletonize(
       cc_mmap.close()
       shm.unlink(dbf_shm_location)
       shm.unlink(cc_shm_location)
-      if vg_mmap:
+      if vg_mmap is not None:
         vg_mmap.close()
         shm.unlink(vg_shm_location)
 
