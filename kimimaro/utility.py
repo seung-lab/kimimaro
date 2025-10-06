@@ -404,7 +404,11 @@ def cross_sectional_area(
     if visualize_section_planes:
       cross_sections = np.zeros(binimg.shape, dtype=np.uint32, order="F")
 
-    all_verts = (skel.vertices / anisotropy).round().astype(int)
+    if skel.space == "physical":
+      all_verts = (skel.vertices / anisotropy).round().astype(int)
+    else:
+      all_verts = np.copy(skel.vertices)
+
     all_verts -= roi.minpt
 
     mapping = { tuple(v): i for i, v in enumerate(all_verts) }
@@ -428,7 +432,8 @@ def cross_sectional_area(
     shape = np.array(binimg.shape)
 
     for path in paths:
-      path = (path / anisotropy).round().astype(int)
+      if skel.space == "physical":
+        path = (path / anisotropy).round().astype(int)
       path -= roi.minpt
 
       normals = (path[1:] - path[:-1]).astype(np.float32)
