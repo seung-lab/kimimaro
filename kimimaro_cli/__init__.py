@@ -64,16 +64,16 @@ def main():
 @click.option('--max-paths', type=int, default=None, help="Maximum number of paths to trace per object.", show_default=True)
 @click.option('-p', '--parallel', type=int, default=1, help="Number of processes to use.", show_default=True)
 @click.option('-o', '--outdir', type=str, default="kimimaro_out", help="Where to write the SWC files.", show_default=True)
+@click.option("--cross-section", type=int, default=0, help="Turn on cross section analysis. The integer value gives the normal smoothing window, 0=off.", show_default=True)
 def forge(
   src,
   scale, const, pdrf_scale, pdrf_exponent,
   soma_detect, soma_accept, soma_scale, soma_const,
   anisotropy, dust, progress, fill_holes, 
   fix_avocados, fix_branches, fix_borders,
-  parallel, max_paths, outdir
+  parallel, max_paths, outdir, cross_section,
 ):
   """Skeletonize an input image and write out SWCs."""
-  
   labels = codecs.load(src)
 
   skels = kimimaro.skeletonize(
@@ -108,6 +108,25 @@ def forge(
 
   if progress:
     print(f"kimimaro: wrote {len(skels)} skeletons to {directory}")
+
+  if cross_section > 0:
+    skels = kimimaro.cross_sectional_area(
+      labels, 
+      skels,
+      anisotropy=anisotropy,
+      progress=progress,
+      smoothing_window=cross_section,
+      fill_holes=fill_holes,
+    )
+
+    for label, skel in skels.items():
+      fname = os.path.join(directory, f"{label}_xs_area.npy")
+      np.save(fname, skel.cross_sectional_area)
+      fname = os.path.join(directory, f"{label}_xs_area_contacts.npy")
+      np.save(fname, skel.cross_sectional_area_contacts)
+
+    if progress:
+      print(f"Wrote cross sectional area and border contacts to {directory}")  
 
 @main.group()
 def swc():
