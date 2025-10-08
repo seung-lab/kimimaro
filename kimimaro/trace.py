@@ -144,7 +144,9 @@ def trace(
     return_max_location=True,
   )
   DAF = kimimaro.skeletontricks.inf2zero(DAF) # DAF[ DAF == np.inf ] = 0
-  PDRF = compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF)
+  target_finder = kimimaro.skeletontricks.CachedTargetFinder(labels, DAF)
+  PDRF = compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF, DAF[target])
+  del DAF
 
   # Use dijkstra propogation w/o a target to generate a field of
   # pointers from each voxel to its parent. Then we can rapidly
@@ -168,9 +170,6 @@ def trace(
   # invalidations have occured yet.
   elif len(manual_targets_before) == 0:
     manual_targets_before.append(target)
-
-  target_finder = kimimaro.skeletontricks.CachedTargetFinder(labels, DAF)
-  del DAF
   
   paths = compute_paths(
     root, labels, DBF, target_finder, 
@@ -313,7 +312,11 @@ def is_power_of_two(num):
     return False
   return num != 0 and ((num & (num - 1)) == 0)
 
-def compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF):
+def compute_pdrf(
+  dbf_max, pdrf_scale, 
+  pdrf_exponent, DBF, DAF,
+  max_daf
+):
   """
   Add p(v) to the DAF (pp. 4, section 4.5)
   "4.5 PDRF: Compute penalized distance from root voxel field"
@@ -344,9 +347,9 @@ def compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF):
   PDRF *= f(pdrf_scale)
 
   # provide trickle of gradient so open spaces don't collapse
-  max_daf = np.max(DAF)
   if max_daf != 0:
-    PDRF += DAF * (1 / max_daf)
+    DAF *= (1 / max_daf)
+    PDRF += DAF
 
   return np.asfortranarray(PDRF)
 
@@ -368,12 +371,13 @@ def point_to_point(
   dbf_max = np.max(DBF)
 
   DBF = kimimaro.skeletontricks.zero2inf(DBF) # DBF[ DBF == 0 ] = np.inf
-  DAF = dijkstra3d.euclidean_distance_field(
+  DAF, target = dijkstra3d.euclidean_distance_field(
     binary_img, start, 
     anisotropy=anisotropy,
+    return_max_location=True,
   )
   DAF = kimimaro.skeletontricks.inf2zero(DAF) # DAF[ DAF == np.inf ] = 0
-  PDRF = compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF)
+  PDRF = compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF, DAF[target])
   del DAF
 
   path = dijkstra3d.dijkstra(PDRF, end, start)
