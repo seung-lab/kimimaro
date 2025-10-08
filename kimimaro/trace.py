@@ -169,13 +169,11 @@ def trace(
   elif len(manual_targets_before) == 0:
     manual_targets_before.append(target)
 
-  # delete reference to DAF and place it in
-  # a list where we can delete it later and
-  # free that memory.
-  DAF = [ DAF ] 
-
+  target_finder = kimimaro.skeletontricks.CachedTargetFinder(labels, DAF)
+  del DAF
+  
   paths = compute_paths(
-    root, labels, DBF, DAF, 
+    root, labels, DBF, target_finder, 
     parents, scale, const, anisotropy, 
     soma_mode, soma_radius, fix_branching,
     manual_targets_before, manual_targets_after, 
@@ -197,7 +195,7 @@ def trace(
   return skel
 
 def compute_paths(
-    root, labels, DBF, DAF, 
+    root, labels, DBF, target_finder, 
     parents, scale, const, anisotropy, 
     soma_mode, soma_radius, fix_branching,
     manual_targets_before, manual_targets_after,
@@ -220,14 +218,6 @@ def compute_paths(
   if len(manual_targets_before) + len(manual_targets_after) >= max_paths:
     return []
 
-  target_finder = None
-  def find_target():
-    nonlocal target_finder
-    if target_finder is None:
-      target_finder = kimimaro.skeletontricks.CachedTargetFinder(labels, DAF[0])
-      DAF.pop(0)
-    return target_finder.find_target(labels)
-
   parents[tuple(root)] = 0 # provide initial rail for dijkstra.railroad
 
   while (valid_labels > 0 or manual_targets_before or manual_targets_after) \
@@ -238,7 +228,7 @@ def compute_paths(
     elif valid_labels == 0:
       target = manual_targets_after.pop()
     else:
-      target = find_target()
+      target = target_finder.find_target(labels)
 
     if fix_branching:
       # Draw a path (a "road") from the target to the nearest zero weighted
