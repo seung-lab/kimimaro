@@ -337,12 +337,14 @@ def compute_pdrf(
 
   # First branch is much faster than ** which presumably
   # uses logarithms to do the exponentiation.
+  PDRF = np.empty(DBF.shape, dtype=np.float32, order="F")
+  np.multiply(DBF, M, out=PDRF)
+  np.subtract(f(1), PDRF, out=PDRF)
   if is_power_of_two(pdrf_exponent) and (pdrf_exponent < (2 ** 16)):
-    PDRF = (f(1) - (DBF * M)) # ^1
     for _ in range(int(np.log2(pdrf_exponent))):
       PDRF *= PDRF # ^pdrf_exponent
   else: 
-    PDRF = (f(1) - (DBF * M)) ** pdrf_exponent
+    np.power(PDRF, pdrf_exponent, out=PDRF)
 
   PDRF *= f(pdrf_scale)
 
