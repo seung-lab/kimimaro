@@ -968,7 +968,10 @@ class CachedTargetFinder:
     so that finding them becomes very fast.
     """
     mask_indices = np.flatnonzero(mask.ravel(order='F'))
-    daf_sort = np.argsort(-daf.ravel(order='F')[mask_indices])
+    if mask.size < np.iinfo(np.uint32).max:
+      mask_indices = mask_indices.astype(np.uint32, copy=False)
+    daf_sort = np.argsort(daf.ravel(order='F')[mask_indices])
+    daf_sort = np.flip(daf_sort)
     self.daf_indices = mask_indices[daf_sort]
 
   def find_target(self, mask: np.ndarray):
@@ -995,14 +998,13 @@ class CachedTargetFinder:
   @cython.boundscheck(False)
   @cython.wraparound(False)  # turn off negative index wrapping for entire function
   @cython.nonecheck(False)
-  def first_label_indexed(self, uint8_t[:] labels not None, int64_t[:] indices not None):
+  def first_label_indexed(self, uint8_t[:] labels not None, UINT[:] indices not None):
     """
-    first_label_indexed(uint8_t[:] labels not None, int64_t[:] indices not None)
     Returns: first i for which labels[indices[i]] is non-zero.
     """
     cdef size_t length = indices.size
     cdef size_t i = 0
-    cdef int64_t label_index
+    cdef UINT label_index
 
     for i in range(length):
       label_index = indices[i]
