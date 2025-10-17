@@ -18,6 +18,7 @@ from crackle import CrackleArray
 import dijkstra3d
 import fastremap
 import fill_voids
+import fastmorph
 import xs3d
 
 XS_PROP = {
@@ -342,7 +343,7 @@ def cross_sectional_area_single(
   return skel
 
 def cross_sectional_area(
-  all_labels:np.ndarray, 
+  all_labels:npt.NDArray[np.number], 
   skeletons:Union[Dict[int,Skeleton],List[Skeleton],Skeleton],
   anisotropy:np.ndarray = np.array([1,1,1], dtype=np.float32),
   smoothing_window:int = 1,
@@ -399,11 +400,18 @@ def cross_sectional_area(
   """
   assert step > 0
   assert smoothing_window > 0
+  
+  orig_skeletons = skeletons
 
-  def cross_sectional_area_helper(skel, binimg, roi):
+  if hasattr(skeletons, "vertices"):
+    skeletons = { skeletons.id: skeletons }
+  elif isinstance(skeletons, (list,tuple)):
+    skeletons = { skel.id: skel for skel in skeletons }
+
+  def cross_sectional_area_helper(segid, skel, image, roi):
     cross_sections = None
     if visualize_section_planes:
-      cross_sections = np.zeros(binimg.shape, dtype=np.uint32, order="F")
+      cross_sections = np.zeros(image.shape, dtype=np.uint32, order="F")
 
     if skel.space == "physical":
       all_verts = (skel.vertices / anisotropy).round().astype(int)
@@ -430,7 +438,7 @@ def cross_sectional_area(
 
     normal = np.array([1,0,0], dtype=np.float32)
 
-    shape = np.array(binimg.shape)
+    shape = np.array(image.shape)
 
     for path in paths:
       if skel.space == "physical":
@@ -478,10 +486,11 @@ def cross_sectional_area(
         ):
           visited[idx] = True
           areas[idx], contact = xs3d.cross_sectional_area(
-            binimg, vert, 
+            image, vert, 
             normal, anisotropy,
             return_contact=True,
             use_persistent_data=True,
+            segid=segid,
           )
           if repair_contacts:
             contacts[idx] = contact
@@ -491,7 +500,7 @@ def cross_sectional_area(
             branch_pt_vals[idx].append(areas[idx])
           if visualize_section_planes:
             img = xs3d.cross_section(
-              binimg, vert, 
+              (image == segid), vert, 
               normal, anisotropy,
             )
             cross_sections[img > 0] = idx
@@ -517,13 +526,43 @@ def cross_sectional_area(
       )
       for label, binimg in iterator:
         slc = Bbox.from_slices(bboxes[label])
-        cross_sectional_area_helper(skeletons[label], binimg, slc)
-    else:
-      shape_iterator(
-        all_labels, skeletons, 
-        fill_holes, in_place, progress, 
-        cross_sectional_area_helper
+        if fill_holes:
+          binimg = fill_voids.fill(binimg, in_place=True)
+        cross_sectional_area_helper(1, skeletons[label], binimg, slc)
+    elif fill_holes:
+      filled_labels, hole_labels = fastmorph.fill_hole_v2(
+        all_labels, return_crackle=True, parallel=1
       )
+
+      labels_set = set(skeletons.keys())
+
+      full_image_bbox = Bbox([0,0,0], list(all_labels.shape[:3]))
+
+      def process(labels:CrackleArray, desc:str):
+        subset = labels_set.intersection(set(labels.labels()))
+        pbar = tqdm(
+          subset,
+          disable=(not progress),
+          desc=f"{desc} Cross Section Analysis Paths"
+        )
+        filled_labels = filled_labels.numpy()
+        for label in pbar:
+          pbar.set_postfix(label=str(label))
+          if label in subset:
+            cross_sectional_area_helper(label, skeletons[label], labels, full_image_bbox)
+
+      process(filled_labels, "Filled")
+      process(hole_labels, "Hole")
+    else:
+      pbar = tqdm(
+        list(skeletons.keys()),
+        disable=(not progress),
+        desc="Cross Section Analysis Paths"
+      )
+      full_image_bbox = Bbox([0,0,0], list(all_labels.shape[:3]))
+      for label in pbar:
+        pbar.set_postfix(label=str(label))
+        cross_sectional_area_helper(label, skeletons[label], all_labels, full_image_bbox)
   finally:
     xs3d.clear_shape()
 
@@ -543,7 +582,7 @@ def cross_sectional_area(
     if not hasattr(skel, "cross_sectional_area_contacts"):
       skel.cross_sectional_area_contacts = np.zeros(len(skel.vertices), dtype=np.uint8, order="F")
 
-  return skeletons
+  return orig_skeletons
 
 def oversegment(
   all_labels:np.ndarray, 

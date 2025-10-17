@@ -5,6 +5,7 @@ dijkstra3d>=1.15.0
 fill-voids>=2.0.0
 edt>=3.0.0
 fastremap>=1.10.2
+fastmorph
 microviewer
 networkx
 numpy>=1.16.1
@@ -14,4 +15,4 @@ posix_ipc
 psutil
 scipy>=1.1.0
 tqdm
-xs3d>=1.11.0,<2
+xs3d>=1.13.0,<2
