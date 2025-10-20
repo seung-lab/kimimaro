@@ -255,9 +255,10 @@ def cross_sectional_area_single(
   normal = np.array([1,0,0], dtype=np.float32)
 
   shape = np.array(binimg.shape)
-  xs3d.set_shape(binimg)
 
   try:
+    xs3d.set_shape(binimg)
+    
     for path in tqdm(paths, disable=(not progress), desc="Cross Section Analysis Paths"):
       if skel.space == "physical":
         path = (path / anisotropy).round().astype(int)

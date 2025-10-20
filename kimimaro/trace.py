@@ -144,7 +144,9 @@ def trace(
     return_max_location=True,
   )
   DAF = kimimaro.skeletontricks.inf2zero(DAF) # DAF[ DAF == np.inf ] = 0
-  PDRF = compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF)
+  target_finder = kimimaro.skeletontricks.CachedTargetFinder(labels, DAF)
+  PDRF = compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF, DAF[target])
+  del DAF
 
   # Use dijkstra propogation w/o a target to generate a field of
   # pointers from each voxel to its parent. Then we can rapidly
@@ -168,14 +170,9 @@ def trace(
   # invalidations have occured yet.
   elif len(manual_targets_before) == 0:
     manual_targets_before.append(target)
-
-  # delete reference to DAF and place it in
-  # a list where we can delete it later and
-  # free that memory.
-  DAF = [ DAF ] 
-
+  
   paths = compute_paths(
-    root, labels, DBF, DAF, 
+    root, labels, DBF, target_finder, 
     parents, scale, const, anisotropy, 
     soma_mode, soma_radius, fix_branching,
     manual_targets_before, manual_targets_after, 
@@ -197,7 +194,7 @@ def trace(
   return skel
 
 def compute_paths(
-    root, labels, DBF, DAF, 
+    root, labels, DBF, target_finder, 
     parents, scale, const, anisotropy, 
     soma_mode, soma_radius, fix_branching,
     manual_targets_before, manual_targets_after,
@@ -220,14 +217,6 @@ def compute_paths(
   if len(manual_targets_before) + len(manual_targets_after) >= max_paths:
     return []
 
-  target_finder = None
-  def find_target():
-    nonlocal target_finder
-    if target_finder is None:
-      target_finder = kimimaro.skeletontricks.CachedTargetFinder(labels, DAF[0])
-      DAF.pop(0)
-    return target_finder.find_target(labels)
-
   parents[tuple(root)] = 0 # provide initial rail for dijkstra.railroad
 
   while (valid_labels > 0 or manual_targets_before or manual_targets_after) \
@@ -238,7 +227,7 @@ def compute_paths(
     elif valid_labels == 0:
       target = manual_targets_after.pop()
     else:
-      target = find_target()
+      target = target_finder.find_target(labels)
 
     if fix_branching:
       # Draw a path (a "road") from the target to the nearest zero weighted
@@ -323,7 +312,11 @@ def is_power_of_two(num):
     return False
   return num != 0 and ((num & (num - 1)) == 0)
 
-def compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF):
+def compute_pdrf(
+  dbf_max, pdrf_scale, 
+  pdrf_exponent, DBF, DAF,
+  max_daf
+):
   """
   Add p(v) to the DAF (pp. 4, section 4.5)
   "4.5 PDRF: Compute penalized distance from root voxel field"
@@ -344,19 +337,21 @@ def compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF):
 
   # First branch is much faster than ** which presumably
   # uses logarithms to do the exponentiation.
+  PDRF = np.empty(DBF.shape, dtype=np.float32, order="F")
+  np.multiply(DBF, M, out=PDRF)
+  np.subtract(f(1), PDRF, out=PDRF)
   if is_power_of_two(pdrf_exponent) and (pdrf_exponent < (2 ** 16)):
-    PDRF = (f(1) - (DBF * M)) # ^1
     for _ in range(int(np.log2(pdrf_exponent))):
       PDRF *= PDRF # ^pdrf_exponent
   else: 
-    PDRF = (f(1) - (DBF * M)) ** pdrf_exponent
+    np.power(PDRF, pdrf_exponent, out=PDRF)
 
   PDRF *= f(pdrf_scale)
 
   # provide trickle of gradient so open spaces don't collapse
-  max_daf = np.max(DAF)
   if max_daf != 0:
-    PDRF += DAF * (1 / max_daf)
+    DAF *= (1 / max_daf)
+    PDRF += DAF
 
   return np.asfortranarray(PDRF)
 
@@ -378,12 +373,13 @@ def point_to_point(
   dbf_max = np.max(DBF)
 
   DBF = kimimaro.skeletontricks.zero2inf(DBF) # DBF[ DBF == 0 ] = np.inf
-  DAF = dijkstra3d.euclidean_distance_field(
+  DAF, target = dijkstra3d.euclidean_distance_field(
     binary_img, start, 
     anisotropy=anisotropy,
+    return_max_location=True,
   )
   DAF = kimimaro.skeletontricks.inf2zero(DAF) # DAF[ DAF == np.inf ] = 0
-  PDRF = compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF)
+  PDRF = compute_pdrf(dbf_max, pdrf_scale, pdrf_exponent, DBF, DAF, DAF[target])
   del DAF
 
   path = dijkstra3d.dijkstra(PDRF, end, start)
