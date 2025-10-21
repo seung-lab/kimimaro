@@ -173,6 +173,7 @@ def cross_sectional_area_single(
   smoothing_window:int = 1,
   progress:bool = False,
   in_place:bool = False,
+  multipass:bool = False,
   repair_contacts:bool = False,
   visualize_section_planes:bool = False,
   step:int = 1,
@@ -201,6 +202,12 @@ def cross_sectional_area_single(
     The first six bits are a bitfield xxyyzz that
     tell you which image faces were touched and
     alternate from low (0) to high (size-1).
+
+  multipass: When True, preserve existing cross_sectional_area
+    and contact values and allow values with zero to be recalculated.
+    This is useful for example, when using a large skeleton with
+    different sections of an image. Very similar to repair_contacts,
+    except that any vertex can be considered, not just contacts.
 
   repair_contacts: When True, only examine vertices
     that have a nonzero value for 
@@ -240,7 +247,7 @@ def cross_sectional_area_single(
 
   visited = np.zeros([ all_verts.shape[0] ], dtype=bool)
 
-  if repair_contacts:
+  if repair_contacts or (multipass and hasattr(skel, "cross_sectional_area")):
     areas = skel.cross_sectional_area
     contacts = skel.cross_sectional_area_contacts
   else:
@@ -349,6 +356,7 @@ def cross_sectional_area(
   progress:bool = False,
   in_place:bool = False,
   fill_holes:bool = False,
+  multipass:bool = False,
   repair_contacts:bool = False,
   visualize_section_planes:bool = False,
   step:int = 1,
@@ -377,6 +385,12 @@ def cross_sectional_area(
     The first six bits are a bitfield xxyyzz that
     tell you which image faces were touched and
     alternate from low (0) to high (size-1).
+
+  multipass: When True, preserve existing cross_sectional_area
+    and contact values and allow values with zero to be recalculated.
+    This is useful for example, when using a large skeleton with
+    different sections of an image. Very similar to repair_contacts,
+    except that any vertex can be considered, not just contacts.
 
   repair_contacts: When True, only examine vertices
     that have a nonzero value for 
@@ -416,7 +430,7 @@ def cross_sectional_area(
 
     visited = np.zeros([ all_verts.shape[0] ], dtype=bool)
 
-    if repair_contacts:
+    if repair_contacts or (multipass and hasattr(skel, "cross_sectional_area")):
       areas = skel.cross_sectional_area
       contacts = skel.cross_sectional_area_contacts
     else:
