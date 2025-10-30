@@ -626,7 +626,13 @@ def oversegment(
     vertices = (skel.vertices / anisotropy).round().astype(int)
     vertices -= roi.minpt
 
-    feature_map[binimg] += next_label
+    # Fortran order efficient version of:
+    # feature_map[binimg] += next_label
+
+    flat_binary_image = binimg.ravel('F')
+    flat_feature_map = feature_map.ravel('F')
+    flat_feature_map[flat_binary_image] += next_label
+    
     skel.segments = feature_map[vertices[:,0], vertices[:,1], vertices[:,2]]
     next_label += vertices.shape[0]
     all_features[roi.to_slices()] += feature_map
