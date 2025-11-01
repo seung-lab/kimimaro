@@ -529,13 +529,15 @@ def cross_sectional_area(
     skel.cross_sectional_area = areas
     skel.cross_sectional_area_contacts = contacts
 
+  desc = "Cross Section Analysis Paths"
+
   try:
     xs3d.set_shape(all_labels)
     if isinstance(all_labels, CrackleArray):
       pbar = tqdm(
         all_labels.each(multi=True, labels=list(skeletons.keys())),
         disable=(not progress),
-        desc="Cross Section Analysis Paths",
+        desc=desc,
       )
       for label, tmp_label, subset_labels in pbar:
         pbar.set_postfix(label=str(label))
@@ -548,7 +550,7 @@ def cross_sectional_area(
       pbar = tqdm(
         skeletons.values(), 
         disable=(not progress),
-        desc="Cross Section Analysis Paths",
+        desc=desc,
       )
       for skel in pbar:
         pbar.set_postfix(label=str(skel.id))
