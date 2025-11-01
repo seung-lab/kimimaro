@@ -415,6 +415,8 @@ def cross_sectional_area(
   assert step > 0
   assert smoothing_window > 0
 
+  original_skeleton_object = skeletons
+
   if isinstance(skeletons, dict):
     skeletons = skeletons
     total = len(skeletons)
@@ -567,7 +569,7 @@ def cross_sectional_area(
     if not hasattr(skel, "cross_sectional_area_contacts"):
       skel.cross_sectional_area_contacts = np.zeros(len(skel.vertices), dtype=np.uint8, order="F")
 
-  return skeletons
+  return original_skeleton_object
 
 def oversegment(
   all_labels:np.ndarray, 
