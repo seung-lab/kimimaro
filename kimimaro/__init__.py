@@ -20,6 +20,5 @@ from .post import postprocess, join_close_components
 from .utility import (
 	extract_skeleton_from_binary_image,
 	cross_sectional_area, 
-	cross_sectional_area_single,
 	oversegment,
 )
