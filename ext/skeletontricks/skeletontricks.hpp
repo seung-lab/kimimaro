@@ -181,9 +181,11 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
     index[e2].insert(e1);
   }
 
+  constexpr T sentinel = std::numeric_limits<T>::max();
+
   T root = edges[0];
-  T node = -1;
-  T parent = -1;
+  T node = sentinel;
+  T parent = sentinel;
   uint32_t depth = -1;
 
   std::vector<T> stack;
@@ -192,7 +194,7 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
   std::vector<T> path;
 
   stack.push_back(root);
-  parents.push_back(-1);
+  parents.push_back(sentinel);
   depth_stack.push_back(0);
   
   std::vector<bool> visited(Nv, false);
@@ -211,15 +213,19 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
     }
 
     path.push_back(node);
-
-    if (visited[node]) {
-      break;
-    }
     visited[node] = true;
 
     for (T child : index[node]) {
-      if (child == parent) {
+      if (child == sentinel) {
+        throw std::runtime_error("Child cannot be equal to the sentinel value.");
+      }
+      else if (child == parent) {
         continue;
+      }
+      else if (visited[child]) {
+        node = child;
+        path.push_back(child);
+        goto finished_iterating;
       }
 
       stack.push_back(child);
@@ -227,6 +233,8 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
       depth_stack.push_back(depth + 1);
     }
   }
+
+  finished_iterating:
 
   if (path.size() <= 1) {
     return std::vector<T>(0);
@@ -236,17 +244,17 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
   // the last node found started the cycle. We need
   // to trim the path leading up to that connection.
   size_t i;
-  for (i = 0; i < stack.size() - 1; i++) {
-    if (stack[i] == node) {
+  for (i = 0; i < path.size() - 1; i++) {
+    if (path[i] == node) {
       break;
     }
   }
 
-  if (stack.size() - i < 3) {
+  if (path.size() - i < 3) {
     return std::vector<T>(0);
   }
 
-  return std::vector<T>(stack.begin() + i, stack.end());
+  return std::vector<T>(path.begin() + i, path.end());
 }
 
 // Had trouble returning an unordered_map< pair<int,int>, float>
