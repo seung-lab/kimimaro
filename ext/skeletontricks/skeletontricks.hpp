@@ -159,31 +159,6 @@ void printvec(std::vector<T> vec) {
   printf("\n");
 }
 
-template <typename T>
-void printstack(std::stack<T> stack) {
-  while (!stack.empty()) {
-    printf("%d, ", stack.top());
-    stack.pop();
-  }
-
-  printf("\n");
-}
-
-template <typename T>
-std::vector<T> stack2vec(std::stack<T> stk) {
-  std::vector<T> vec;
-  vec.reserve(stk.size());
-
-  while (!stk.empty()) {
-    vec.push_back(stk.top());
-    stk.pop();
-  }
-
-  std::reverse(vec.begin(), vec.end());
-
-  return vec;
-}
-
 // Ne = size of edges / 2
 // Nv = number of vertices (max of edge values)
 template <typename T>
@@ -195,7 +170,6 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
   size_t Nv = max(edges, Ne * 2) + 1; // +1 to ensure zero is counted
 
   std::vector< ankerl::unordered_dense::set<T> > index(Nv);
-  index.reserve(Nv);
 
   // NB: consolidate handles the trivial loops (e1 == e2)
   //     and deduplication of edges
@@ -212,31 +186,31 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
   T parent = -1;
   uint32_t depth = -1;
 
-  std::stack<T> stack;
-  std::stack<T> parents;
-  std::stack<uint32_t> depth_stack;
-  std::stack<T> path;
+  std::vector<T> stack;
+  std::vector<T> parents;
+  std::vector<uint32_t> depth_stack;
+  std::vector<T> path;
 
-  stack.push(root);
-  parents.push(-1);
-  depth_stack.push(0);
+  stack.push_back(root);
+  parents.push_back(-1);
+  depth_stack.push_back(0);
   
   std::vector<bool> visited(Nv, false);
 
   while (!stack.empty()) {
-    node = stack.top();
-    parent = parents.top();
-    depth = depth_stack.top();
+    node = stack.back();
+    parent = parents.back();
+    depth = depth_stack.back();
 
-    stack.pop();
-    parents.pop();
-    depth_stack.pop();
+    stack.pop_back();
+    parents.pop_back();
+    depth_stack.pop_back();
 
     while (path.size() > depth) {
-      path.pop();
+      path.pop_back();
     }
 
-    path.push(node);
+    path.push_back(node);
 
     if (visited[node]) {
       break;
@@ -248,9 +222,9 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
         continue;
       }
 
-      stack.push(child);
-      parents.push(node);
-      depth_stack.push(depth + 1);
+      stack.push_back(child);
+      parents.push_back(node);
+      depth_stack.push_back(depth + 1);
     }
   }
 
@@ -258,24 +232,21 @@ std::vector<T> _find_cycle(const T* edges, const size_t Ne) {
     return std::vector<T>(0);
   }
 
-  // cast stack to vector w/ zero copy
-  std::vector<T> vec_path = stack2vec<T>(path);
-
   // Find start of loop. Since a cycle was detected,
   // the last node found started the cycle. We need
   // to trim the path leading up to that connection.
   size_t i;
-  for (i = 0; i < vec_path.size() - 1; i++) {
-    if (vec_path[i] == node) {
+  for (i = 0; i < stack.size() - 1; i++) {
+    if (stack[i] == node) {
       break;
     }
   }
 
-  if (vec_path.size() - i < 3) {
+  if (stack.size() - i < 3) {
     return std::vector<T>(0);
   }
 
-  return std::vector<T>(vec_path.begin() + i, vec_path.end());
+  return std::vector<T>(stack.begin() + i, stack.end());
 }
 
 // Had trouble returning an unordered_map< pair<int,int>, float>
