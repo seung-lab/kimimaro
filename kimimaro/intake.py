@@ -506,11 +506,11 @@ def skeletonize_subset(
       if skeleton.empty():
         continue
 
-      skeleton.vertices += roi.minpt
+      skeleton.vertices += roi.minpt.astype(skeleton.vertices.dtype, copy=False)
 
       orig_segid = remapping[segid]
       skeleton.id = orig_segid
-      skeleton.vertices *= anisotropy
+      skeleton.vertices = np.multiply(skeleton.vertices, anisotropy, dtype=np.float32)
       skeleton.space = 'physical'
       skeletons[orig_segid].append(skeleton)
 
