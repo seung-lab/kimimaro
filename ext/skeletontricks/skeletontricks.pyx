@@ -776,33 +776,42 @@ def roll_invalidation_cube(
   in a cube around each vertex. In contrast to `roll_invalidation_ball`,
   this function runs in time linear in the number of image pixels.
   """
+
+  cdef size_t invalidated = 0
+  if len(path) == 0:
+      return (invalidated, labels)
+
+  #   C++ x  <->  numpy axis 2  (fast / stride 1)
+  #   C++ z  <->  numpy axis 0  (slow / largest stride)
   cdef int64_t sx, sy, sz 
-  sx = labels.shape[0]
+  sx = labels.shape[2]
   sy = labels.shape[1]
-  sz = labels.shape[2]
+  sz = labels.shape[0]
 
   cdef size_t sxy = sx * sy
 
-  cdef float wx, wy, wz
-  (wx, wy, wz) = anisotropy
-
+  # Path linearization in C-contigous order
   path = [ 
-    coord[0] + sx * coord[1] + sxy * coord[2] 
+    coord[2] + sx * coord[1] + sxy * coord[0] 
     for coord in path if tuple(coord) not in invalid_vertices 
   ]
-  path = np.array(path, dtype=np.uintp)
+  cdef cnp.ndarray[size_t, ndim=1] path_arr = np.asarray(path, dtype=np.uintp)
 
-  cdef size_t[:] pathview = path
+  # Since C++ x maps to numpy axis 2, swap accordingly
+  cdef float wx, wy, wz
+  (wz, wy, wx) = anisotropy
 
-  cdef size_t invalidated = _roll_invalidation_cube(
-    <uint8_t*>&labels[0,0,0], <float*>&DBF[0,0,0],
-    sx, sy, sz, 
-    wx, wy, wz,
-    <size_t*>&pathview[0], path.size,
-    scale, const
-  )
+  invalidated = _roll_invalidation_cube(
+        <uint8_t*>&labels[0,0,0],
+        <float*>&DBF[0,0,0],
+        sx, sy, sz,
+        wx, wy, wz,
+        <size_t*>&path_arr[0],
+        path_arr.size,
+        scale, const,
+    )
 
-  return invalidated, labels
+  return (invalidated, labels)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
@@ -1053,6 +1062,3 @@ def extract_edges_from_binary_image(uint8_t[:,:,:] binimg, int connectivity = 26
   int_edges = np.array(int_edges, dtype=np.uint32)
 
   return (vertices, int_edges)
-
-
-

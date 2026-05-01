@@ -73,6 +73,9 @@ size_t _roll_invalidation_cube(
   size_t loc;
   float radius;
 
+  // Track invalidation from degenerate-x-bbox path voxels
+  size_t direct_invalidated = 0;
+
   // First pass: compute toplology
   for (size_t i = 0; i < path_size; i++) {
     loc = path[i];
@@ -97,6 +100,22 @@ size_t _roll_invalidation_cube(
     maxy = std::min(sy-1, static_cast<int64_t>(0.5 + (y + (radius / wy))));
     minz = std::max(ZERO,    static_cast<int64_t>(z - (radius / wz)));
     maxz = std::min(sz-1, static_cast<int64_t>(0.5 + (z + (radius / wz))));
+
+    // Bypass topology trick for when minx==maxx, 
+    // which results in +1 and -1 both targeting 
+    // the same cell, and cancelling eachother 
+    // so that Pass 2 sees topology of 0 in that 
+    // cell, and that cell is never invalidated.
+    if (minx == maxx) {
+      for (y = miny; y <= maxy; y++) {
+        for (z = minz; z <= maxz; z++) {
+          const size_t idx = minx + sx * y + sxy * z;
+          direct_invalidated += static_cast<size_t>(labels[idx] > 0);
+          labels[idx] = 0;
+        }
+      }
+      continue;
+    }
 
     global_minx = std::min(global_minx, minx);
     global_maxx = std::max(global_maxx, maxx);
@@ -132,7 +151,7 @@ size_t _roll_invalidation_cube(
     }
   }
 
-  return invalidated;
+  return invalidated + direct_invalidated;
 }
 
 template <typename T>
