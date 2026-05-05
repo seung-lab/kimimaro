@@ -629,6 +629,147 @@ def test_postprocess():
 
   assert Skeleton.equivalent(res_skel, ans)
 
+def _zeroed_set(arr):
+    return set(map(tuple, np.argwhere(arr == 0).tolist()))
 
 
+def _expected_corner_cube(coord, radius, shape, anisotropy=(1.0, 1.0, 1.0)):
+    # lo = max(0, int(coord[i] - radius / w[i]))
+    # hi = min(shape[i] - 1, int(0.5 + coord[i] + radius / w[i]))
+    bbox = []
+    for i in range(3):
+        lo = max(0, int(coord[i] - radius / anisotropy[i]))
+        hi = min(shape[i] - 1, int(0.5 + coord[i] + radius / anisotropy[i]))
+        bbox.append((lo, hi))
+    return {
+        (a, b, c)
+        for a in range(bbox[0][0], bbox[0][1] + 1)
+        for b in range(bbox[1][0], bbox[1][1] + 1)
+        for c in range(bbox[2][0], bbox[2][1] + 1)
+    }
 
+
+def test_roll_invalidation_cube_cubic_isotropic():
+    # Confirm the previously-working cubic+isotropic case still works.
+    labels = np.ones((10, 10, 10), dtype=np.uint8)
+    dbf = np.zeros((10, 10, 10), dtype=np.float32)
+    path = [(5, 5, 5)]
+
+    count, labels_out = kimimaro.skeletontricks.roll_invalidation_cube(
+        labels, dbf, path, 0.0, 2.0, anisotropy=(1.0, 1.0, 1.0),
+    )
+
+    expected = _expected_corner_cube((5, 5, 5), 2.0, (10, 10, 10), (1.0, 1.0, 1.0))
+    assert count == len(expected) == 125
+    assert _zeroed_set(labels_out) == expected
+
+
+def test_roll_invalidation_cube_asymmetric_volume():
+    # Pre-layout-fix this volume's output was scrambled by the C-vs-F
+    # contiguity mismatch in the Cython wrapper.
+    labels = np.ones((3, 4, 5), dtype=np.uint8)
+    dbf = np.zeros((3, 4, 5), dtype=np.float32)
+    path = [(2, 3, 4)]
+
+    count, labels_out = kimimaro.skeletontricks.roll_invalidation_cube(
+        labels, dbf, path, 0.0, 1.0, anisotropy=(1.0, 1.0, 1.0),
+    )
+
+    expected = {
+        (1, 2, 3), (1, 2, 4), (1, 3, 3), (1, 3, 4),
+        (2, 2, 3), (2, 2, 4), (2, 3, 3), (2, 3, 4),
+    }
+    assert count == 8
+    assert _zeroed_set(labels_out) == expected
+
+
+def test_roll_invalidation_cube_anisotropic_axis_ordering():
+    # Pre-layout-fix the cube was rotated 90 degrees on anisotropic input:
+    # the spread that should be widest on numpy axis 0 (smallest weight)
+    # appeared widest on axis 2 instead.
+    labels = np.ones((10, 10, 10), dtype=np.uint8)
+    dbf = np.zeros((10, 10, 10), dtype=np.float32)
+    path = [(5, 5, 5)]
+    anisotropy = (1.0, 2.0, 4.0)
+
+    count, labels_out = kimimaro.skeletontricks.roll_invalidation_cube(
+        labels, dbf, path, 0.0, 3.0, anisotropy=anisotropy,
+    )
+
+    zeroed = _zeroed_set(labels_out)
+    axis_widths = [
+        max(c[i] for c in zeroed) - min(c[i] for c in zeroed) + 1
+        for i in range(3)
+    ]
+    # Lowest weight -> widest spread; highest weight -> narrowest.
+    assert axis_widths[0] >= axis_widths[1] >= axis_widths[2]
+
+
+def test_roll_invalidation_cube_degenerate_x_bbox():
+    # Pre-degenerate-bbox-fix, a single path voxel with r/wx < 0.5
+    # produced 0 invalidations because the topology trick's +1/-1
+    # cancelled at minx == maxx.
+    labels = np.ones((13, 17, 14), dtype=np.uint8)
+    dbf = np.zeros((13, 17, 14), dtype=np.float32)
+    # r/wx_post_layout_patch = 0.965 / 2.58 = 0.374, so minx == maxx == 0.
+    # bbox is 1 (x) * 3 (y, [14..16]) * 3 (z, [0..2]) = 9 cells.
+    path = [(1, 16, 0)]
+
+    count, _ = kimimaro.skeletontricks.roll_invalidation_cube(
+        labels, dbf, path, 0.0, 0.965, anisotropy=(0.94, 0.93, 2.58),
+    )
+    assert count == 9
+
+
+def test_roll_invalidation_cube_random_fixtures():
+    # 100 random fixtures. Compared against the geometric 
+    # bbox formula directly.
+    rng = np.random.default_rng(seed=0xDECAFBAD)
+    mismatches = []
+
+    for trial in range(100):
+        shape = tuple(int(s) for s in rng.integers(8, 24, size=3))
+        labels = np.ones(shape, dtype=np.uint8)
+        dbf = np.zeros(shape, dtype=np.float32)
+        n_path = int(rng.integers(1, 4))
+        path = [
+            tuple(int(rng.integers(0, s)) for s in shape)
+            for _ in range(n_path)
+        ]
+        radius = float(rng.uniform(0.5, 3.0))
+        anisotropy = tuple(float(rng.uniform(0.5, 4.0)) for _ in range(3))
+
+        count, labels_out = kimimaro.skeletontricks.roll_invalidation_cube(
+            labels.copy(), dbf, path, 0.0, radius, anisotropy=anisotropy,
+        )
+
+        expected = set()
+        for coord in path:
+            expected |= _expected_corner_cube(coord, radius, shape, anisotropy)
+
+        actual = _zeroed_set(labels_out)
+        if actual != expected or count != len(expected):
+            mismatches.append({
+                "trial": trial, "shape": shape, "path": path,
+                "radius": radius, "aniso": anisotropy,
+                "count_returned": count, "count_expected": len(expected),
+                "missing_voxels": sorted(expected - actual)[:5],
+                "extra_voxels": sorted(actual - expected)[:5],
+            })
+
+    assert not mismatches, (
+        f"{len(mismatches)}/100 random fixtures disagree with geometric "
+        f"reference. First: {mismatches[0]}"
+    )
+
+
+def test_roll_invalidation_ball_unaffected():
+    # Cofirm the ball variant was never touched by either patch.
+    labels = np.ones((3, 4, 5), dtype=np.uint8)
+    dbf = np.zeros((3, 4, 5), dtype=np.float32)
+    path = [(2, 3, 4)]
+
+    count, _ = kimimaro.skeletontricks.roll_invalidation_ball(
+        labels, dbf, path, 0.0, 1.0, anisotropy=(1.0, 1.0, 1.0),
+    )
+    assert count >= 0
