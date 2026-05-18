@@ -760,49 +760,80 @@ cdef float distsq(
   return p1x * p1x + p1y * p1y 
 
 @cython.boundscheck(False)
-@cython.wraparound(False)  # turn off negative index wrapping for entire function
+@cython.wraparound(False)
 @cython.nonecheck(False)
 @cython.binding(True)
 def roll_invalidation_cube(
-    cnp.ndarray[uint8_t, cast=True, ndim=3] labels, 
-    cnp.ndarray[float, ndim=3] DBF, 
+    cnp.ndarray[uint8_t, cast=True, ndim=3] labels,
+    cnp.ndarray[float, ndim=3] DBF,
     path, float scale, float const,
     anisotropy=(1,1,1),
     invalid_vertices={},
-  ):
-  """
-  Given an anisotropic binary image, its distance transform, and a path 
-  traversing the binary image, erase the voxels surrounding the path
-  in a cube around each vertex. In contrast to `roll_invalidation_ball`,
-  this function runs in time linear in the number of image pixels.
-  """
-  cdef int64_t sx, sy, sz 
-  sx = labels.shape[0]
-  sy = labels.shape[1]
-  sz = labels.shape[2]
+):
+    """
+    Given an anisotropic binary image, its distance transform, and a path
+    traversing the binary image, erase the voxels surrounding the path
+    in a cube around each vertex. In contrast to roll_invalidation_ball,
+    this function runs in time linear in the number of image pixels.
 
-  cdef size_t sxy = sx * sy
+    Supports both C- and F-contiguous labels; DBF is coerced to match.
+    Path coordinates and anisotropy are always in numpy-axis order:
+    coord[i] indexes axis i and anisotropy[i] is the weight along
+    axis i, regardless of layout.
 
-  cdef float wx, wy, wz
-  (wx, wy, wz) = anisotropy
+    Raises:
+      ValueError: if labels is neither C- nor F-contiguous.
+    """
+    cdef bint is_f = labels.flags.f_contiguous
+    if not (is_f or labels.flags.c_contiguous):
+        raise ValueError(
+            "roll_invalidation_cube: `labels` must be C- or F-contiguous. "
+            "Got shape=({0}, {1}, {2}), strides=({3}, {4}, {5}).".format(
+                labels.shape[0], labels.shape[1], labels.shape[2],
+                labels.strides[0], labels.strides[1], labels.strides[2],
+            )
+        )
+    
+    if is_f and not DBF.flags.f_contiguous:
+        DBF = np.asfortranarray(DBF)
+    elif (not is_f) and not DBF.flags.c_contiguous:
+        DBF = np.ascontiguousarray(DBF)
 
-  path = [ 
-    coord[0] + sx * coord[1] + sxy * coord[2] 
-    for coord in path if tuple(coord) not in invalid_vertices 
-  ]
-  path = np.array(path, dtype=np.uintp)
+    cdef int64_t shape0 = labels.shape[0]
+    cdef int64_t shape1 = labels.shape[1]
+    cdef int64_t shape2 = labels.shape[2]
+    cdef int64_t sx, sy, sz
+    cdef float wx, wy, wz
 
-  cdef size_t[:] pathview = path
+    if is_f:
+        sx, sy, sz = shape0, shape1, shape2
+        wx, wy, wz = anisotropy[0], anisotropy[1], anisotropy[2]
+        # F-order element strides: (1, shape0, shape0*shape1)
+        path = [
+            coord[0] + shape0 * coord[1] + shape0 * shape1 * coord[2]
+            for coord in path if tuple(coord) not in invalid_vertices
+        ]
+    else:
+        sx, sy, sz = shape2, shape1, shape0
+        wx, wy, wz = anisotropy[2], anisotropy[1], anisotropy[0]
+        # C-order element strides: (shape1*shape2, shape2, 1)
+        path = [
+            coord[2] + shape2 * coord[1] + shape2 * shape1 * coord[0]
+            for coord in path if tuple(coord) not in invalid_vertices
+        ]
+    path = np.array(path, dtype=np.uintp)
+    if path.size == 0:
+        return 0, labels
 
-  cdef size_t invalidated = _roll_invalidation_cube(
-    <uint8_t*>&labels[0,0,0], <float*>&DBF[0,0,0],
-    sx, sy, sz, 
-    wx, wy, wz,
-    <size_t*>&pathview[0], path.size,
-    scale, const
-  )
-
-  return invalidated, labels
+    cdef size_t[:] pathview = path
+    cdef size_t invalidated = _roll_invalidation_cube(
+        <uint8_t*>&labels[0,0,0], <float*>&DBF[0,0,0],
+        sx, sy, sz,
+        wx, wy, wz,
+        <size_t*>&pathview[0], path.size,
+        scale, const,
+    )
+    return invalidated, labels
 
 @cython.boundscheck(False)
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
@@ -1053,6 +1084,3 @@ def extract_edges_from_binary_image(uint8_t[:,:,:] binimg, int connectivity = 26
   int_edges = np.array(int_edges, dtype=np.uint32)
 
   return (vertices, int_edges)
-
-
-
