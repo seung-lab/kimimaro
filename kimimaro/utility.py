@@ -173,6 +173,7 @@ def cross_sectional_area_single(
   smoothing_window:int = 1,
   progress:bool = False,
   in_place:bool = False,
+  multipass:bool = False,
   repair_contacts:bool = False,
   visualize_section_planes:bool = False,
   step:int = 1,
@@ -201,6 +202,12 @@ def cross_sectional_area_single(
     The first six bits are a bitfield xxyyzz that
     tell you which image faces were touched and
     alternate from low (0) to high (size-1).
+
+  multipass: When True, preserve existing cross_sectional_area
+    and contact values and allow values with zero to be recalculated.
+    This is useful for example, when using a large skeleton with
+    different sections of an image. Very similar to repair_contacts,
+    except that any vertex can be considered, not just contacts.
 
   repair_contacts: When True, only examine vertices
     that have a nonzero value for 
@@ -240,7 +247,7 @@ def cross_sectional_area_single(
 
   visited = np.zeros([ all_verts.shape[0] ], dtype=bool)
 
-  if repair_contacts:
+  if repair_contacts or (multipass and hasattr(skel, "cross_sectional_area")):
     areas = skel.cross_sectional_area
     contacts = skel.cross_sectional_area_contacts
   else:
@@ -349,6 +356,7 @@ def cross_sectional_area(
   progress:bool = False,
   in_place:bool = False,
   fill_holes:bool = False,
+  multipass:bool = False,
   repair_contacts:bool = False,
   visualize_section_planes:bool = False,
   step:int = 1,
@@ -377,6 +385,12 @@ def cross_sectional_area(
     The first six bits are a bitfield xxyyzz that
     tell you which image faces were touched and
     alternate from low (0) to high (size-1).
+
+  multipass: When True, preserve existing cross_sectional_area
+    and contact values and allow values with zero to be recalculated.
+    This is useful for example, when using a large skeleton with
+    different sections of an image. Very similar to repair_contacts,
+    except that any vertex can be considered, not just contacts.
 
   repair_contacts: When True, only examine vertices
     that have a nonzero value for 
@@ -416,7 +430,7 @@ def cross_sectional_area(
 
     visited = np.zeros([ all_verts.shape[0] ], dtype=bool)
 
-    if repair_contacts:
+    if repair_contacts or (multipass and hasattr(skel, "cross_sectional_area")):
       areas = skel.cross_sectional_area
       contacts = skel.cross_sectional_area_contacts
     else:
@@ -582,10 +596,6 @@ def oversegment(
   else:
     skeleton_list = skeletons
     
-  for skel in skeleton_list:
-    if not hasattr(skel, 'segments'):
-      skel.segments = np.zeros(len(skel.vertices), dtype=np.uint64)
-
   all_features = np.zeros(all_labels.shape, dtype=np.uint64, order="F")
   next_label = 0
 
@@ -609,11 +619,13 @@ def oversegment(
 
     add_property(skel, prop)
 
-    vertices = (skel.vertices / anisotropy).round().astype(int)
-    vertices -= roi.minpt
+    # Fortran order efficient version of:
+    # feature_map[binimg] += next_label
 
-    feature_map[binimg] += next_label
-    skel.segments = feature_map[vertices[:,0], vertices[:,1], vertices[:,2]]
+    flat_binary_image = binimg.ravel('F')
+    flat_feature_map = feature_map.ravel('F')
+    flat_feature_map[flat_binary_image] += next_label
+    
     next_label += vertices.shape[0]
     all_features[roi.to_slices()] += feature_map
 
@@ -624,8 +636,10 @@ def oversegment(
   )
 
   all_features, mapping = fastremap.renumber(all_features)
-  for skel in iterator:
-    skel.segments = fastremap.remap(skel.segments, mapping, in_place=True)
+  
+  for skel in skeleton_list:
+    vertices = (skel.vertices / anisotropy).round().astype(int)
+    skel.segments = all_features[vertices[:,0], vertices[:,1], vertices[:,2]]
 
   return all_features, skeletons
 
