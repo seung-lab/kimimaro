@@ -18,7 +18,7 @@ along with Kimimaro.  If not, see <https://www.gnu.org/licenses/>.
 from collections import defaultdict
 from functools import partial
 import gc
-import multiprocessing as mp
+import multiprocess as mp
 import signal
 import uuid
 

@@ -5,8 +5,6 @@ import os
 import sys
 import time
 
-import multiprocessing as mp
-
 import numpy as np
 
 from osteoid import Bbox, Vec
