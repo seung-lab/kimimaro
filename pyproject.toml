@@ -56,6 +56,7 @@ classifiers = [
 dependencies = [
     "click",
     "connected-components-3d>=3.16.0",
+    "crackle-codec",
     "dijkstra3d>=1.15.0",
     "fill-voids>=2.0.0",
     "edt>=3.0.0",
@@ -89,6 +90,7 @@ nrrd = [
     "pynrrd",
 ]
 all_formats = [
+    "crackle-codec",
     "tifffile",
     "nibabel",
     "pynrrd",
