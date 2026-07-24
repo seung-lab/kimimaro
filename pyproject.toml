@@ -68,7 +68,9 @@ dependencies = [
     "pytest",
     "scipy>=1.1.0",
     "tqdm",
-    "xs3d>=1.2.0,<2"
+    "xs3d>=1.2.0,<2",
+    "posix_ipc>=1.0.4; sys_platform != 'win32'",
+    "psutil>=5.4.3; sys_platform != 'win32'",
 ]
 
 [project.optional-dependencies]
