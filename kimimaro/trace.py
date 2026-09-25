@@ -214,6 +214,9 @@ def compute_paths(
   if max_paths is None:
     max_paths = valid_labels
 
+    if max_paths == 0 and root is not None:
+      return [np.array([root])]
+
   if len(manual_targets_before) + len(manual_targets_after) >= max_paths:
     return []
 
