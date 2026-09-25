@@ -823,3 +823,52 @@ def test_dbf_layout_mismatch_is_normalized(labels_order, dbf_order):
     inv_ref, out_ref = kimimaro.skeletontricks.roll_invalidation_cube(L_ref, D_ref, path, 1.0, 0.5)
     assert inv == inv_ref
     assert np.array_equal(out, out_ref)
+
+
+def create_sphere(radius, shape):
+  y, x, z = np.ogrid[:shape[0], :shape[1], :shape[2]]
+  dist = np.sqrt((y - shape[0]/2)**2 + (x - shape[1]/2)**2 + (z - shape[2]/2)**2)
+  sphere = dist <= radius
+  return sphere.astype(np.uint8)
+
+def test_soma_root():
+  sphere = create_sphere(100, [200,200,200])
+
+  teasar_params = {
+    "scale": 1.5, 
+    "const": 300,
+    "pdrf_scale": 100000,
+    "pdrf_exponent": 4,
+    "soma_acceptance_threshold": 20,
+    "soma_detection_threshold": 30,
+    "soma_invalidation_const": 300,
+    "soma_invalidation_scale": 2
+  }
+
+  skels = kimimaro.skeletonize(
+    sphere, 
+    teasar_params=teasar_params,
+  )
+  skel = skels[1]
+
+  assert skel.vertices.shape[0] == 1
+
+  teasar_params = {
+    "scale": 1.5, 
+    "const": 300,
+    "pdrf_scale": 100000,
+    "pdrf_exponent": 4,
+    "soma_acceptance_threshold": 20,
+    "soma_detection_threshold": 30,
+    "soma_invalidation_const": 10,
+    "soma_invalidation_scale": 0.5
+  }
+
+  skels = kimimaro.skeletonize(
+    sphere, 
+    teasar_params=teasar_params,
+  )
+  skel = skels[1]
+
+  assert skel.vertices.shape[0] > 1
+
