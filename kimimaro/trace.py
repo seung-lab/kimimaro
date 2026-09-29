@@ -214,10 +214,13 @@ def compute_paths(
   if max_paths is None:
     max_paths = valid_labels
 
+    if max_paths == 0 and root is not None:
+      return [np.array([root])]
+
   if len(manual_targets_before) + len(manual_targets_after) >= max_paths:
     return []
 
-  parents[tuple(root)] = 0 # provide initial rail for dijkstra.railroad
+  parents[root] = 0 # provide initial rail for dijkstra.railroad
 
   while (valid_labels > 0 or manual_targets_before or manual_targets_after) \
     and len(paths) < max_paths:
@@ -243,12 +246,17 @@ def compute_paths(
     else:
       path = dijkstra3d.path_from_parents(parents, target)
     
-    if soma_mode:
-      dist_to_soma_root = np.linalg.norm(anisotropy * (path - root), axis=1)
+    if soma_mode and soma_radius > 0:
+      dist_to_soma_root = path.view(np.int32) - np.array(root, dtype=np.int32)
+      dist_to_soma_root = dist_to_soma_root.astype(np.float32)
+      dist_to_soma_root *= np.array(anisotropy, dtype=np.float32)
+      dist_to_soma_root = np.linalg.norm(dist_to_soma_root, axis=1)
       # remove all path points which are within soma_radius of root
-      path = np.concatenate(
-        (path[:1,:], path[dist_to_soma_root > soma_radius, :])
-      )
+      path = path[dist_to_soma_root > soma_radius, :]
+      if fix_branching:
+        path = np.concatenate((path, np.array([root])))
+      else:
+        path = np.concatenate((np.array([root]), path))
 
     if valid_labels > 0:
       invalidated, labels = kimimaro.skeletontricks.roll_invalidation_ball_inside_component(
@@ -277,7 +285,7 @@ def find_soma_root(DBF, dbf_max):
   Returns: (x,y,z) as integers
   """
   maxima = (DBF == dbf_max)
-  com = ndimage.measurements.center_of_mass(maxima)
+  com = ndimage.center_of_mass(maxima)
   com = np.asarray(com, dtype=np.float32)
   
   coords = np.where(maxima)
