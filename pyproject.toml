@@ -123,3 +123,9 @@ include-package-data = true
 kimimaro = "kimimaro"
 kimimaro_cli = "kimimaro_cli"
 
+[tool.pytest.ini_options]
+testpaths = ["automated_testing"]
+python_files = ["automated_test*.py"]
+markers = [
+    "gpu: needs an NVIDIA GPU and the brook package",
+]

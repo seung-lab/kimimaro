@@ -11,8 +11,10 @@ from kimimaro.utility import moving_average, cross_sectional_area
 
 @pytest.fixture
 def connectomics_data():
+  import os
   import crackle
-  return crackle.load("benchmarks/connectomics.npy.ckl.gz")
+  root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+  return crackle.load(os.path.join(root, "benchmarks", "connectomics.npy.ckl.gz"))
 
 def test_empty_image():
   labels = np.zeros( (256, 256, 256), dtype=bool)  
