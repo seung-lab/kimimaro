@@ -105,6 +105,9 @@ all = [
     "vtk",
     "pykdtree",
 ]
+gpu = [
+    "brook-cu12>=0.1,<0.2; sys_platform == 'linux' and platform_machine == 'x86_64' and python_version >= '3.12'",
+]
 
 [project.urls]
 Homepage = "https://github.com/seung-lab/kimimaro/"
