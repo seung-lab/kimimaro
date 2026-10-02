@@ -22,4 +22,18 @@ Fig. 2: Kimimaro Peak Memory Usage by Version on `connectomics.npy`
 Fig. 3: Kimimaro Memory Profile Versions (blue) 0.3.1 (black) 3.0.0. The first hump on the left is processing a soma. The second hump is a glia.
 </p>
 
+GPU Backend
+-----------
 
+`benchmark_gpu.py` times `kimimaro.skeletonize` on the CPU against `kimimaro.skeletonize(..., gpu=True)`, which runs on an NVIDIA GPU through [Brook](https://github.com/giorgioangel/brook) (`pip install "kimimaro[gpu]"`). It uses the `teasar_params` of `benchmark.py` with `anisotropy=(16,16,40)`. The volume is a `.npy` file or `connectomics.npy.ckl.gz`; `--crop N` takes `[:N,:N,:N]`.
+
+```bash
+V=benchmarks/connectomics.npy.ckl.gz
+python benchmarks/benchmark_gpu.py $V --backend gpu --save gpu.npz
+python benchmarks/benchmark_gpu.py $V --backend cpu --parallel 32 --runs 0 --save cpu32.npz
+taskset -c 0 python benchmarks/benchmark_gpu.py $V --backend cpu --parallel 1 --runs 0
+python benchmarks/benchmark_gpu.py --compare cpu32.npz gpu.npz
+# --crop 256 for the 256^3 crop, --no-fix-branching to turn branching correction off
+```
+
+Each timing is one complete call, NumPy labels in and skeletons out. The first call in the process is the cold start (lazy imports and, on the GPU, CUDA initialization) and is reported separately; `--runs` more calls follow (3 by default, `--runs 0` for none) and are summarized by median, min and max. `--compare` reports whether the label sets match, the change in total cable length, the median and 95th percentile of the per-object cable length change, the mean and 95th percentile of the nearest-vertex distance between the skeletons of each object (in voxels), and the label whose cable length changed most.
