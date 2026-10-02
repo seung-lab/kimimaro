@@ -15,7 +15,8 @@ authors = [
     {name = "Alex Bae"},
     {name = "Forrest Collman"},
     {name = "Peter Li"},
-    {name = "Nina Shamsi"}
+    {name = "Nina Shamsi"},
+    {name = "Giorgio Angelotti"}
 ]
 description = "Skeletonize densely labeled image volumes."
 readme = "README.md"
