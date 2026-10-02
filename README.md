@@ -34,6 +34,11 @@ pip install "kimimaro[view]"
 pip install "kimimaro[tif]"
 # Enables reading NIBABEL, NRRD, TIFF, CRACKLE on the CLI
 pip install "kimimaro[all_formats]"
+# Enables gpu=True and kimimaro forge --gpu via the Brook GPU backend.
+# Needs Linux x86-64, Python >= 3.12, an NVIDIA GPU with compute capability
+# >= 8.0 and a driver that supports CUDA 12.3+. Installs nothing on other
+# platforms. Not part of "all". Also requires NumPy >= 2.4.6.
+pip install "kimimaro[gpu]"
 # Install all optional dependencies
 pip install "kimimaro[all]"
 ```
@@ -95,6 +100,7 @@ skels = kimimaro.skeletonize(
   progress=True, # default False, show progress bar
   parallel=1, # <= 0 all cpu, 1 single process, 2+ multiprocess
   parallel_chunk_size=100, # how many skeletons to process before updating progress bar
+  gpu=False, # default False, True runs on an NVIDIA GPU via Brook (see "gpu" below), ignores parallel
 )
 
 # LISTING 2: Combining skeletons produced from 
@@ -178,6 +184,12 @@ Here's an equivalent example to the code above.
 
 ```bash
 kimimaro forge labels.npy --scale 4 --const 10 --soma-detect 1100 --soma-accept 3500 --soma-scale 1 --soma-const 300 --anisotropy 16,16,40 --fix-borders --progress 
+```
+
+To skeletonize on an NVIDIA GPU, add `--gpu` (see the `gpu` parameter below for the requirements and how the output differs from CPU mode). If Brook or a usable GPU is missing, the command prints an error and exits instead of falling back to the CPU.
+
+```bash
+kimimaro forge labels.npy --gpu --anisotropy 16,16,40 --progress
 ```
 
 Visualize the your data:
@@ -276,6 +288,31 @@ This only applies when using parallel. This sets the number of skeletons a subpr
 
 The actual chunk size used will be `min(parallel_chunk_size, len(cc_labels) // parallel)`. `cc_labels` represents the number of connected components in the sample.  
 
+### `gpu`
+
+```python
+skeletons = kimimaro.skeletonize(labels, anisotropy=(16,16,40), gpu=True)
+```
+
+Skeletonize on an NVIDIA GPU. The work is delegated to [Brook](https://github.com/giorgioangel/brook), a CUDA implementation of this TEASAR variant that takes the same arguments and returns the same `{ segid: Skeleton }` dictionary. On the 512x512x512 benchmark volume and its crops, on an RTX 4090, it was 41x to 137x faster than 32 CPU workers (3.0 s against 410 s with `fix_branching` on); see `benchmarks/README.md`. Speed depends on the shapes, the parameters and the GPU.
+
+This requires `pip install "kimimaro[gpu]"` (see Installation above): Linux x86-64, Python >= 3.12, an NVIDIA GPU with compute capability >= 8.0 and a driver that supports CUDA 12.3 or newer. `parallel` and `parallel_chunk_size` are ignored (with a warning if `parallel` is not 1) and each call uses one GPU. For several GPUs, chunked processing of very large volumes, arrays that are already on the GPU or batches, call Brook directly (see its [user guide](https://github.com/giorgioangel/brook/blob/v0.1.0/docs/USAGE.md)).
+
+`gpu=True` never silently falls back to the CPU. It raises an `ImportError` if Brook is not installed and a `RuntimeError` if there is no usable GPU. `kimimaro.gpu.is_available()` returns `True` or `False` without raising, but it initializes CUDA in the calling process (about 0.2 s and a few hundred MB of GPU memory that are held until the process exits). Call it once, and under `if __name__ == "__main__":` if you also use `parallel`, because worker processes re-import your script.
+
+Brook streams a volume through the GPU when it estimates that the volume needs more than about half of the free GPU memory. Streaming does not support `voxel_graph`, `fill_holes` or `fix_avocados`, so with any of them Kimimaro runs Brook in-core and a volume that doesn't fit fails with a GPU out-of-memory `RuntimeError`. (`kimimaro forge` turns `fill_holes` on by default; pass `--no-fill-holes` to allow streaming.)
+
+If you use GPU mode, please also cite Brook: [doi:10.5281/zenodo.22947047](https://doi.org/10.5281/zenodo.22947047).
+
+#### Differences from CPU mode
+
+The output is close to, but not identical to, CPU mode. Brook's [user guide](https://github.com/giorgioangel/brook/blob/v0.1.0/docs/USAGE.md#differences-from-kimimaro) lists the differences it found against Kimimaro 5.8.1. The main ones:
+
+- **Equal-cost routes.** Where routes tie, Brook takes straight axial steps while Kimimaro's heap order alternates between slices. On the benchmark volume and its crops the total cable length was 0.02% to 1.3% shorter with `fix_branching=False` and the median per-object difference was 0.05% to 0.96% (see `benchmarks/README.md`); with `fix_branching=True` one soma dominates the totals of the larger volumes (see below). On smooth, symmetric test shapes (spheres, flat slabs, hollow shells) we measured roughly 10% to 18% shorter cable and up to 19% fewer endpoints.
+- **Somas.** Paths inside a soma are trimmed and re-attached to the soma root differently, so skeletons of objects with a soma can differ in connectivity and cable length. If the soma invalidation removes every voxel of an object, Kimimaro returns a one-vertex skeleton and Brook returns none.
+- **Other options.** `fill_holes`, `fix_avocados`, `voxel_graph` and unreachable targets differ in edge cases (see the user guide).
+- **Brook 0.1.0.** A `uint64` label of 2**63 or more is returned as a negative key, and a `CrackleArray` is decompressed into host memory first.
+
 ### Performance Tips
 
 - If you only need a few labels skeletonized, pass in `object_ids` to bypass processing all the others. If `object_ids` contains only a single label, the masking operation will run faster.
@@ -285,6 +322,7 @@ The actual chunk size used will be `min(parallel_chunk_size, len(cc_labels) // p
 - If your dataset contains important cells (that may in fact be the seat of consciousness) but they take significant processing power to analyze, you can save them to savor for later by setting `max_paths` to some reasonable level which will abort and proceed to the next label after the algorithm detects that that at least that many paths will be needed.
 - Parallel distributes work across connected components and is generally a good idea if you have the cores and memory. Not only does it make single runs proceed faster, but you can also practically use a much larger context; that improves soma processing as they are less likely to be cut off. The Preamble of the algorithm (detailed below) is still single threaded at the moment, so task latency increases with size. 
 - If `parallel_chunk_size` is set very low (e.g. < 10) during parallel operation, interprocess communication can become a significant overhead. Try raising this value.  
+- If you have a supported NVIDIA GPU and many or large volumes to skeletonize, try `gpu=True` (see the `gpu` parameter above). It ignores `parallel`, and its output is close to, but not identical to, CPU mode.
 
 ## Motivation
 
