@@ -63,6 +63,7 @@ def main():
 @click.option('--fix-branches', is_flag=True, default=True, help="Improves quality of forked shapes. (slower for highly branched shapes)", show_default=True)
 @click.option('--max-paths', type=int, default=None, help="Maximum number of paths to trace per object.", show_default=True)
 @click.option('-p', '--parallel', type=int, default=1, help="Number of processes to use.", show_default=True)
+@click.option('--gpu/--no-gpu', default=False, help='Skeletonize on an NVIDIA GPU via Brook; requires pip install "kimimaro[gpu]". --parallel is ignored.', show_default=True)
 @click.option('-o', '--outdir', type=str, default="kimimaro_out", help="Where to write the SWC files.", show_default=True)
 @click.option("--cross-section", type=int, default=0, help="Turn on cross section analysis. The integer value gives the normal smoothing window, 0=off.", show_default=True)
 def forge(
@@ -71,33 +72,40 @@ def forge(
   soma_detect, soma_accept, soma_scale, soma_const,
   anisotropy, dust, progress, fill_holes, 
   fix_avocados, fix_branches, fix_borders,
-  parallel, max_paths, outdir, cross_section,
+  parallel, gpu, max_paths, outdir, cross_section,
 ):
   """Skeletonize an input image and write out SWCs."""
   labels = codecs.load(src)
 
-  skels = kimimaro.skeletonize(
-    labels,
-    teasar_params={
-      "scale": scale,
-      "const": const,
-      "pdrf_scale": pdrf_scale,
-      "pdrf_exponent": pdrf_exponent,
-      "soma_detection_threshold": soma_detect,
-      "soma_acceptance_threshold": soma_accept,
-      "soma_invalidation_scale": soma_scale,
-      "soma_invalidation_const": soma_const,
-      "max_paths": max_paths,
-    },
-    anisotropy=anisotropy,
-    dust_threshold=dust,
-    progress=progress,
-    fill_holes=fill_holes,
-    fix_avocados=fix_avocados,
-    fix_branching=fix_branches,
-    fix_borders=fix_borders,
-    parallel=parallel,
-  )
+  try:
+    skels = kimimaro.skeletonize(
+      labels,
+      teasar_params={
+        "scale": scale,
+        "const": const,
+        "pdrf_scale": pdrf_scale,
+        "pdrf_exponent": pdrf_exponent,
+        "soma_detection_threshold": soma_detect,
+        "soma_acceptance_threshold": soma_accept,
+        "soma_invalidation_scale": soma_scale,
+        "soma_invalidation_const": soma_const,
+        "max_paths": max_paths,
+      },
+      anisotropy=anisotropy,
+      dust_threshold=dust,
+      progress=progress,
+      fill_holes=fill_holes,
+      fix_avocados=fix_avocados,
+      fix_branching=fix_branches,
+      fix_borders=fix_borders,
+      parallel=parallel,
+      gpu=gpu,
+    )
+  except (ImportError, RuntimeError) as err:
+    if not gpu:
+      raise
+    # missing brook, no usable GPU, CUDA errors, ...
+    raise click.ClickException(str(err)) from err
 
   directory = mkdir(outdir)
 
