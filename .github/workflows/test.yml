@@ -33,4 +33,4 @@ jobs:
     - name: Test with pytest
       run: |
         python setup.py develop
-        python -m pytest -v -x automated_test.py
+        python -m pytest -v -x automated_testing

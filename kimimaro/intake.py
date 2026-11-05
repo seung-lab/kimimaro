@@ -62,7 +62,7 @@ def skeletonize(
   fix_borders=True, parallel=1, parallel_chunk_size=100,
   extra_targets_before=[], extra_targets_after=[],
   fill_holes=False, fix_avocados=False,
-  voxel_graph=None
+  voxel_graph=None, gpu=False
 ):
   """
   Skeletonize all non-zero labels in a given 2D or 3D image.
@@ -138,9 +138,29 @@ def skeletonize(
       the end of a job and infrequent progress bar updates. If the
       chunk size is set higher than num tasks // parallel, that number
       is used instead.
+    gpu: skeletonize on an NVIDIA GPU by delegating to Brook. Requires
+      pip install "kimimaro[gpu]", Linux x86-64, Python >= 3.12 and an
+      NVIDIA GPU of compute capability >= 8.0. parallel and
+      parallel_chunk_size are ignored. The output is close to but NOT
+      identical to CPU mode (e.g. tie-breaking between equal cost paths,
+      soma handling). Raises an error if the GPU backend is unavailable;
+      it never silently falls back to the CPU.
 
   Returns: { $segid: osteoid.Skeleton, ... }
   """
+  if gpu:
+    from .gpu import skeletonize as _gpu_skeletonize
+    return _gpu_skeletonize(
+      all_labels, teasar_params=teasar_params, anisotropy=anisotropy,
+      object_ids=object_ids, dust_threshold=dust_threshold,
+      progress=progress, fix_branching=fix_branching, in_place=in_place,
+      fix_borders=fix_borders, parallel=parallel,
+      parallel_chunk_size=parallel_chunk_size,
+      extra_targets_before=extra_targets_before,
+      extra_targets_after=extra_targets_after,
+      fill_holes=fill_holes, fix_avocados=fix_avocados,
+      voxel_graph=voxel_graph,
+    )
 
   anisotropy = np.array(anisotropy, dtype=np.float32)
 

@@ -15,7 +15,8 @@ authors = [
     {name = "Alex Bae"},
     {name = "Forrest Collman"},
     {name = "Peter Li"},
-    {name = "Nina Shamsi"}
+    {name = "Nina Shamsi"},
+    {name = "Giorgio Angelotti"}
 ]
 description = "Skeletonize densely labeled image volumes."
 readme = "README.md"
@@ -105,6 +106,9 @@ all = [
     "vtk",
     "pykdtree",
 ]
+gpu = [
+    "brook-cu12>=0.1,<0.2; sys_platform == 'linux' and platform_machine == 'x86_64' and python_version >= '3.12'",
+]
 
 [project.urls]
 Homepage = "https://github.com/seung-lab/kimimaro/"
@@ -120,3 +124,9 @@ include-package-data = true
 kimimaro = "kimimaro"
 kimimaro_cli = "kimimaro_cli"
 
+[tool.pytest.ini_options]
+testpaths = ["automated_testing"]
+python_files = ["automated_test*.py"]
+markers = [
+    "gpu: needs an NVIDIA GPU and the brook package",
+]
